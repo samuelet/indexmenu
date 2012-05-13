@@ -1,9 +1,11 @@
 /* Queue of loaded script files */
-var indexmenu_jsqueue = [];
+var indexmenu_jsqueue = new Array();
 /* Queue of loaded css files */
-var indexmenu_cssqueue = [];
+var indexmenu_cssqueue = new Array();
 /* Queue of nojs trees */
-var indexmenu_nojsqueue = [];
+var indexmenu_nojsqueue = new Array();
+/* Context menu */
+var indexmenu_contextmenu = {'all': new Array()};
 
 function indexmenu_findExt(path){
     var ext = "gif";
@@ -136,6 +138,7 @@ function indexmenu_notinarray(array,val) {
 
 function indexmenu_mouseposition(obj,e) {
 /*http://www.quirksmode.org/js/events_properties.html*/
+    var X=0,Y=0;
     if (!e) e = window.event;
     if (e.pageX || e.pageY) 	{
       X = e.pageX;
@@ -147,6 +150,39 @@ function indexmenu_mouseposition(obj,e) {
     }
     obj.style.left=X-5+'px';
     obj.style.top=Y-5+'px';
+}
+
+function indexmenu_arrconcat(amenu,index,n) {
+    var html,id,item,i,a,li;
+    if (isUndefined(amenu) || isUndefined(amenu['view'])) {return false;}
+    var cmenu = amenu['view'];
+    if ($('tool__bar') && isArray(amenu['edit'])) {
+	cmenu = amenu['edit'].concat(cmenu);
+    }
+    var node = index.aNodes[n];
+    id = node.hns || node.dokuid;
+    for (i in cmenu) {
+	if (cmenu[i] == '') {continue;}
+	item = document.createElement('li');
+	if (cmenu[i][1]) {
+	    if (isArray(cmenu[i][1])) {
+		html=document.createElement('ul');
+		for (a in cmenu[i][1]) {
+		    li = document.createElement('li');
+		    li.innerHTML = '<a title="'+((cmenu[i][1][a][2]) ? cmenu[i][1][a][2] : cmenu[i][1][a][0])+'" href="'+eval(cmenu[i][1][a][1])+'">'+cmenu[i][1][a][0]+'</a>';
+		    html.appendChild(li);
+		}
+		item.innerHTML = '<span class="indexmenu_submenu">'+cmenu[i][0]+'</span>';
+		html.left = $('r' + index.obj).width;
+		item.appendChild(html);
+	    } else {
+		item.innerHTML = '<a title="'+((cmenu[i][2]) ? cmenu[i][2] : cmenu[i][0])+'" href="'+eval(cmenu[i][1])+'">'+cmenu[i][0]+'</a>';
+	    }
+	} else {
+	    item.innerHTML = cmenu[i];
+	}
+	$('r' + index.obj).lastChild.appendChild(item);
+    }
 }
 
 addInitEvent(indexmenu_loadtoolbar);

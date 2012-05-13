@@ -4,7 +4,7 @@
  * @author Andreas Gohr <andi@splitbrain.org>
  */
 
-indexmenu_nojs = {
+var indexmenu_nojs = {
      /**
      * Delay in ms before showing the throbber.
      * Used to skip the throbber for fast AJAX calls.
@@ -16,16 +16,15 @@ indexmenu_nojs = {
      *
      * @author Andreas Gohr <andi@splitbrain.org>
      */
-    treeattach: function(iobj){
-	var obj=$('nojs_'+iobj[0]);
-	if (!obj) return;
+    treeattach: function(obj){
+	if (!obj[0]) return;
 
-	var items = getElementsByClass('indexmenu_idx',obj,'a');
+	var items = getElementsByClass('indexmenu_idx',obj[0],'a');
 	for(var i=0; i<items.length; i++){
 	    var elem = items[i];
 	    
 	    // attach action to make the link clickable by AJAX
-	    addEvent(elem,'click',function(e){ return indexmenu_nojs.toggle(e,this,iobj[1]); });
+	    addEvent(elem,'click',function(e){ return indexmenu_nojs.toggle(e,this,obj[1]); });
 	}
     },
 
@@ -67,7 +66,7 @@ indexmenu_nojs = {
         //prepare the new ul
         var ul = document.createElement('ul');
         ul.className = 'idx';
-        timeout = window.setTimeout(function(){
+        var timeout = window.setTimeout(function(){
             // show the throbber as needed
             ul.innerHTML = '<li><img src="'+DOKU_BASE+'lib/images/throbber.gif" alt="loading..." title="loading..." /></li>';
             listitem.appendChild(ul);
@@ -76,7 +75,7 @@ indexmenu_nojs = {
         ajax.elementObj = ul;
         ajax.afterCompletion = function(){
             window.clearTimeout(timeout);
-            indexmenu_nojs.treeattach(ul);
+            indexmenu_nojs.treeattach(new Array(ul,jsajax));
             if (listitem.className!='open') {
                 listitem.appendChild(ul);
                 listitem.className='open';
@@ -93,7 +92,7 @@ indexmenu_nojs = {
 	if (!aobj) return;
 
 	for (var i in aobj) { 
-	    indexmenu_nojs.treeattach(aobj[i]);
+	    indexmenu_nojs.treeattach(new Array($('nojs_'+aobj[i][0]),aobj[i][1]));
 	}
     }
 };

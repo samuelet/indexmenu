@@ -55,11 +55,6 @@
 }
 */
 
-/*nojs tree div*/
-.indexmenu_nojs {
-  display: block;
-}
-
 /*Namespace without page link in nojs mode. !important has to be used*/
 div.li a.indexmenu_idx {
   color: __missing__ !important;
@@ -138,40 +133,39 @@ div.dokuwiki div.indexmenu_list_themes {
   height:15px;
 }
 
-.indexmenu_rmenu {
-  position: absolute;
-  z-index: 100;
-  background-color: #fff;
-  border: 1px solid black;
-  font-size: 80%;
-  line-height: 100%;
-  padding-bottom: 5px;
-}
-
 .indexmenu_rmenuhead {
   background-color: #CCFFCC;
-  border-bottom: 1px solid __text__;
-  color: __text__;
-  font-size: 90%;
   margin: 0pt;
   text-align: center;
   padding: 1px 5px;
   vertical-align: middle;                       
   overflow: hidden;
-  width: 80px;
+  width: 100px;
+}
+
+.indexmenu_rmenu, .indexmenu_rmenu li ul {
+  position: absolute;
+  z-index: 100;
+  background-color: #fff;
+  border: 1px solid black;
+  font-size: 80%;
+  line-height: 120%;
+  padding-bottom: 5px;
+  width: 110px;
 }
 
 .indexmenu_rmenu ul,.indexmenu_rmenu li {
   list-style-type: none !important;
   list-style-image: none !important;
   color: #000 !important;
-  margin: 2px !important;
+  padding: 0px;
   text-align: center;
+  position: relative;
 }
 
-.indexmenu_rmenu a:hover {
-  background-color: #000 !important;
-  color: #fff !important;
+.indexmenu_rmenu a:hover,.indexmenu_rmenu .indexmenu_submenu:hover {
+  background-color: #E6E6E6 !important;
+  display: block;
 }
 
 .indexmenu_opts {
@@ -187,4 +181,23 @@ div.dokuwiki div.indexmenu_list_themes {
   vertical-align: top;
   /* needed by ie7 */
   zoom: 1;
+}
+
+.indexmenu_rmenu li ul {
+  display: none;
+/*.indexmenu_rmenu width-1*/
+  left: 109px;
+  font-size: 100%;
+  top:0;
+}
+
+/*nojs tree div*/
+.indexmenu_rmenu li:hover ul, .indexmenu_nojs, .indexmenu_titlemenu {
+  display: block;
+}
+
+.indexmenu_titlemenu {
+  background-color: #ccc;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
 }

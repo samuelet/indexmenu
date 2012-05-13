@@ -1,6 +1,6 @@
 <?php
 /**
- * Info Indexmenu: Displays the index of a specified namespace. 
+ * Info Indexmenu: Show a customizable and sortable index for a namespace.
  *
  * @license     GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author      Samuele Tognini <samuele@netsons.org>
@@ -33,8 +33,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
 		 'email'  => 'samuele@netsons.org',
 		 'date'   => rtrim(io_readFile(DOKU_PLUGIN.'indexmenu/VERSION.txt')),
 		 'name'   => 'Indexmenu',
-		 'desc'   => 'Insert the index of a specified namespace.',
-		 'url'    => 'http://wiki.splitbrain.org/plugin:indexmenu'
+		 'desc'   => 'Show a customizable and sortable index for a namespace.',
+		 'url'    => 'http://www.dokuwiki.org/plugin:indexmenu'
 		 );
   }
   
@@ -116,6 +116,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     $nopg = in_array('nopg',$opts);
     //disable toc preview
     $notoc = in_array('notoc',$opts);
+    //disable the right context menu
+    $nomenu = in_array('nomenu',$opts);
     //Main sort method
     if (in_array('tsort',$opts)) {
       $sort='t';
@@ -157,7 +159,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     //max js option
     if (preg_match('/maxjs#(\d+)/u',$match[1],$maxtmp) >0) $maxjs=$maxtmp[1];
     //js options
-    $js_opts=compact('theme','gen_id','nocookie','navbar','noscroll','maxjs','notoc','jsajax','context');
+    $js_opts=compact('theme','gen_id','nocookie','navbar','noscroll','maxjs','notoc','jsajax','context','nomenu');
     return array($ns,
 		 $js_opts,
 		 $sort,
@@ -247,7 +249,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     $this->rsort = $myns[4];
     $this->nsort = $myns[5];
     $opts = $myns[6];
-    $output=false;
+    $output = "";
     $data = array();
     $js_name="indexmenu_";
     $fsdir="/".utf8_encodeFN(str_replace(':','/',$ns));
@@ -267,20 +269,21 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
       $js_name .= uniqid(rand());
     }
 
+    $output .= "<script type='text/javascript' charset='utf-8'>\n";
+    $output .= "<!--//--><![CDATA[//><!--\n";
     //javascript index
-    if ($opts['js']) {      
+    if ($opts['js']) {
       $ns = str_replace('/',':',$ns);
       $output_tmp=$this->_jstree($data,$ns,$js_opts,$js_name,$opts['max']);
       //remove unwanted nodes from standard index 
       $this->_clean_data($data);
     } else {
-      $output .= "<script type='text/javascript' charset='utf-8'>\n";
-      $output .= "<!--//--><![CDATA[//><!--\n";
       $output .= "indexmenu_nojsqueue.push(new Array('".$js_name."','".utf8_encodeFN($js_opts['jsajax'])."'));\n";
       $output .= "addInitEvent(function(){indexmenu_loadJs(DOKU_BASE+'lib/plugins/indexmenu/nojsindex.js');});\n";
-      $output .= "//--><!]]>\n";
-      $output .= "</script>\n";
     }
+    $output .= "//--><!]]>\n";
+    $output .= "</script>\n";
+      
     //Nojs dokuwiki index
     $output.="\n".'<div id="nojs_'.$js_name.'" class="indexmenu_nojs"';
     $output.=">\n";
@@ -328,6 +331,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     $out .= (int) $js_opts['nocookie'].",";
     $out .= '"'.$anodes[1].'",';
     $out .= (int) $js_opts['navbar'].",$max";
+    if ($js_opts['nomenu']) $out .=",1";
     $out .= ");});\n";
     $out .= "//--><!]]>\n";
     $out .= "</script>\n";

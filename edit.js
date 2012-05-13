@@ -1,1 +1,149 @@
-function indexmenu_toolbar_additions(){var e,d,c,b=$("tool__bar");if(!b){return;}e=$("edbtn__save");if(!e){return;}var a=indexmenu_createPicker("picker_plugin_indexmenu");c=indexmenu_createToolbar();b.appendChild(c);c.onclick=(function(){indexmenu_ajaxmenu("req=local",a,this,false,indexmenu_createThemes);return false;});d=window.indexmenu_contextmenu;if(d[1]){window.indexmenu_contextmenu[0]=d[1].concat(d[0]);}}function indexmenu_createThemes(k,j){if(k.substring(0,9)!="indexmenu"){j.innerHTML="Retrieving error";return;}var i=[["<p><strong><em>Navigation</em></strong></p>",0],["navbar","The tree opens at the current namespace"],["context","Display the tree of the current wiki namespace context"],["nocookie","Don\t remember open/closed nodes during user navigation"],["noscroll","Prevent to scrolling the tree when it does not fit its container width"],["notoc","Disable the toc preview feature"],["<p><strong><em>Sort</em></strong></p>",0],["nsort","Sort also namespaces"],["tsort","By title"],["dsort","By date"],["msort","By meta tag"],["<p><strong><em>Performance</em></strong></p>",0],["max#2","How many levels to render with ajax when a node is opened"],["maxjs#2","How many levels to render in the client browser when a node is opened"],["<p><strong><em>Filters</em></strong></p>",0],["nons","Show only pages"],["nopg","Show only namespaces"]];var h,g,f,e,d,c,b,a;e=k.split(",");f=DOKU_BASE+"lib/plugins/indexmenu/images/";d=indexmenu_toolFrame(j,"Indexmenu");b=document.createElement("div");b.className="no indexmenu_nojstoolbar";d.appendChild(b);h=createToolButton(DOKU_BASE+"lib/tpl/default/images/open.gif","nojs index");h.innerHTML+="Nojs";h.className="pickerbutton";eval("b.onclick = function(){indexmenu_opts(\"\");}");b.appendChild(h);b=document.createElement("div");b.className="no indexmenu_jstoolbar";d.appendChild(b);if(e[0]!="indexmenu"){b.innerHTML+="No themes";e=[];}else{e.splice(0,3);}for(g in e){h=createToolButton(f+e[g]+"/base."+indexmenu_findExt(e[g]),e[g]);h.className="pickerbutton";eval("h.onclick = function(){indexmenu_opts(\"js#"+e[g]+"\");}");b.appendChild(h);}c=indexmenu_toolFrame(j,"Options");a=document.createElement("form");a.id="indexmenu_optfrm";a.className="indexmenu_opts";c.appendChild(a);for(g in i){lc=document.createElement("label");lc.innerHTML=i[g][0]+" ";if(i[g][1]){lc.title=i[g][1];h=document.createElement("input");h.type="checkbox";h.name="check";h.title=i[g][1];h.value=i[g][0];a.appendChild(h);}a.appendChild(lc);}b=document.createElement("div");b.className="indexmenu_extratoolbar";b.innerHTML="<p><strong><em>Extra</em></strong></p>";d.appendChild(b);h=createToolButton(f+"/msort.gif","Insert the sort meta-number");h.className="pickerbutton";h.onclick=(function(){insertTags("wiki__text","{{indexmenu_n>","}}","1");$("picker_plugin_indexmenu").style.display="none";return false;});b.appendChild(h);}function indexmenu_createToolbar(){var b=document.createElement("img");b.src=DOKU_BASE+"lib/plugins/indexmenu/images/indexmenu_toolbar.png";var a=document.createElement("button");a.id="syntax_plugin_indexmenu";a.className="toolbutton";a.title="Insert the Indexmenu tree";a.appendChild(b);return a;}function indexmenu_opts(d){var c,b="";var a=$("indexmenu_optfrm");for(c=0;c<a.length;c++){if(a[c].checked){b=b+" "+a[c].value;}}insertTags("wiki__text","{{indexmenu>",((d||b)?"|":"")+d.replace(/#default$/,"")+b+"}}","#1");$("picker_plugin_indexmenu").style.display="none";return false;}function indexmenu_insertTags(d,c){var b,a=d;if(c){b=new RegExp(c,"g");a=d.replace(b,":");}insertTags("wiki__text","[[","]]",a);}function indexmenu_toolFrame(b,a){f=document.createElement("fieldset");l=document.createElement("legend");l.innerHTML="<strong>"+a+"</strong>";f.appendChild(l);b.appendChild(f);return f;}indexmenu_toolbar_additions();
+function indexmenu_toolbar_additions() {
+    var edbtn,cmenu,indx_btn,toolbar = $('tool__bar');
+    if(!toolbar) return;
+    edbtn = $('edbtn__save');
+    if(!edbtn) return;
+    var indx_list = indexmenu_createPicker('picker_plugin_indexmenu');
+    indx_btn = indexmenu_createToolbar();
+    toolbar.appendChild(indx_btn);
+    indx_btn.onclick = function(){indexmenu_ajaxmenu('req=local',indx_list,this,false,indexmenu_createThemes);return false;};
+}
+
+function indexmenu_createThemes(data,indx_list) {
+    if (data.substring(0,9) != 'indexmenu') {
+	indx_list.innerHTML="Retrieving error";
+	return;
+    }
+    var checkboxes=[['<p><strong><em>Navigation</em></strong></p>',0],
+		    ['navbar','The tree opens at the current namespace'],
+		    ['context','Display the tree of the current wiki namespace context'],
+		    ['nocookie','Don\t remember open/closed nodes during user navigation'],
+		    ['noscroll','Prevent to scrolling the tree when it does not fit its container width'],
+		    ['notoc','Disable the toc preview feature'],
+		    ['nomenu','Disable the right context menu'],
+		    ['<p><strong><em>Sort</em></strong></p>',0],
+		    ['nsort','Sort also namespaces'],
+		    ['tsort','By title'],
+		    ['dsort','By date'],
+		    ['msort','By meta tag'],
+		    ['<p><strong><em>Performance</em></strong></p>',0],
+		    ['max#2','How many levels to render with ajax when a node is opened'],
+		    ['maxjs#2','How many levels to render in the client browser when a node is opened'],
+		    ['<p><strong><em>Filters</em></strong></p>',0],
+		    ['nons','Show only pages'],
+		    ['nopg','Show only namespaces']];
+
+    var btn,key,theme_url,adata,f,f2,l,fo;
+    adata=data.split(',');
+    theme_url = DOKU_BASE + 'lib/plugins/indexmenu/images/';
+    f=indexmenu_toolFrame(indx_list,'Indexmenu');
+    l = document.createElement('div');
+    l.className = 'no indexmenu_nojstoolbar';
+    f.appendChild(l);
+    btn = createToolButton(DOKU_BASE + 'lib/tpl/default/images/open.gif','nojs index');
+    btn.innerHTML += 'Nojs';
+    btn.className = 'pickerbutton';
+    eval('btn.onclick = function(){indexmenu_opts("");}');
+    l.appendChild(btn);
+
+    l = document.createElement('div');
+    l.className = 'no indexmenu_jstoolbar';
+    f.appendChild(l);
+    if (adata[0] != 'indexmenu') {
+	l.innerHTML += 'No themes';
+	adata=[];
+    } else {
+	adata.splice(0,3);
+    }
+    for (key in adata) {
+	btn = createToolButton(theme_url + adata[key]+'/base.'+indexmenu_findExt(adata[key]),adata[key]);
+	btn.className = 'pickerbutton';
+	eval('btn.onclick = function(){indexmenu_opts("js#'+adata[key]+'");}');
+	l.appendChild(btn);
+    }
+    f2=indexmenu_toolFrame(indx_list,'Options');
+    fo=document.createElement('form');
+    fo.id='indexmenu_optfrm';
+    fo.className='indexmenu_opts';
+    f2.appendChild(fo);
+    for (key in checkboxes) {
+	lc = document.createElement('label');
+	lc.innerHTML=checkboxes[key][0]+' ';
+	if (checkboxes[key][1]) {
+	    lc.title= checkboxes[key][1];
+	    btn=document.createElement('input');
+	    btn.type = 'checkbox';
+	    btn.name = 'check';
+	    btn.title = checkboxes[key][1];
+	    btn.value = checkboxes[key][0];
+	    fo.appendChild(btn);
+	}
+	fo.appendChild(lc);
+    }
+
+    l = document.createElement('div');
+    l.className = 'indexmenu_extratoolbar';
+    l.innerHTML='<p><strong><em>Extra</em></strong></p>';
+    f.appendChild(l);
+    btn = createToolButton(theme_url+'/msort.gif','Insert the sort meta-number');
+    btn.className = 'pickerbutton';
+    btn.onclick = function(){insertTags(
+	'wiki__text',
+	'{{indexmenu_n>',
+	'}}',
+	'1'
+	);
+	$('picker_plugin_indexmenu').style.display='none';
+	return false;
+    };
+    l.appendChild(btn);
+}
+
+function indexmenu_createToolbar (){
+    var indx_ico = document.createElement('img');
+    indx_ico.src = DOKU_BASE + 'lib/plugins/indexmenu/images/indexmenu_toolbar.png';
+    var indx_btn = document.createElement('button');
+    indx_btn.id = 'syntax_plugin_indexmenu';
+    indx_btn.className = 'toolbutton';
+    indx_btn.title = 'Insert the Indexmenu tree';
+    indx_btn.appendChild(indx_ico);
+    return indx_btn;
+}
+
+function indexmenu_opts(m) {
+    var i,v = '';
+    var f=$('indexmenu_optfrm');
+    for (i=0; i < f.length; i++) {
+	if (f[i].checked) {
+	    v = v + ' ' + f[i].value;
+	}
+    }
+    insertTags(
+	       'wiki__text',
+	       '{{indexmenu>',
+	       ((m||v)?'|':'')+m.replace(/#default$/,'')+v+'}}',
+	       '#1'
+	       );
+    $('picker_plugin_indexmenu').style.display='none';
+    return false;
+}
+
+function indexmenu_insertTags(lnk,sep) {
+    var r,l=lnk;
+    if (sep) {
+	r=new RegExp (sep,"g");
+	l=lnk.replace(r,':');
+    }
+    insertTags('wiki__text','[[',']]',l);
+}
+
+function indexmenu_toolFrame(parent,txt) {
+    f=document.createElement('fieldset');
+    l=document.createElement('legend');
+    l.innerHTML='<strong>'+txt+'</strong>';
+    f.appendChild(l);
+    parent.appendChild(f);
+    return f;
+}
+
+indexmenu_toolbar_additions();

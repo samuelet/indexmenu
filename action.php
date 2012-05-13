@@ -43,7 +43,8 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
    * @author Samuele Tognini <samuele@netsons.org>
    */
   function _checkperm(&$event, $param) {
-    if ($this->_notadmin()) {
+    global $INFO;
+    if (!$INFO['isadmin']) {
       $event->data[0][1]= preg_replace("/{{indexmenu(|_n)>.+?}}/","",$event->data[0][1]);
     }
   }
@@ -54,22 +55,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
    * @author Samuele Tognini <samuele@netsons.org>
    */
   function _hookjs(&$event, $param) {
-    global $ID;
-    global $INFO;
-    $jsmenu=DOKU_BASE."lib/plugins/indexmenu/jsmenu/";
-
-    if ($INFO['userinfo']['grps']) {
-      $jsmenu .= ($this->_notadmin()) ? "usrmenu.js" : "admmenu.js";
-    } else {
-      $jsmenu .= "menu.js";
-    }
-
-    $event->data["script"][] = array (  "type" => "text/javascript",
-				        "charset" => "utf-8",
-				        "_data" => "",
-				        "src" =>  $jsmenu
-				        );
-    
+    global $ID, $INFO;
     $event->data["script"][] = array (	"type" => "text/javascript",
 					"charset" => "utf-8",
 					"_data" => "",
@@ -78,7 +64,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
  
     $event->data["script"][] = array (	"type" => "text/javascript",
 					"charset" => "utf-8",
-					"_data" => "var indexmenu_ID='".idfilter($ID)."'"
+					"_data" => 'var indexmenu_INFO = {"id":"'.$ID.'","isadmin":'.(int) $INFO['isadmin'].',"isauth":'.(int) $INFO['userinfo'].'};'
 					);
   }
 
@@ -143,27 +129,13 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
    * @author Samuele Tognini <samuele@netsons.org>
    */
   function _showsort(&$event, $param) {
-    global $ID,$ACT;
-    if ($ACT != 'show' || $this->_notadmin()) return;
-    if ($n=p_get_metadata($ID,'indexmenu_n')) {
-      ptln('<div class="info">');
-      ptln($this->getLang('showsort').$n);
-      ptln('</div>');
+    global $ID, $ACT, $INFO;
+    if ($INFO['isadmin'] && $ACT == 'show') {
+      if ($n=p_get_metadata($ID,'indexmenu_n')) {
+	ptln('<div class="info">');
+	ptln($this->getLang('showsort').$n);
+	ptln('</div>');
+      }
     }
-  }
-
-  /**
-   * Check if user is administrator..
-   *
-   * @author Samuele Tognini <samuele@netsons.org>
-   */
-  function _notadmin() {
-    global $conf;
-    global $INFO;
-
-    if ($conf['useacl'] && $INFO['perm'] < AUTH_ADMIN) {
-      return true;
-    }
-    return false;
   }
 }

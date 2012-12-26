@@ -416,7 +416,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
       }
       //check headpage
       if (@file_exists(wikiFN($page)) && auth_quickaclcheck($page) >= AUTH_READ) {
-	if ($conf['useheading'] && $title_tmp=p_get_first_heading($page,FALSE)) $title=$title_tmp;
+	if($conf['useheading'] == 1 || $conf['useheading'] == 'navigation') {
+        $title_tmp = p_get_first_heading($page, FALSE);
+        if(!is_null($title_tmp)) $title = $title_tmp;
+    }
 	$title=htmlspecialchars($title,ENT_QUOTES);
 	$hns=$page;
 	//headpage found, exit for
@@ -559,7 +562,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
 	}
       }
       //Set title
-      if (!$conf['useheading'] || !$title=p_get_first_heading($id,FALSE)) $title=noNS($id);
+      if ($conf['useheading'] == 1 || $conf['useheading'] == 'navigation') {
+          $title = p_get_first_heading($id, FALSE);
+      }
+      if(is_null($title)) $title = noNS($id);
       $title=htmlspecialchars($title,ENT_QUOTES);
     }
     

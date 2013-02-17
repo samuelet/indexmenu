@@ -1,8 +1,11 @@
-/* Queue of loaded script files */
+/* DOKUWIKI:include nojsindex-full.js */
+
+/*
+/* Queue of loaded script files * /
 var indexmenu_jsqueue = [];
-/* Queue of loaded css files */
+/* Queue of loaded css files * /
 var indexmenu_cssqueue = [];
-/* Queue of nojs trees */
+/* Queue of nojs trees * /
 var indexmenu_nojsqueue = [];
 
 function indexmenu_findExt(path) {
@@ -140,7 +143,7 @@ function indexmenu_notinarray(array, val) {
 }
 
 function indexmenu_mouseposition(obj, e) {
-    /*http://www.quirksmode.org/js/events_properties.html*/
+    /*http://www.quirksmode.org/js/events_properties.html* /
     if (!e) e = window.event;
     if (e.pageX || e.pageY) {
         X = e.pageX;
@@ -155,3 +158,6 @@ function indexmenu_mouseposition(obj, e) {
 }
 
 addInitEvent(indexmenu_loadtoolbar);
+
+
+    */

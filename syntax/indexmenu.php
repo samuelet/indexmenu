@@ -655,7 +655,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         //Sort dirs
         if($this->nsort) {
             foreach($dirs as $dir) {
-                search_callback($func, $dirs_tmp, $base, $dir, 'd', $lvl, $opts);
+                call_user_func_array($func, array(&$dirs_tmp, $base, $dir, 'd', $lvl, $opts));
             }
             usort($dirs_tmp, array($this, "_cmp"));
             foreach($dirs_tmp as $dir) {
@@ -665,12 +665,14 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         } else {
             sort($dirs);
             foreach($dirs as $dir) {
-                if(search_callback($func, $data, $base, $dir, 'd', $lvl, $opts)) $this->_search($data, $base, $func, $opts, $dir, $lvl + 1);
+                if(call_user_func_array($func, array(&$data, $base, $dir, 'd', $lvl, $opts))) {
+                    $this->_search($data, $base, $func, $opts, $dir, $lvl + 1);
+                }
             }
         }
         //Sort files
         foreach($files as $file) {
-            search_callback($func, $files_tmp, $base, $file, 'f', $lvl, $opts);
+            call_user_func_array($func, array(&$files_tmp, $base, $file, 'f', $lvl, $opts));
         }
         usort($files_tmp, array($this, "_cmp"));
         if(empty($dirs) && empty($files_tmp)) {

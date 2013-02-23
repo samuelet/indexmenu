@@ -75,6 +75,7 @@ class ajax_indexmenu_plugin {
                 && $file != ".."
                 && $file != "repository"
                 && $file != "tmp"
+                && $file != ".svn"
             ) {
                 $data[] = $file;
             }

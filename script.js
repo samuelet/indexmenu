@@ -1,11 +1,46 @@
-/* DOKUWIKI:include nojsindex-full.js */
+/* DOKUWIKI:include scripts/nojsindex.js */
+/* DOKUWIKI:include scripts/toolbarindexwizard.js */
+
+
+/**
+ * Add button action for the link wizard button
+ *
+ * @param  DOMElement btn   Button element to add the action to
+ * @param  array      props Associative array of button properties
+ * @param  string     edid  ID of the editor textarea
+ * @return boolean    If button should be appended
+ */
+function addBtnActionIndexmenu($btn, props, edid) {
+    indexmenu_wiz.init(jQuery('#'+edid));
+    $btn.click(function(){
+        indexmenu_wiz.toggle();
+        return false;
+    });
+    return true;
+}
+
+
+// try to add button to toolbar
+if (window.toolbar != undefined) {
+    window.toolbar[window.toolbar.length] = {
+        "type":"Indexmenu",
+        "title":"Insert the Indexmenu tree",
+        "icon":"../../plugins/indexmenu/images/indexmenu_toolbar.png"
+    }
+}
+
+
+
 
 /*
-/* Queue of loaded script files * /
+// Section below works only in release till 2012-09-10 "Adora Belle". Uncomment to use.
+// - Later releases has removed the old javascript library https://github.com/splitbrain/dokuwiki/commit/99421189
+
+// Queue of loaded script files
 var indexmenu_jsqueue = [];
-/* Queue of loaded css files * /
+// Queue of loaded css files
 var indexmenu_cssqueue = [];
-/* Queue of nojs trees * /
+// Queue of nojs trees
 var indexmenu_nojsqueue = [];
 
 function indexmenu_findExt(path) {
@@ -143,7 +178,7 @@ function indexmenu_notinarray(array, val) {
 }
 
 function indexmenu_mouseposition(obj, e) {
-    /*http://www.quirksmode.org/js/events_properties.html* /
+    //http://www.quirksmode.org/js/events_properties.html
     if (!e) e = window.event;
     if (e.pageX || e.pageY) {
         X = e.pageX;
@@ -159,5 +194,4 @@ function indexmenu_mouseposition(obj, e) {
 
 addInitEvent(indexmenu_loadtoolbar);
 
-
-    */
+   */ 

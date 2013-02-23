@@ -192,3 +192,32 @@ div.dokuwiki div.indexmenu_list_themes {
     /* needed by ie7 */
     zoom: 1;
 }
+
+/* indexmenu wizard */
+#indexmenu__wiz {
+    width: 450px;
+}
+#indexmenu__wiz fieldset {
+    width: 400px;
+    text-align: left;
+}
+
+#indexmenu__wiz input {
+    margin: 0 0.1em 0 0;
+}
+
+#indexmenu__wiz input#namespace {
+    margin: 0 0.6em;
+    width: 270px;
+}
+
+#indexmenu__wiz .number input {
+    width: 30px;
+}
+
+#indexmenu__wiz strong { line-height: 1.5em; }
+#indexmenu__wiz label { margin: 0 0.6em; }
+#indexmenu__wiz fieldset.options label.number { margin: 0 0.6em 0 -0.3em; }
+
+#indexmenu__wiz input#indexmenu__insert { margin: 0.5em 3px 1em 3px; }
+#indexmenu__wiz fieldset.metanumber input[type=text] { width: 50px; margin: 5px; }

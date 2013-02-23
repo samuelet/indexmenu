@@ -1,17 +1,11 @@
 /**
- * Created with IntelliJ IDEA.
- * User: gerrit
- * Date: 18-2-13
- * Time: 16:17
- * To change this template use File | Settings | File Templates.
- */
-
-
-/**
  * The Indexmenu Wizard
  *
+ * @author Gerrit Uitslag
+ * based on Linkwiz by
  * @author Andreas Gohr <gohr@cosmocode.de>
  * @author Pierre Spring <pierre.spring@caillou.ch>
+ * and the concepts of the old indexmenu wizard
  */
 var indexmenu_wiz = {
     $wiz: null,
@@ -69,7 +63,7 @@ var indexmenu_wiz = {
     },
 
     /**
-     * Initialize the dw_linkwizard by creating the needed HTML
+     * Initialize the indexmenu_wiz by creating the needed HTML
      * and attaching the eventhandlers
      */
     init: function($editor){
@@ -244,17 +238,16 @@ var indexmenu_wiz = {
     },
 
     /**
-     * Show the link wizard
+     * Show the indexmenu wizard
      */
     show: function(){
         indexmenu_wiz.selection  = getSelection(indexmenu_wiz.textArea);
         indexmenu_wiz.$wiz.show();
-        //indexmenu_wiz.$entry.focus();
         //indexmenu_wiz.autocomplete();
     },
 
     /**
-     * Hide the link wizard
+     * Hide the indexmenu wizard
      */
     hide: function(){
         indexmenu_wiz.$wiz.hide();
@@ -263,7 +256,7 @@ var indexmenu_wiz = {
     },
 
     /**
-     * Toggle the link wizard
+     * Toggle the indexmenu wizard
      */
     toggle: function(){
         if(indexmenu_wiz.$wiz.css('display') == 'none'){

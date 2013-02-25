@@ -6,11 +6,11 @@
  * @author     Samuele Tognini <samuele@netsons.org>
  */
 
-if(!defined('DOKU_INC')) define('DOKU_INC', realpath(dirname(__FILE__).'/../../').'/');
-if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN', DOKU_INC.'lib/plugins/');
-require_once(DOKU_PLUGIN.'admin.php');
+if(!defined('DOKU_INC')) die();
+
 require_once (DOKU_INC.'inc/HTTPClient.php');
 require_once(DOKU_PLUGIN."indexmenu/inc/pclzip.lib.php");
+
 if(!defined('INDEXMENU_IMG_ABSDIR')) define('INDEXMENU_IMG_ABSDIR', DOKU_PLUGIN."indexmenu/images");
 define('INDEXMENU_ICOS', 'base,folder,folderopen,folderh,folderhopen,page,plus,minus,nolines_plus,nolines_minus,minusbottom,plusbottom,join,joinbottom,line,empty');
 
@@ -172,7 +172,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
                 }
             } else {
                 $act = "install";
-                ptln('      <a href="'.$this->repos['url'][$n]."$repo/lib/plugins/indexmenu/ajax.php?req=send&amp;t=".$theme.'">Download</a>');
+                ptln('      <a href="'.$this->repos['url'][$n]."/lib/plugins/indexmenu/ajax.php?req=send&amp;t=".$theme.'">Download</a>');
             }
             $this->_form_open($act, $n);
             if($n == 0 && !is_file(INDEXMENU_IMG_ABSDIR."/".$theme."/info.txt")) {
@@ -196,7 +196,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
         $repo = $this->repos['url'][$n];
         if(!isset($name)) return false;
         $return = true;
-        if(!$absdir = $this->checktmpsubdir()) return;
+        if(!$absdir = $this->checktmpsubdir()) return false;
         $tmp = $absdir."/tmp";
 
         //send theme list request
@@ -241,8 +241,6 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
         } else {
             return @unlink($path);
         }
-
-        return false;
     }
 
     /**
@@ -398,6 +396,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
      * @author Samuele Tognini <samuele@netsons.org>
      */
     function _form_open($act, $n = -1) {
+        global $ID;
         ptln('     <form action="'.wl($ID).'" method="post">');
         ptln('      <input type="hidden" name="do" value="admin" />');
         ptln('      <input type="hidden" name="page" value="'.$this->getPluginName().'" />');

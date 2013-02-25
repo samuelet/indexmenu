@@ -179,7 +179,6 @@ function indexmenu_notinarray(array, val) {
     return true;
 }
 
-
 function indexmenu_mouseposition(obj, e) {
     //http://www.quirksmode.org/js/events_properties.html
     var X=0,Y=0;

@@ -1,15 +1,17 @@
-/* Right Context Menu configuration for authenticated users:
- Menu is built from four array items: title, link, show if page or headpage, show if namespace.
- Link is not created if it's 0, otherwise it's evaluated.
- Second array is displayed only in edit mode.
-
- Some usefull variables:
- node.hns = headpage id;
- node.isdir = node is namespace;
- node.dokuid = the DW id (namespace parent in case of headpage);
- id = the DW id of the selected node (headpage id in case of headpage);
- this.config.urlbase = Url Base;
- this.config.sepchar = Url separator;
+/**
+ * Right Context Menu configuration for authenticated users:
+ *
+ * Menu is built from four array items: title, link, show if page or headpage, show if namespace.
+ * Link is not created if it's 0, otherwise it's evaluated.
+ * Second array is displayed only in edit mode.
+ *
+ * Some usefull variables:
+ *   node.hns = headpage id;
+ *   node.isdir = node is namespace;
+ *   node.dokuid = the DW id (namespace parent in case of headpage);
+ *   id = the DW id of the selected node (headpage id in case of headpage);
+ *   this.config.urlbase = Url Base;
+ *   this.config.sepchar = Url separator;
  */
 
 var indexmenu_contextmenu = new Array(
@@ -32,8 +34,9 @@ var indexmenu_contextmenu = new Array(
     )
 );
 
-/*Custom User Functions
- Insert your custom functions here.
+/*
+ * Custom User Functions
+ * Insert your custom functions here.
  */
 function indexmenu_reqpage(b, s, id, n) {
     var r, u = b;

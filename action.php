@@ -7,8 +7,6 @@
  */
 
 if(!defined('DOKU_INC')) die();
-if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN', DOKU_INC.'lib/plugins/');
-require_once(DOKU_PLUGIN.'action.php');
 
 class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
 
@@ -26,26 +24,31 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         );
     }
 
-    /*
-    * plugin should use this method to register its handlers with the dokuwiki's event controller
-    */
+    /**
+     * plugin should use this method to register its handlers with the dokuwiki's event controller
+     *
+     * @param Doku_Event_Handler $controller DokuWiki's event controller object.
+     */
     function register(&$controller) {
         if($this->getConf('only_admins')) $controller->register_hook('IO_WIKIPAGE_WRITE', 'BEFORE', $this, '_checkperm');
         if($this->getConf('page_index') != '') $controller->register_hook('TPL_ACT_RENDER', 'BEFORE', $this, '_loadindex');
         $controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, '_hookjs');
         $controller->register_hook('PARSER_CACHE_USE', 'BEFORE', $this, '_purgecache');
         if($this->getConf('show_sort')) $controller->register_hook('TPL_CONTENT_DISPLAY', 'BEFORE', $this, '_showsort');
-        $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this,'_ajax_call');
+        $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, '_ajax_call');
     }
 
     /**
      * Check if user has permission to insert indexmenu
      *
      * @author Samuele Tognini <samuele@netsons.org>
+     *
+     * @param Doku_Event $event
+     * @param mixed $param not defined
      */
     function _checkperm(&$event, $param) {
         global $INFO;
-        if (!$INFO['isadmin']) {
+        if(!$INFO['isadmin']) {
             $event->data[0][1] = preg_replace("/{{indexmenu(|_n)>.+?}}/", "", $event->data[0][1]);
         }
     }
@@ -54,25 +57,33 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * Hook js script into page headers.
      *
      * @author Samuele Tognini <samuele@netsons.org>
+     *
+     * @param Doku_Event $event
+     * @param mixed $param not defined
      */
     function _hookjs(&$event, $param) {
         global $ID, $INFO;
-        $event->data["script"][] = array (	"type" => "text/javascript",
-					"charset" => "utf-8",
-					"_data" => "",
-					"src" => DOKU_BASE."lib/plugins/indexmenu/indexmenu.js"
-					);
+        $event->data["script"][] = array(
+            "type"    => "text/javascript",
+            "charset" => "utf-8",
+            "_data"   => "",
+            "src"     => DOKU_BASE."lib/plugins/indexmenu/indexmenu.js"
+        );
 
-    $event->data["script"][] = array (	"type" => "text/javascript",
-					"charset" => "utf-8",
-					"_data" => 'var indexmenu_INFO = {"id":"'.$ID.'","isadmin":'.(int) $INFO['isadmin'].',"isauth":'.(int) $INFO['userinfo'].'};'
-					);
+        $event->data["script"][] = array(
+            "type"    => "text/javascript",
+            "charset" => "utf-8",
+            "_data"   => 'var indexmenu_INFO = {"id":"'.$ID.'","isadmin":'.(int) $INFO['isadmin'].',"isauth":'.(int) $INFO['userinfo'].'};'
+        );
     }
 
     /**
      * Check for pages changes and eventually purge cache.
      *
      * @author Samuele Tognini <samuele@netsons.org>
+     *
+     * @param Doku_Event $event
+     * @param mixed $param not defined
      */
     function _purgecache(&$event, $param) {
         global $ID;
@@ -112,6 +123,9 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * Render a defined page as index.
      *
      * @author Samuele Tognini <samuele@netsons.org>
+     *
+     * @param Doku_Event $event
+     * @param mixed $param not defined
      */
     function _loadindex(&$event, $param) {
         if('index' != $event->data) return;
@@ -128,10 +142,13 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * Display the indexmenu sort number.
      *
      * @author Samuele Tognini <samuele@netsons.org>
+     *
+     * @param Doku_Event $event
+     * @param mixed $param not defined
      */
     function _showsort(&$event, $param) {
         global $ID, $ACT, $INFO;
-        if ($INFO['isadmin'] && $ACT == 'show') {
+        if($INFO['isadmin'] && $ACT == 'show') {
             if($n = p_get_metadata($ID, 'indexmenu_n')) {
                 ptln('<div class="info">');
                 ptln($this->getLang('showsort').$n);
@@ -168,14 +185,19 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
 
         return array(
             'themebase' => $themebase,
-            'themes' => $themes
+            'themes'    => $themes
         );
-
 
     }
 
+    /**
+     * Handles ajax requests for indexmenu
+     *
+     * @param Doku_Event $event
+     * @param mixed $param not defined
+     */
     function _ajax_call(&$event, $param) {
-        if ($event->data !== 'indexmenu') {
+        if($event->data !== 'indexmenu') {
             return;
         }
         //no other ajax call handlers needed
@@ -184,13 +206,14 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
 
         global $INPUT;
 
+        $data = array();
         switch($INPUT->str('req')) {
             case 'local':
                 //list themes
                 $data = $this->_getlocalThemes();
 
                 break;
-           /* case 'toc':
+         /* case 'toc':
                 //print toc preview
                 if(isset($_REQUEST['id'])) print $this->print_toc($_REQUEST['id']);
                 break;
@@ -200,10 +223,10 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
                 break;        */
         }
 
-        require_once DOKU_INC . 'inc/JSON.php';
+        require_once DOKU_INC.'inc/JSON.php';
         $json = new JSON();
         header('Content-Type: application/json');
-        echo '' . $json->encode($data) . '';
+        echo ''.$json->encode($data).'';
     }
 
 }

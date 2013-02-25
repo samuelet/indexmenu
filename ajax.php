@@ -95,10 +95,10 @@ class ajax_indexmenu_plugin {
     function print_toc($id) {
         require_once(DOKU_INC.'inc/parser/xhtml.php');
         $id = cleanID($id);
-        if(auth_quickaclcheck($id) < AUTH_READ) return;
+        if(auth_quickaclcheck($id) < AUTH_READ) return '';
         $meta = p_get_metadata($id);
         $toc  = $meta['description']['tableofcontents'];
-        $out .= '<div class="tocheader toctoggle">'.DOKU_LF;
+        $out  = '<div class="tocheader toctoggle">'.DOKU_LF;
         if(count($toc) > 1) {
             $out .= $this->render_toc($toc);
         } else {
@@ -125,7 +125,7 @@ class ajax_indexmenu_plugin {
         global $lang;
         $r      = new Doku_Renderer_xhtml;
         $r->toc = $toc;
-        $out .= $lang['toc'];
+        $out = $lang['toc'];
         $out .= '</div>'.DOKU_LF;
         $out .= '<div class="indexmenu_toc_inside">'.DOKU_LF;
         $out .= html_buildlist($r->toc, 'toc', array($this, '_tocitem'));
@@ -156,6 +156,7 @@ class ajax_indexmenu_plugin {
         $level = -1;
         $max   = 0;
         $data  = array();
+        $out   = '';
         if($_REQUEST['max'] > 0) {
             $max   = $_REQUEST['max'];
             $level = $max;

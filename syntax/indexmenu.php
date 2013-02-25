@@ -7,10 +7,9 @@
  *
  */
 
-if(!defined('DOKU_INC')) define('DOKU_INC', realpath(dirname(__FILE__).'/../../').'/');
-if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN', DOKU_INC.'lib/plugins/');
+if(!defined('DOKU_INC')) die();
 if(!defined('INDEXMENU_IMG_ABSDIR')) define('INDEXMENU_IMG_ABSDIR', DOKU_PLUGIN."indexmenu/images");
-require_once(DOKU_PLUGIN.'syntax.php');
+
 require_once(DOKU_INC.'inc/search.php');
 
 /**
@@ -34,7 +33,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             'date'   => rtrim(io_readFile(DOKU_PLUGIN.'indexmenu/VERSION.txt')),
             'name'   => 'Indexmenu',
             'desc'   => 'Show a customizable and sortable index for a namespace.',
-		    'url'    => 'http://www.dokuwiki.org/plugin:indexmenu'
+            'url'    => 'http://www.dokuwiki.org/plugin:indexmenu'
         );
     }
 
@@ -45,6 +44,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         return 'substition';
     }
 
+    /**
+     * Behavior regarding the paragraph
+     */
     function getPType() {
         return 'block';
     }
@@ -117,7 +119,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         //disable toc preview
         $notoc = in_array('notoc', $opts);
         //disable the right context menu
-        $nomenu = in_array('nomenu',$opts);
+        $nomenu = in_array('nomenu', $opts);
         //Main sort method
         if(in_array('tsort', $opts)) {
             $sort = 't';
@@ -224,6 +226,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             $renderer->doc .= $n;
             return true;
         } else if($mode == 'metadata') {
+            /** @var Doku_Renderer_metadata $renderer */
             if(!($data[1]['navbar'] && !$data[6]['js']) && !$data[1]['context']) {
                 //this is an indexmenu page that needs the PARSER_CACHE_USE event trigger;
                 $renderer->meta['indexmenu'] = TRUE;
@@ -253,12 +256,13 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $this->rsort = $myns[4];
         $this->nsort = $myns[5];
         $opts        = $myns[6];
-        $output      = false;
+        $output      = "";
+        $output_tmp  = "";
         $data        = array();
         $js_name     = "indexmenu_";
         $fsdir       = "/".utf8_encodeFN(str_replace(':', '/', $ns));
         if($this->sort || $this->msort || $this->rsort) {
-            $custsrch = $this->_search($data, $conf['datadir'], array($this, '_search_index'), $opts, $fsdir);
+            $this->_search($data, $conf['datadir'], array($this, '_search_index'), $opts, $fsdir);
         } else {
             search($data, $conf['datadir'], array($this, '_search_index'), $opts, $fsdir);
         }
@@ -275,11 +279,18 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
 
         //javascript index
         if($opts['js']) {
+            $output .= "<script type='text/javascript' charset='utf-8'>\n";
+            $output .= "<!--//--><![CDATA[//><!--\n";
+
             $ns         = str_replace('/', ':', $ns);
             $output_tmp = $this->_jstree($data, $ns, $js_opts, $js_name, $opts['max']);
             //remove unwanted nodes from standard index
             $this->_clean_data($data);
+
+            $output .= "//--><!]]>\n";
+            $output .= "</script>\n";
         }
+
         //Nojs dokuwiki index
         $output .= "\n".'<div id="nojs_'.$js_name.'" data-jsajax="'.utf8_encodeFN($js_opts['jsajax']).'" class="indexmenu_nojs"';
         $output .= ">\n";
@@ -327,6 +338,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $out .= (int) $js_opts['nocookie'].",";
         $out .= '"'.$anodes[1].'",';
         $out .= (int) $js_opts['navbar'].",$max";
+        if($js_opts['nomenu']) $out .= ",1";
         $out .= ");});\n";
         $out .= "//--><!]]>\n";
         $out .= "</script>\n";
@@ -478,15 +490,14 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $hns        = false;
         $return     = false;
         $isopen     = false;
+        $title      = null;
         $skip_index = $opts['skip_index'];
         $skip_file  = $opts['skip_file'];
         $headpage   = $opts['headpage'];
         $id         = pathID($file);
         if($type == 'd') {
             // Skip folders in plugin conf
-            if(!empty($skip_index) &&
-                preg_match($skip_index, $id)
-            )
+            if(!empty($skip_index) && preg_match($skip_index, $id))
                 return false;
             //check ACL (for sneaky_index namespaces too).
             if($this->getConf('sneaky_index') && auth_quickaclcheck($id.':') < AUTH_READ) return false;
@@ -622,18 +633,20 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     }
 
     /**
-     * recurse direcory
+     * Recurse directory
      *
      * This function recurses into a given base directory
      * and calls the supplied function for each file and directory
      *
-     * @param             array ref $data The results of the search are stored here
+     * @param   array     $data The results of the search are stored here
      * @param   string    $base Where to start the search
-     * @param   callback  $func Callback (function name or arayy with object,method)
+     * @param   callback  $func Callback (function name or array with object,method)
+     * @param   array     $opts List of indexmenu options
      * @param   string    $dir  Current directory beyond $base
      * @param   int       $lvl  Recursion Level
+     *
      * @author  Andreas Gohr <andi@splitbrain.org>
-     * modified by Samuele Tognini <samuele@netsons.org>
+     * @author  modified by Samuele Tognini <samuele@netsons.org>
      */
     function _search(&$data, $base, $func, $opts, $dir = '', $lvl = 1) {
         $dirs      = array();
@@ -683,7 +696,6 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         } else {
             $data = array_merge($data, $files_tmp);
         }
-        return true;
     }
 
     /**
@@ -705,6 +717,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      */
     function _setorder($item) {
         $sort = false;
+        $page = false;
         if($item['type'] == 'd') {
             //Fake order info when nsort is not requested
             ($this->nsort) ? $page = $item['hns'] : $sort = 0;

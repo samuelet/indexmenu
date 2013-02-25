@@ -331,7 +331,6 @@ var indexmenu_wiz = {
     hide: function(){
         indexmenu_wiz.$wiz.hide();
         indexmenu_wiz.textArea.focus();
-        console.log('hide');
     },
 
     /**

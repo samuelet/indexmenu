@@ -1,7 +1,7 @@
 /* Right Context Menu configuration for admin users:
-   Menu is built from four array items: title, link, show if page or headpage, show if namespace.
-   Link is not created if it's 0, otherwise it's evaluated.
-   Second array is displayed only in edit mode.
+ Menu is built from four array items: title, link, show if page or headpage, show if namespace.
+ Link is not created if it's 0, otherwise it's evaluated.
+ Second array is displayed only in edit mode.
 
    Some usefull variables:
    node.hns = headpage id;
@@ -35,3 +35,4 @@ indexmenu_contextmenu['ns'] = {'view' : [
 					   ]]
 					 ]
 };
+

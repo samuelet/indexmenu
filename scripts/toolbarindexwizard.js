@@ -12,6 +12,7 @@ var indexmenu_wiz = {
     timer: null,
     textArea: null,
 
+    defaulttheme: 'default',
     fields: {
         div1: {
             elems: {
@@ -135,6 +136,8 @@ var indexmenu_wiz = {
             $opt_fieldset.append(div);
         });
 
+        indexmenu_wiz.includeThemes();
+
         if(JSINFO.namespace){
             jQuery('#namespace').val(':'+JSINFO.namespace);
         }
@@ -160,6 +163,73 @@ var indexmenu_wiz = {
         jQuery('#indexmenu__insertmetanum').click(indexmenu_wiz.insertMetaNumber);
 
         jQuery('#indexmenu__wiz .ui-dialog-titlebar-close').click(indexmenu_wiz.hide);
+    },
+
+    /**
+     * Request and include themes in wizard
+     */
+    includeThemes: function() {
+
+        var addButtons = function(data) {
+            var $themebar = jQuery('<div>')
+                .attr('id','themebar')
+                .addClass('toolbar')
+                .appendTo('div.theme');
+
+            jQuery.each(data.themes, function(i, theme){
+                var themeName =theme.split('.');
+
+                var $ico = jQuery('<div>')
+                    .css({
+                        background: 'url('+ DOKU_BASE + data.themebase + '/' + theme + '/base.' + indexmenu_wiz.getExtension(theme)+') no-repeat center',
+
+                    });
+                var $btn = jQuery('<button>')
+                    .addClass('themebutton toolbutton')
+                    .attr('id', theme)
+                    .attr('title', themeName[0])
+                    .append($ico)
+                    .click(indexmenu_wiz.selectTheme)
+                    .appendTo('div#themebar');
+            });
+
+            //select default theme
+            jQuery('#themebar button#'+indexmenu_wiz.defaulttheme).click();
+        };
+
+        jQuery.post(
+            DOKU_BASE + 'lib/exe/ajax.php',
+            {call: 'indexmenu', req: 'local'},
+            addButtons,
+            'json'
+        );
+    },
+
+    /**
+     * set class 'selected' to clicked theme, remove from other
+     */
+    selectTheme: function(){
+        jQuery('.themebutton').toggleClass('selected', false);
+        jQuery(this).toggleClass('selected', true);
+    },
+
+    /**
+     * determine extension from foldername
+     *
+     * @param foldername
+     * @return {String}
+     */
+    getExtension: function(foldername) {
+        var ext = "gif";
+        var cext = foldername.lastIndexOf(".");
+        if (cext > -1) {
+            cext++;
+            cext = foldername.substring(cext, foldername.length).toLowerCase();
+            if ((cext == "png") || (cext == "jpg")) {
+                ext = cext;
+            }
+        }
+        return ext;
     },
 
     /**
@@ -194,13 +264,23 @@ var indexmenu_wiz = {
             var $label = jQuery(this).parent();
 
             if(input.checked && ( !$label.hasClass('js')||jQuery('input#js').is(':checked') )){
+                //add option
                 options += ' '+input.id;
 
+                //add numbers
                 if($label.hasClass('num')){
                     jQuery.each(indexmenu_wiz.fields.div6.elems[input.id].number, function(j,numid){
                         var num = parseInt(jQuery('input#'+numid).val());
                         options +=  num ? '#'+num : '';
                     });
+                }
+                //add theme
+                if(input.id == 'js') {
+                    var themename = jQuery('#themebar button.selected').attr('id');
+                    if(indexmenu_wiz.defaulttheme !== themename) { //skip default theme
+                        options += '#'+jQuery('#themebar button.selected').attr('id');
+                    }
+
                 }
             }
 

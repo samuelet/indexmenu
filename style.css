@@ -195,10 +195,10 @@ div.dokuwiki div.indexmenu_list_themes {
 
 /* indexmenu wizard */
 #indexmenu__wiz {
-    width: 450px;
+    width: 451px;
 }
 #indexmenu__wiz fieldset {
-    width: 400px;
+    width: 401px;
     text-align: left;
 }
 
@@ -221,3 +221,30 @@ div.dokuwiki div.indexmenu_list_themes {
 
 #indexmenu__wiz input#indexmenu__insert { margin: 0.5em 3px 1em 3px; }
 #indexmenu__wiz fieldset.metanumber input[type=text] { width: 50px; margin: 5px; }
+
+.dokuwiki #indexmenu__wiz div.toolbar button.toolbutton {
+    border-radius: 4px;
+    margin: 0 3px 3px 0;
+    border-left-width: 1px;
+}
+.dokuwiki #indexmenu__wiz div.toolbar button.toolbutton div {
+    width: 16px;
+    height: 16px;
+    opacity: .70;
+}
+.dokuwiki #indexmenu__wiz div.toolbar button.toolbutton div:hover,
+.dokuwiki #indexmenu__wiz div.toolbar button.toolbutton div:active,
+.dokuwiki #indexmenu__wiz div.toolbar button.toolbutton.selected div{
+    opacity: 1;
+}
+.dokuwiki #indexmenu__wiz div.toolbar button.toolbutton.selected {
+    border-color: #333;
+    /* copied from tpl/dokuwiki/css/basic.css */
+    background-color: #ddd;
+    background-image:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPgo8bGluZWFyR3JhZGllbnQgaWQ9Imc2NzAiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+CjxzdG9wIHN0b3AtY29sb3I9IiNGRkZGRkYiIG9mZnNldD0iMCIvPjxzdG9wIHN0b3AtY29sb3I9IiNGNEY0RjQiIG9mZnNldD0iMC4zIi8+PHN0b3Agc3RvcC1jb2xvcj0iI0RERERERCIgb2Zmc2V0PSIwLjk5Ii8+PHN0b3Agc3RvcC1jb2xvcj0iI0JCQkJCQiIgb2Zmc2V0PSIuOTkiLz4KPC9saW5lYXJHcmFkaWVudD4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNnNjcwKSIgLz4KPC9zdmc+);
+    /*background: -moz-linear-gradient(   top, #ffffff 0%, #f4f4f4 30%, #dddddd 99%, #cccccc 99%); see FS#2447*/
+    background: -webkit-linear-gradient(top, #ffffff 0%, #f4f4f4 30%, #dddddd 99%, #bbbbbb 99%);
+    background: -o-linear-gradient(     top, #ffffff 0%, #f4f4f4 30%, #dddddd 99%, #bbbbbb 99%);
+    background: -ms-linear-gradient(    top, #ffffff 0%, #f4f4f4 30%, #dddddd 99%, #bbbbbb 99%);
+    background: linear-gradient(        top, #ffffff 0%, #f4f4f4 30%, #dddddd 99%, #bbbbbb 99%);
+}

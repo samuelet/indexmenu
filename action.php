@@ -35,6 +35,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         $controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, '_hookjs');
         $controller->register_hook('PARSER_CACHE_USE', 'BEFORE', $this, '_purgecache');
         if($this->getConf('show_sort')) $controller->register_hook('TPL_CONTENT_DISPLAY', 'BEFORE', $this, '_showsort');
+        $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this,'_ajax_call');
     }
 
     /**
@@ -169,4 +170,71 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         }
         return false;
     }
+
+    /**
+     * Print a list of local themes
+     *
+     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Gerrit Uitslag <klapinklapin@gmail.com>
+     */
+    private function _getlocalThemes() {
+        global $JSINFO;
+        $themebase = 'lib/plugins/indexmenu/images';
+
+        $handle = @opendir(DOKU_INC.$themebase);
+        $themes = array();
+        while(false !== ($file = readdir($handle))) {
+            if(is_dir(DOKU_INC.$themebase.'/'.$file)
+                && $file != "."
+                && $file != ".."
+                && $file != "repository"
+                && $file != "tmp"
+                && $file != ".svn"
+            ) {
+                $themes[] = $file;
+            }
+        }
+        closedir($handle);
+        sort($themes);
+
+        return array(
+            'themebase' => $themebase,
+            'themes' => $themes
+        );
+
+
+    }
+
+    function _ajax_call(&$event, $param) {
+        if ($event->data !== 'indexmenu') {
+            return;
+        }
+        //no other ajax call handlers needed
+        $event->stopPropagation();
+        $event->preventDefault();
+
+        global $INPUT;
+
+        switch($INPUT->str('req')) {
+            case 'local':
+                //list themes
+                $data = $this->_getlocalThemes();
+
+                break;
+           /* case 'toc':
+                //print toc preview
+                if(isset($_REQUEST['id'])) print $this->print_toc($_REQUEST['id']);
+                break;
+            case 'index':
+                //print index
+                if(isset($_REQUEST['idx'])) print $this->print_index($_REQUEST['idx']);
+                break;        */
+        }
+
+        require_once DOKU_INC . 'inc/JSON.php';
+        $json = new JSON();
+        header('Content-Type: application/json');
+        echo '' . $json->encode($data) . '';
+    }
+
 }

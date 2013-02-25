@@ -193,7 +193,7 @@ var indexmenu_wiz = {
         jQuery('fieldset.options input').each(function(i, input){
             var $label = jQuery(this).parent();
 
-            if(input.checked && ( !$label.hasClass('js')||jQuery('#indexmenu__wiz input#js').is(':checked') )){
+            if(input.checked && ( !$label.hasClass('js')||jQuery('input#js').is(':checked') )){
                 options += ' '+input.id;
 
                 if($label.hasClass('num')){
@@ -243,7 +243,6 @@ var indexmenu_wiz = {
     show: function(){
         indexmenu_wiz.selection  = getSelection(indexmenu_wiz.textArea);
         indexmenu_wiz.$wiz.show();
-        //indexmenu_wiz.autocomplete();
     },
 
     /**

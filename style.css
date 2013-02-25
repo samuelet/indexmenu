@@ -187,6 +187,9 @@ div.dokuwiki div.indexmenu_list_themes {
     zoom: 1;
 }
 
+.indexmenu_rmenu li {
+    margin: 0;
+}
 .indexmenu_rmenu li ul {
     display: none;
     /*.indexmenu_rmenu width-1*/
@@ -206,7 +209,9 @@ div.dokuwiki div.indexmenu_list_themes {
     border-bottom: 1px solid #333;
 }
 
-/* indexmenu wizard */
+/***************************************
+ *          indexmenu wizard           *
+ ***************************************/
 #indexmenu__wiz {
     width: 451px;
 }

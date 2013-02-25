@@ -1,18 +1,19 @@
 /* DOKUWIKI:include scripts/nojsindex.js */
 /* DOKUWIKI:include scripts/toolbarindexwizard.js */
+/* DOKUWIKI:include scripts/indexmenu.js */
 
 
 /**
  * Add button action for the link wizard button
  *
- * @param  DOMElement btn   Button element to add the action to
- * @param  array      props Associative array of button properties
- * @param  string     edid  ID of the editor textarea
- * @return boolean    If button should be appended
+ * @param  {jQuery}   $btn  Button element to add the action to
+ * @param  {Array}    props Associative array of button properties
+ * @param  {string}   edid  ID of the editor textarea
+ * @return {boolean}  If button should be appended
  */
 function addBtnActionIndexmenu($btn, props, edid) {
-    indexmenu_wiz.init(jQuery('#'+edid));
-    $btn.click(function(){
+    indexmenu_wiz.init(jQuery('#' + edid));
+    $btn.click(function () {
         indexmenu_wiz.toggle();
         return false;
     });
@@ -23,13 +24,11 @@ function addBtnActionIndexmenu($btn, props, edid) {
 // try to add button to toolbar
 if (window.toolbar != undefined) {
     window.toolbar[window.toolbar.length] = {
-        "type":"Indexmenu",
-        "title":"Insert the Indexmenu tree",
-        "icon":"../../plugins/indexmenu/images/indexmenu_toolbar.png"
+        "type": "Indexmenu",
+        "title": "Insert the Indexmenu tree",
+        "icon": "../../plugins/indexmenu/images/indexmenu_toolbar.png"
     }
 }
-
-
 
 
 /*
@@ -181,7 +180,7 @@ function indexmenu_notinarray(array, val) {
 
 function indexmenu_mouseposition(obj, e) {
     //http://www.quirksmode.org/js/events_properties.html
-    var X=0,Y=0;
+    var X = 0, Y = 0;
     if (!e) e = window.event;
     if (e.pageX || e.pageY) {
         X = e.pageX;
@@ -195,39 +194,43 @@ function indexmenu_mouseposition(obj, e) {
     obj.style.top = Y - 5 + 'px';
 }
 
-function indexmenu_arrconcat(amenu,index,n) {
-    var html,id,item,i,a,li;
-    if (isUndefined(amenu) || isUndefined(amenu['view'])) {return false;}
+function indexmenu_arrconcat(amenu, index, n) {
+    var html, id, item, i, a, li;
+    if (typeof amenu == 'undefined' || typeof amenu['view'] == 'undefined') {
+        return false;
+    }
     var cmenu = amenu['view'];
-    if ($('tool__bar') && isArray(amenu['edit'])) {
-	cmenu = amenu['edit'].concat(cmenu);
+    if (jQuery('#tool__bar')[0] && amenu['edit'] instanceof Array ) {
+        cmenu = amenu['edit'].concat(cmenu);
     }
     var node = index.aNodes[n];
     id = node.hns || node.dokuid;
     for (i in cmenu) {
-	if (cmenu[i] == '') {continue;}
-	item = document.createElement('li');
-	if (cmenu[i][1]) {
-	    if (isArray(cmenu[i][1])) {
-		html=document.createElement('ul');
-		for (a in cmenu[i][1]) {
-		    li = document.createElement('li');
-		    li.innerHTML = '<a title="'+((cmenu[i][1][a][2]) ? cmenu[i][1][a][2] : cmenu[i][1][a][0])+'" href="'+eval(cmenu[i][1][a][1])+'">'+cmenu[i][1][a][0]+'</a>';
-		    html.appendChild(li);
-		}
-		item.innerHTML = '<span class="indexmenu_submenu">'+cmenu[i][0]+'</span>';
-		html.left = $('r' + index.obj).width;
-		item.appendChild(html);
-	    } else {
-		item.innerHTML = '<a title="'+((cmenu[i][2]) ? cmenu[i][2] : cmenu[i][0])+'" href="'+eval(cmenu[i][1])+'">'+cmenu[i][0]+'</a>';
-	    }
-	} else {
-	    item.innerHTML = cmenu[i];
-	}
-	$('r' + index.obj).lastChild.appendChild(item);
+        if (cmenu[i] == '') {
+            continue;
+        }
+        item = document.createElement('li');
+        if (cmenu[i][1]) {
+            if (isArray(cmenu[i][1])) {
+                html = document.createElement('ul');
+                for (a in cmenu[i][1]) {
+                    li = document.createElement('li');
+                    li.innerHTML = '<a title="' + ((cmenu[i][1][a][2]) ? cmenu[i][1][a][2] : cmenu[i][1][a][0]) + '" href="' + eval(cmenu[i][1][a][1]) + '">' + cmenu[i][1][a][0] + '</a>';
+                    html.appendChild(li);
+                }
+                item.innerHTML = '<span class="indexmenu_submenu">' + cmenu[i][0] + '</span>';
+                html.left = $('r' + index.obj).width;
+                item.appendChild(html);
+            } else {
+                item.innerHTML = '<a title="' + ((cmenu[i][2]) ? cmenu[i][2] : cmenu[i][0]) + '" href="' + eval(cmenu[i][1]) + '">' + cmenu[i][0] + '</a>';
+            }
+        } else {
+            item.innerHTML = cmenu[i];
+        }
+        $('r' + index.obj).lastChild.appendChild(item);
     }
 }
 
 addInitEvent(indexmenu_loadtoolbar);
 
-   */ 
+  */

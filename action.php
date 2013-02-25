@@ -49,12 +49,6 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      */
     function _hookjs(&$event, $param) {
         global $ID, $INFO;
-        $event->data["script"][] = array(
-            "type"    => "text/javascript",
-            "charset" => "utf-8",
-            "_data"   => "",
-            "src"     => DOKU_BASE."lib/plugins/indexmenu/indexmenu.js"
-        );
 
         $event->data["script"][] = array(
             "type"    => "text/javascript",

@@ -17,20 +17,6 @@ if(!defined('DOKU_INC')) die();
 class syntax_plugin_indexmenu_tag extends DokuWiki_Syntax_Plugin {
 
     /**
-     * return some info
-     */
-    function getInfo() {
-        return array(
-            'author' => 'Samuele Tognini',
-            'email'  => 'samuele@netsons.org',
-            'date'   => rtrim(io_readFile(DOKU_PLUGIN.'indexmenu/VERSION.txt')),
-            'name'   => 'Indexmenu tag',
-            'desc'   => 'Indexmenu tag plugin.',
-            'url'    => 'http://wiki.splitbrain.org/plugin:indexmenu'
-        );
-    }
-
-    /**
      * What kind of syntax are we?
      */
     function getType() {

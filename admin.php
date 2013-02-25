@@ -24,20 +24,6 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     var $selected = -1;
 
     /**
-     * return some info
-     */
-    function getInfo() {
-        return array(
-            'author' => 'Samuele Tognini',
-            'email'  => 'samuele@netsons.org',
-            'date'   => rtrim(io_readFile(DOKU_PLUGIN.'indexmenu/VERSION.txt')),
-            'name'   => 'Indexmenu (admin plugin component)',
-            'desc'   => 'Indexmenu admin functions.',
-            'url'    => 'http://wiki.splitbrain.org/plugin:indexmenu',
-        );
-    }
-
-    /**
      * return sort order for position in admin menu
      */
     function getMenuSort() {

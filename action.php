@@ -11,20 +11,6 @@ if(!defined('DOKU_INC')) die();
 class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
 
     /**
-     * return some info
-     */
-    function getInfo() {
-        return array(
-            'author' => 'Samuele Tognini',
-            'email'  => 'samuele@netsons.org',
-            'date'   => rtrim(io_readFile(DOKU_PLUGIN.'indexmenu/VERSION.txt')),
-            'name'   => 'Indexmenu (action plugin component)',
-            'desc'   => 'Indexmenu action functions.',
-            'url'    => 'http://wiki.splitbrain.org/plugin:indexmenu',
-        );
-    }
-
-    /**
      * plugin should use this method to register its handlers with the dokuwiki's event controller
      *
      * @param Doku_Event_Handler $controller DokuWiki's event controller object.

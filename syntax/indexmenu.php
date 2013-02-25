@@ -24,20 +24,6 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     var $nsort = false;
 
     /**
-     * return some info
-     */
-    function getInfo() {
-        return array(
-            'author' => 'Samuele Tognini',
-            'email'  => 'samuele@netsons.org',
-            'date'   => rtrim(io_readFile(DOKU_PLUGIN.'indexmenu/VERSION.txt')),
-            'name'   => 'Indexmenu',
-            'desc'   => 'Show a customizable and sortable index for a namespace.',
-            'url'    => 'http://www.dokuwiki.org/plugin:indexmenu'
-        );
-    }
-
-    /**
      * What kind of syntax are we?
      */
     function getType() {

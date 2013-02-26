@@ -290,6 +290,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * Build the browsable index of pages using javascript
      *
      * @author  Samuele Tognini <samuele@netsons.org>
+     * @author  Rene Hadler
      */
     function _jstree($data, $ns, $js_opts, $js_name, $max) {
         global $conf;
@@ -319,7 +320,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $anodes = $this->_jsnodes($data, $js_name);
         $out .= $anodes[0];
         $out .= "document.write(".$js_name.");\n";
-        $out .= "addInitEvent(function(){".$js_name.".init(";
+        $out .= "jQuery(function(){".$js_name.".init(";
         $out .= (int) is_file(INDEXMENU_IMG_ABSDIR.'/'.$js_opts['theme'].'/style.css').",";
         $out .= (int) $js_opts['nocookie'].",";
         $out .= '"'.$anodes[1].'",';

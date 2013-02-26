@@ -147,12 +147,13 @@ class ajax_indexmenu_plugin {
      *
      * @author Samuele Tognini <samuele@netsons.org>
      * @author Andreas Gohr <andi@splitbrain.org>
+     * @author Rene Hadler <rene.hadler@iteas.at>
      */
     function print_index($ns) {
         require_once(DOKU_PLUGIN.'indexmenu/syntax/indexmenu.php');
         global $conf;
         $idxm  = new syntax_plugin_indexmenu_indexmenu();
-        $ns    = $idxm->_parse_ns($ns);
+		$ns=$idxm->_parse_ns(rawurldecode($ns));
         $level = -1;
         $max   = 0;
         $data  = array();

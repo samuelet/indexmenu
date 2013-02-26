@@ -14,8 +14,14 @@
  | (http://www.gnu.org/licenses/gpl.html)            |
  | Updated: 29.08.2009                               |
  |---------------------------------------------------|
- | indexmenu  | wiki.splitbrain.org/plugin:indexmenu |
- |--------------------------------------------------*/
+ | Modified for Dokuwiki by                          |
+ | Rene Hadler <rene.hadler@iteas.at>                |
+ | under GPL 2 license                               |
+ | (http://www.gnu.org/licenses/gpl.html)            | 
+ | Updated: 07.08.2012                               |
+ |--------------------------------------------------------|
+ | indexmenu  | https://www.dokuwiki.org/plugin:indexmenu |
+ |-------------------------------------------------------*/
 
 // Node object
 function Node(dokuid, id, pid, name, hns, isdir, ajax) {
@@ -106,7 +112,7 @@ dTree.prototype.toString = function () {
         str += 'hidden;"';
     }
     str += '>';
-    if ($('dtree_' + this.obj)) {
+	if (jQuery('#dtree_' + this.obj)[0]) {
         str += '<div class="error">Indexmenu id conflict</div>';
     }
     if (this.config.toc) {
@@ -342,11 +348,11 @@ dTree.prototype.nodeStatus = function (status, id, bottom) {
         return;
     }
     var eJoin, eIcon;
-    eJoin = $('j' + this.obj + id);
-    eIcon = $('i' + this.obj + id);
+	eJoin = jQuery('#j' + this.obj + id)[0];
+	eIcon = jQuery('#i' + this.obj + id)[0];
     eIcon.src = (status) ? this.aNodes[id].iconOpen : this.aNodes[id].icon;
     eJoin.src = ((status) ? ((bottom) ? this.icon.minusBottom : this.icon.minus) : ((bottom) ? this.icon.plusBottom : this.icon.plus));
-    $('d' + this.obj + id).style.display = (status) ? 'block' : 'none';
+    jQuery('#d' + this.obj + id)[0].style.display = (status) ? 'block' : 'none';
 };
 
 // [Cookie] Clears a cookie
@@ -426,7 +432,7 @@ dTree.prototype.openCurNS = function (max) {
             this.openTo(cn.id, false, true);
             this.fajax = false;
             if (cn.pid >= 0) {
-                addInitEvent(this.scroll("l", 4, cn.pid, 1));
+				jQuery(this.scroll("l", 4, cn.pid, 1));
             }
             break;
         }
@@ -466,7 +472,7 @@ dTree.prototype.fill = function (id) {
     for (ln = rd.length - 1; ln >= 0; ln--) {
         id = rd[ln];
         a = this.aNodes[id];
-        eDiv = $('d' + this.obj + id);
+		eDiv = jQuery('#d' + this.obj + id)[0];
         if (!eDiv) {
             return false;
         }
@@ -505,13 +511,13 @@ dTree.prototype.scroll = function (where, s, n, i) {
         return false;
     }
     var w, dtree, dtreel, nodeId;
-    dtree = $('dtree_' + this.obj);
+	dtree = jQuery('#dtree_' + this.obj)[0];
     dtreel = parseInt(dtree.offsetLeft, 0);
     if (where == "r") {
         $('left_' + this.obj).style.border = "thin inset";
         this.scrollRight(dtreel, s);
     } else {
-        nodeId = $('s' + this.obj + n);
+        nodeId = jQuery('#s' + this.obj + n)[0];
         if (nodeId == null) {
             return false;
         }
@@ -565,10 +571,10 @@ dTree.prototype.stopscroll = function () {
 };
 
 dTree.prototype.show_feat = function (n) {
-    var w, div, id, dtree, dtreel, self, node = $('s' + this.obj + n);
+	var w, div, id, dtree, dtreel, self, node = jQuery('#s' + this.obj + n)[0];
     self = this;
     if (this.config.toc && node.className != "node") {
-        div = $('t' + this.obj);
+		div = jQuery('#t' + this.obj)[0];
         id = (this.aNodes[n].hns) ? this.aNodes[n].hns : this.aNodes[n].dokuid;
         div.onmousedown = function () {
             indexmenu_createTocMenu('req=toc&id=' + decodeURIComponent(id), 'picker_' + self.obj, 't' + self.obj);
@@ -579,7 +585,7 @@ dTree.prototype.show_feat = function (n) {
         }
     }
     if (this.config.scroll) {
-        div = $('z' + this.obj);
+		div = jQuery('#z' + this.obj)[0];
         div.onmouseover = function () {
             div.style.border = "none";
             self.scroll("l", 1, n, 0);
@@ -593,7 +599,7 @@ dTree.prototype.show_feat = function (n) {
             self.stopscroll();
         };
         div.onmouseup = div.onmouseover;
-        dtree = $('dtree_' + this.obj);
+		dtree = jQuery('#dtree_' + this.obj)[0];
         dtreel = parseInt(dtree.offsetLeft, 0);
         w = parseInt(dtree.parentNode.offsetWidth - node.offsetWidth - node.offsetLeft + 1, 0);
         if (dtreel > w) {
@@ -606,7 +612,7 @@ dTree.prototype.show_feat = function (n) {
 };
 
 dTree.prototype.resizescroll = function (status) {
-    var dtree, w, h, left = $('left_' + this.obj);
+	var dtree, w, h, left = jQuery('#left_' + this.obj)[0];
     if (!left) {
         return;
     }
@@ -677,8 +683,8 @@ dTree.prototype.loadCss = function () {
 //Right click
 dTree.prototype.contextmenu = function (n, e) {
     var type, node, cdtree, rmenu;
-    cdtree = $("cdtree_" + this.obj);
-    rmenu = $('r' + this.obj);
+    cdtree = jQuery("#cdtree_" + this.obj)[0];
+	rmenu = jQuery('#r' + this.obj)[0];
     if (!rmenu) {
         return true;
     }
@@ -700,7 +706,7 @@ dTree.prototype.contextmenu = function (n, e) {
 };
 
 dTree.prototype.divdisplay = function (obj, v) {
-    var o = $(obj + this.obj);
+	var o = jQuery('#' + obj + this.obj)[0];
     if (!o) {
         return false;
     }
@@ -729,8 +735,8 @@ dTree.prototype.init = function (s, c, n, nav, max, nomenu) {
         }
         var self = this;
         indexmenu_createPicker('r' + this.obj, 'indexmenu_rmenu ' + this.config.theme);
-        $('r' + this.obj).oncontextmenu = indexmenu_stopevt;
-        addEvent(document, 'click', function () {
+        jQuery('#r' + this.obj)[0].oncontextmenu = indexmenu_stopevt;
+		jQuery(document).click(function() {
             self.divdisplay('r', 0);
         });
     }

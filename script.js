@@ -31,7 +31,6 @@ if (window.toolbar != undefined) {
 }
 
 
-/*
 // Section below works only in release till 2012-09-10 "Adora Belle". Uncomment to use.
 // - Later releases has removed the old javascript library https://github.com/splitbrain/dokuwiki/commit/99421189
 
@@ -228,5 +227,3 @@ function indexmenu_arrconcat(amenu, index, n) {
         jQuery('#r' + index.obj)[0].lastChild.appendChild(item);
     }
 }
-
-  */

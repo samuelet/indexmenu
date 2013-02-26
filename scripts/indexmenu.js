@@ -83,7 +83,7 @@ function dTree(objName, theme) {
     this.selectedFound = false;
     this.completed = false;
     this.scrllTmr = 0;
-    this.pageid = window.indexmenu_INFO['id'] || '';
+    this.pageid = JSINFO.id || '';
     this.fajax = false;
 }
 
@@ -367,7 +367,7 @@ dTree.prototype.clearCookie = function () {
 // [Cookie] Sets value in a cookie
 dTree.prototype.setCookie = function (cookieName, cookieValue, expires, path, domain, secure) {
     document.cookie =
-        escape(cookieName) + '=' + escape(cookieValue) +
+        encodeURIComponent(cookieName) + '=' + encodeURIComponent(cookieValue) +
             (expires ? '; expires=' + expires.toGMTString() : '') +
             ';path=/' +
             (domain ? '; domain=' + domain : '') +
@@ -377,15 +377,15 @@ dTree.prototype.setCookie = function (cookieName, cookieValue, expires, path, do
 // [Cookie] Gets a value from a cookie
 dTree.prototype.getCookie = function (cookieName) {
     var cookieValue = '', pN, posValue, endPos;
-    pN = document.cookie.indexOf(escape(cookieName) + '=');
+    pN = document.cookie.indexOf(encodeURIComponent(cookieName) + '=');
     if (pN != -1) {
-        posValue = pN + (escape(cookieName) + '=').length;
+        posValue = pN + (encodeURIComponent(cookieName) + '=').length;
         endPos = document.cookie.indexOf(';', posValue);
         if (endPos != -1) {
-            cookieValue = unescape(document.cookie.substring(posValue, endPos));
+            cookieValue = decodeURIComponent(document.cookie.substring(posValue, endPos));
         }
         else {
-            cookieValue = unescape(document.cookie.substring(posValue));
+            cookieValue = decodeURIComponent(document.cookie.substring(posValue));
         }
     }
     return (cookieValue);
@@ -728,9 +728,9 @@ dTree.prototype.init = function (s, c, n, nav, max, nomenu) {
     }
     if (!nomenu) {
         indexmenu_loadJs(this.config.plugbase + '/jsmenu/common.js');
-        if (window.indexmenu_INFO['isadmin']) {
+        if (JSINFO.isadmin) {
             indexmenu_loadJs(this.config.plugbase + '/jsmenu/admmenu.js');
-        } else if (window.indexmenu_INFO['isauth']) {
+        } else if (JSINFO.isauth) {
             indexmenu_loadJs(this.config.plugbase + '/jsmenu/authmenu.js');
         }
         var self = this;

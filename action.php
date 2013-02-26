@@ -18,7 +18,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     function register(&$controller) {
         if($this->getConf('only_admins')) $controller->register_hook('IO_WIKIPAGE_WRITE', 'BEFORE', $this, '_checkperm');
         if($this->getConf('page_index') != '') $controller->register_hook('TPL_ACT_RENDER', 'BEFORE', $this, '_loadindex');
-        $controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, '_hookjs');
+        $controller->register_hook('DOKUWIKI_STARTED', 'AFTER',  $this, '_extendJSINFO');
         $controller->register_hook('PARSER_CACHE_USE', 'BEFORE', $this, '_purgecache');
         if($this->getConf('show_sort')) $controller->register_hook('TPL_CONTENT_DISPLAY', 'BEFORE', $this, '_showsort');
         $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, '_ajax_call');
@@ -40,21 +40,18 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     }
 
     /**
-     * Hook js script into page headers.
+     * Add additional info to $JSINFO
      *
      * @author Samuele Tognini <samuele@netsons.org>
+     * @author Gerrit Uitslag <klapinklapin@gmail.com>
      *
      * @param Doku_Event $event
      * @param mixed $param not defined
      */
-    function _hookjs(&$event, $param) {
-        global $ID, $INFO;
-
-        $event->data["script"][] = array(
-            "type"    => "text/javascript",
-            "charset" => "utf-8",
-            "_data"   => 'var indexmenu_INFO = {"id":"'.$ID.'","isadmin":'.(int) $INFO['isadmin'].',"isauth":'.(int) $INFO['userinfo'].'};'
-        );
+    function _extendJSINFO(&$event, $param) {
+        global $INFO, $JSINFO;
+        $JSINFO['isadmin'] = (int) $INFO['isadmin'];
+        $JSINFO['isauth'] = (int) $INFO['userinfo'];
     }
 
     /**
@@ -144,7 +141,6 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @author Gerrit Uitslag <klapinklapin@gmail.com>
      */
     private function _getlocalThemes() {
-        global $JSINFO;
         $themebase = 'lib/plugins/indexmenu/images';
 
         $handle = @opendir(DOKU_INC.$themebase);
@@ -208,6 +204,5 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         header('Content-Type: application/json');
         echo ''.$json->encode($data).'';
     }
-
 }
 

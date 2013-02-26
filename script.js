@@ -36,8 +36,6 @@ if (window.toolbar != undefined) {
 
 // Queue of loaded script files
 var indexmenu_jsqueue = new Array();
-// Queue of loaded css files
-var indexmenu_cssqueue = new Array();
 // Context menu
 var indexmenu_contextmenu = {'all': new Array()};
 
@@ -119,8 +117,9 @@ function indexmenu_showPicker(pickerid, btn) {
         picker = pickerid;
     }
     if (picker.style.display == 'none') {
-        x += jQuery(btn).position().left;
-        y += jQuery(btn).position().top;
+        var pos = jQuery(btn).position();
+        x += pos.left;
+        y += pos.top;
         if (picker.id != 'picker_plugin_indexmenu') {
             x += btn.offsetWidth - 3;
         } else {
@@ -162,7 +161,7 @@ function indexmenu_stopevt(e) {
         return true;
     }
     e = e || event;
-    e.preventdefault ? e.preventdefault() : e.returnValue = false;
+    e.preventDefault ? e.preventDefault() : e.returnValue = false;
     return false;
 }
 
@@ -192,9 +191,9 @@ function indexmenu_mouseposition(obj, e) {
 }
 
 function indexmenu_arrconcat(amenu, index, n) {
-    var html, id, item, i, a, li;
+    var html, id, item, a, li;
     if (typeof amenu == 'undefined' || typeof amenu['view'] == 'undefined') {
-        return false;
+        return;
     }
     var cmenu = amenu['view'];
     if (jQuery('#tool__bar')[0] && amenu['edit'] instanceof Array ) {
@@ -202,28 +201,37 @@ function indexmenu_arrconcat(amenu, index, n) {
     }
     var node = index.aNodes[n];
     id = node.hns || node.dokuid;
-    for (i in cmenu) {
-        if (cmenu[i] == '') {
-            continue;
-        }
-        item = document.createElement('li');
-        if (cmenu[i][1]) {
-            if (cmenu[i][1] instanceof Array) {
-                html = document.createElement('ul');
-                for (a in cmenu[i][1]) {
-                    li = document.createElement('li');
-                    li.innerHTML = '<a title="' + ((cmenu[i][1][a][2]) ? cmenu[i][1][a][2] : cmenu[i][1][a][0]) + '" href="' + eval(cmenu[i][1][a][1]) + '">' + cmenu[i][1][a][0] + '</a>';
-                    html.appendChild(li);
-                }
-                item.innerHTML = '<span class="indexmenu_submenu">' + cmenu[i][0] + '</span>';
-                html.left = jQuery('#r' + index.obj)[0].width;
-                item.appendChild(html);
-            } else {
-                item.innerHTML = '<a title="' + ((cmenu[i][2]) ? cmenu[i][2] : cmenu[i][0]) + '" href="' + eval(cmenu[i][1]) + '">' + cmenu[i][0] + '</a>';
+
+    var createCMenuEntry = function(entry) {
+        return '<a title="' + ((entry[2]) ? entry[2] : entry[0]) + '" href="' + eval(entry[1]) + '">' + entry[0] + '</a>';
+    };
+
+    jQuery.each(cmenu, function(i, cmenuentry){
+            if (cmenuentry == '') {
+                return true;
             }
-        } else {
-            item.innerHTML = cmenu[i];
-        }
-        jQuery('#r' + index.obj)[0].lastChild.appendChild(item);
-    }
+            item = document.createElement('li');
+            if (cmenuentry[1]) {
+                if (cmenuentry[1] instanceof Array) {
+                    html = document.createElement('ul');
+                    jQuery.each(cmenuentry[1], function(a, subcmenuentry) {
+                        li = document.createElement('li');
+                        li.innerHTML = createCMenuEntry(subcmenuentry);
+                        html.appendChild(li);
+                    });
+
+                    //}
+                    item.innerHTML = '<span class="indexmenu_submenu">' + cmenuentry[0] + '</span>';
+                    html.left = jQuery('#r' + index.obj)[0].width;
+                    item.appendChild(html);
+                } else {
+                    item.innerHTML = createCMenuEntry(cmenuentry);
+                }
+            } else {
+                item.innerHTML = cmenuentry;
+            }
+            //jQuery('#r' + index.obj)[0].lastChild.appendChild(item);
+            jQuery('#r' + index.obj).children().last().append(item);
+    });
+
 }

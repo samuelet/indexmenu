@@ -22,6 +22,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     var $msort = false;
     var $rsort = false;
     var $nsort = false;
+    var $hsort = false;
 
     /**
      * What kind of syntax are we?
@@ -114,6 +115,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         } else $sort = 0;
         //Directory sort
         $nsort = in_array('nsort', $opts);
+        //sort headpages up
+        $hsort = in_array('hsort', $opts);
         //Metadata sort method
         if($msort = in_array('msort', $opts)) {
             $msort = 'indexmenu_n';
@@ -143,6 +146,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         if($msort) $jsajax .= "&msort=".$msort;
         if($rsort) $jsajax .= "&rsort=1";
         if($nsort) $jsajax .= "&nsort=1";
+        if($hsort) $jsajax .= "&hsort=1";
         if($nopg) $jsajax .= "&nopg=1";
         //max js option
         if(preg_match('/maxjs#(\d+)/u', $match[1], $maxtmp) > 0) $maxjs = $maxtmp[1];
@@ -166,7 +170,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 'skip_file'     => $this->getConf('skip_file'),
                 'headpage'      => $this->getConf('headpage'),
                 'hide_headpage' => $this->getConf('hide_headpage')
-            )
+            ),
+            $hsort
         );
     }
 
@@ -242,12 +247,13 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $this->rsort = $myns[4];
         $this->nsort = $myns[5];
         $opts        = $myns[6];
+        $this->hsort = $myns[7];
         $output      = "";
         $output_tmp  = "";
         $data        = array();
         $js_name     = "indexmenu_";
         $fsdir       = "/".utf8_encodeFN(str_replace(':', '/', $ns));
-        if($this->sort || $this->msort || $this->rsort) {
+        if($this->sort || $this->msort || $this->rsort || $this->hsort) {
             $this->_search($data, $conf['datadir'], array($this, '_search_index'), $opts, $fsdir);
         } else {
             search($data, $conf['datadir'], array($this, '_search_index'), $opts, $fsdir);
@@ -703,6 +709,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @author  Samuele Tognini <samuele@netsons.org>
      */
     function _setorder($item) {
+        global $conf;
+
         $sort = false;
         $page = false;
         if($item['type'] == 'd') {
@@ -711,6 +719,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         }
         if($item['type'] == 'f') $page = $item['id'];
         if($page) {
+            if($this->hsort && noNS($item['id']) == $conf['start']) $sort = 1;
             if($this->msort) $sort = p_get_metadata($page, $this->msort);
             if(!$sort && $this->sort) {
                 switch($this->sort) {

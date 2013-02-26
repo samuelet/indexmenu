@@ -167,6 +167,7 @@ class ajax_indexmenu_plugin {
         $idxm->msort = $_REQUEST['msort'];
         $idxm->rsort = $_REQUEST['rsort'];
         $idxm->nsort = $_REQUEST['nsort'];
+        $idxm->hsort = $_REQUEST['hsort'];
         $fsdir       = "/".utf8_encodeFN(str_replace(':', '/', $ns));
         $opts        = array(
             'level'         => $level,
@@ -180,7 +181,7 @@ class ajax_indexmenu_plugin {
             'headpage'      => $idxm->getConf('headpage'),
             'hide_headpage' => $idxm->getConf('hide_headpage')
         );
-        if($idxm->sort || $idxm->msort || $idxm->rsort) {
+        if($idxm->sort || $idxm->msort || $idxm->rsort || $idxm->hsort) {
             $idxm->_search($data, $conf['datadir'], array($idxm, '_search_index'), $opts, $fsdir);
         } else {
             search($data, $conf['datadir'], array($idxm, '_search_index'), $opts, $fsdir);

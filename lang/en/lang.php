@@ -50,6 +50,7 @@ $lang['js']['tsort'] = 'By title';
 $lang['js']['dsort'] = 'By date';
 $lang['js']['msort'] = 'By meta tag';
 $lang['js']['nsort'] = 'Sort also namespaces';
+$lang['js']['hsort'] = 'Sort headpage up';
 $lang['js']['rsort'] = 'Reverse the sorting of pages';
 
 $lang['js']['nons'] = 'Show only pages';

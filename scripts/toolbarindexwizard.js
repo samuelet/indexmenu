@@ -41,8 +41,9 @@ var indexmenu_wiz = {
                 tsort: {},
                 dsort: {},
                 msort: {},
-                nsort: {},
-                rsort: {}
+                hsort: {},
+                rsort: {},
+                nsort: {}
             }
         },
         div5: {
@@ -320,6 +321,7 @@ var indexmenu_wiz = {
     show: function(){
         indexmenu_wiz.selection  = getSelection(indexmenu_wiz.textArea);
         indexmenu_wiz.$wiz.show();
+        jQuery('#namespace').focus();
     },
 
     /**

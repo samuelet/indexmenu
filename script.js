@@ -39,8 +39,6 @@ if (window.toolbar != undefined) {
 var indexmenu_jsqueue = new Array();
 // Queue of loaded css files
 var indexmenu_cssqueue = new Array();
-// Queue of nojs trees
-var indexmenu_nojsqueue = new Array();
 // Context menu
 var indexmenu_contextmenu = {'all': new Array()};
 
@@ -58,19 +56,19 @@ function indexmenu_findExt(path) {
 }
 
 function indexmenu_createTocMenu(get, picker, btn) {
-    var toc_picker = $(picker);
+    var toc_picker = jQuery('#'+picker)[0];
     if (!toc_picker) {
         toc_picker = indexmenu_createPicker(picker);
         toc_picker.className = 'dokuwiki indexmenu_toc';
         toc_picker.innerHTML = '<a href="#"><img src="' + DOKU_BASE + 'lib/plugins/indexmenu/images/close.gif" class="indexmenu_close" /></a><div />';
-        addEvent(toc_picker.firstChild, 'click', function (event) {
+        jQuery(toc_picker.firstChild).click(function(event){
             event.stopPropagation();
             return indexmenu_showPicker(picker)
         });
     } else {
         toc_picker.style.display = 'none';
     }
-    indexmenu_ajaxmenu(get, toc_picker, $(btn), toc_picker.childNodes[1]);
+    indexmenu_ajaxmenu(get, toc_picker, jQuery('#'+btn)[0], toc_picker.childNodes[1]);
 }
 
 function indexmenu_ajaxmenu(get, picker, btn, container, oncomplete) {
@@ -81,25 +79,26 @@ function indexmenu_ajaxmenu(get, picker, btn, container, oncomplete) {
         indx_list = picker;
     }
     if (!indexmenu_showPicker(picker, btn)) return;
-    // We use SACK to do the AJAX requests
-    var ajax = new sack(DOKU_BASE + 'lib/plugins/indexmenu/ajax.php');
-    ajax.encodeURIString = false;
-    ajax.onLoading = function () {
-        indx_list.innerHTML = '<div class="tocheader">Loading .....</div>';
-    };
 
-    // define callback
-    ajax.onCompletion = function () {
-        var data = this.response;
+    var onComplete = function (data) {
         indx_list.innerHTML = "";
-        if (isFunction(oncomplete)) {
+        if (typeof oncomplete == 'function') {
             oncomplete(data, indx_list);
         } else {
             indx_list.innerHTML = data;
         }
     };
 
-    ajax.runAJAX(encodeURI(get));
+    jQuery.ajax({
+        type: "POST",
+        url: DOKU_BASE + 'lib/plugins/indexmenu/ajax.php',
+        data: get,
+        beforeSend: function () {
+            indx_list.innerHTML = '<div class="tocheader">Loading .....</div>';
+        },
+        success: onComplete,
+        dataType: 'html'
+    });
 }
 
 function indexmenu_createPicker(id, cl) {
@@ -114,10 +113,15 @@ function indexmenu_createPicker(id, cl) {
 }
 
 function indexmenu_showPicker(pickerid, btn) {
-    var x = 3, y = 3, picker = $(pickerid);
+    var x = 3, y = 3, picker;
+    if(typeof pickerid == 'string') {
+        picker = jQuery('#'+pickerid)[0];
+    } else {
+        picker = pickerid;
+    }
     if (picker.style.display == 'none') {
-        x += findPosX(btn);
-        y += findPosY(btn);
+        x += jQuery(btn).position().left;
+        y += jQuery(btn).position().top;
         if (picker.id != 'picker_plugin_indexmenu') {
             x += btn.offsetWidth - 3;
         } else {
@@ -131,12 +135,6 @@ function indexmenu_showPicker(pickerid, btn) {
         picker.style.display = 'none';
         return false;
     }
-}
-
-function indexmenu_loadtoolbar() {
-    var toolbar = $('tool__bar');
-    if (!toolbar) return;
-    indexmenu_loadJs(DOKU_BASE + 'lib/plugins/indexmenu/edit.js');
 }
 
 function indexmenu_loadJs(f) {
@@ -211,7 +209,7 @@ function indexmenu_arrconcat(amenu, index, n) {
         }
         item = document.createElement('li');
         if (cmenu[i][1]) {
-            if (isArray(cmenu[i][1])) {
+            if (cmenu[i][1] instanceof Array) {
                 html = document.createElement('ul');
                 for (a in cmenu[i][1]) {
                     li = document.createElement('li');
@@ -219,7 +217,7 @@ function indexmenu_arrconcat(amenu, index, n) {
                     html.appendChild(li);
                 }
                 item.innerHTML = '<span class="indexmenu_submenu">' + cmenu[i][0] + '</span>';
-                html.left = $('r' + index.obj).width;
+                html.left = jQuery('#r' + index.obj)[0].width;
                 item.appendChild(html);
             } else {
                 item.innerHTML = '<a title="' + ((cmenu[i][2]) ? cmenu[i][2] : cmenu[i][0]) + '" href="' + eval(cmenu[i][1]) + '">' + cmenu[i][0] + '</a>';
@@ -227,10 +225,8 @@ function indexmenu_arrconcat(amenu, index, n) {
         } else {
             item.innerHTML = cmenu[i];
         }
-        $('r' + index.obj).lastChild.appendChild(item);
+        jQuery('#r' + index.obj)[0].lastChild.appendChild(item);
     }
 }
-
-addInitEvent(indexmenu_loadtoolbar);
 
   */

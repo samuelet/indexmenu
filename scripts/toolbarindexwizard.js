@@ -180,10 +180,7 @@ var indexmenu_wiz = {
                 var themeName =theme.split('.');
 
                 var $ico = jQuery('<div>')
-                    .css({
-                        background: 'url('+ DOKU_BASE + data.themebase + '/' + theme + '/base.' + indexmenu_wiz.getExtension(theme)+') no-repeat center',
-
-                    });
+                    .css({ background: 'url('+ DOKU_BASE + data.themebase + '/' + theme + '/base.' + indexmenu_wiz.getExtension(theme)+') no-repeat center' });
                 var $btn = jQuery('<button>')
                     .addClass('themebutton toolbutton')
                     .attr('id', theme)

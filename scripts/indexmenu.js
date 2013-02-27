@@ -19,6 +19,9 @@
  | under GPL 2 license                               |
  | (http://www.gnu.org/licenses/gpl.html)            | 
  | Updated: 07.08.2012                               |
+ |---------------------------------------------------|
+ | jQuery update - 27 02 2012                        |
+ | Gerrit Uitslag <klapinklapin@gmail.com            |
  |--------------------------------------------------------|
  | indexmenu  | https://www.dokuwiki.org/plugin:indexmenu |
  |-------------------------------------------------------*/
@@ -32,7 +35,7 @@ function Node(dokuid, id, pid, name, hns, isdir, ajax) {
     this.hns = hns;
     this.isdir = isdir;
     this.ajax = ajax;
-    this._io = 0;
+    this._io = 0;       //is node open
     this._is = false;
     this._ls = false;
     this._hc = ajax;
@@ -343,7 +346,13 @@ dTree.prototype.getOpenTo = function (nodes) {
     }
 };
 
-// Change the status of a node(open or closed)
+/**
+ * Change the status of a node(open or closed)
+ *
+ * @param status true if open
+ * @param id     Node id
+ * @param bottom true if bottom node
+ */
 dTree.prototype.nodeStatus = function (status, id, bottom) {
     if (status && !this.fill(id)) {
         return;
@@ -370,8 +379,7 @@ dTree.prototype.setCookie = function (cookieName, cookieValue, expires, path, do
     document.cookie =
         encodeURIComponent(cookieName) + '=' + encodeURIComponent(cookieValue) +
             (expires ? '; expires=' + expires.toGMTString() : '') +
-            ';path=/' +
-            (domain ? '; domain=' + domain : '') +
+            ';path=/' + (domain ? '; domain=' + domain : '') +
             (secure ? '; secure' : '');
 };
 
@@ -406,7 +414,12 @@ dTree.prototype.updateCookie = function () {
     this.setCookie('co' + this.obj, str);
 };
 
-// [Cookie] Checks if a node id is in a cookie
+/**
+ * [Cookie] Checks if a node id is in a cookie
+ *
+ * @param {int} id Node id
+ * @return {Boolean} if open true
+ */
 dTree.prototype.isOpen = function (id) {
     var n, aOpen = this.getCookie('co' + this.obj).split('.');
     for (n = 0; n < aOpen.length; n++) {
@@ -462,8 +475,6 @@ dTree.prototype.fill = function (id) {
             .html('Loading ...')
             .css({width: 'auto'})
             .show();
-        //eLoad.style.width = 'auto';  TODO
-        //eLoad.style.display = 'inline';
         this.getAjax(n);
         return true;
     }
@@ -638,15 +649,18 @@ dTree.prototype.resizescroll = function (status) {
 dTree.prototype.getAjax = function (n) {
     var node, req, curns, selft = this;
     node = selft.aNodes[n];
-    // We use SACK to do the AJAX requests
-    var Ajax = new sack(this.config.plugbase + '/ajax.php');
-    req = 'req=index&idx=' + node.dokuid + decodeURIComponent(this.config.jsajax);
+
+    req = 'call=indexmenu&req=index&idx=' + node.dokuid + decodeURIComponent(this.config.jsajax);
     curns = this.pageid.substring(0, this.pageid.lastIndexOf(this.config.sepchar));
-    Ajax.encodeURIString = false;
-    Ajax.onCompletion = function () {
+
+    if (this.fajax) {
+        req += '&nss=' + curns + '&max=1';
+    }
+
+    var onCompletion = function (data) {
         var i, ajxnodes, ajxnode, plus;
         plus = selft.aNodes.length - 1;
-        eval(this.response);
+        eval(data);
         if (!ajxnodes instanceof Array || ajxnodes.length < 1) {
             ajxnodes = [
                 ['', 1, 0, '', 0, 1, 0]
@@ -667,11 +681,13 @@ dTree.prototype.getAjax = function (n) {
         }
         jQuery('#l' + selft.obj)[0].style.display = 'none';
     };
-    if (this.fajax) {
-        req += '&nss=' + curns + '&max=1';
-    }
-    Ajax.encodeURIString = false;
-    Ajax.runAJAX(encodeURI(req));
+
+    jQuery.post(
+        DOKU_BASE + 'lib/exe/ajax.php',
+        'call=indexmenu&'+req,
+        onCompletion,
+        'html'
+    );
 };
 
 //Load custom css

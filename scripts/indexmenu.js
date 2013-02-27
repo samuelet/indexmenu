@@ -746,12 +746,6 @@ dTree.prototype.init = function (s, c, n, nav, max, nomenu) {
         this.openCurNS(max);
     }
     if (!nomenu) {
-        /*indexmenu_loadJs(this.config.plugbase + '/jsmenu/common.js');
-        if (JSINFO.isadmin) {
-            indexmenu_loadJs(this.config.plugbase + '/jsmenu/admmenu.js');
-        } else if (JSINFO.isauth) {
-            indexmenu_loadJs(this.config.plugbase + '/jsmenu/authmenu.js');
-        } */
         var self = this;
         indexmenu_createPicker('r' + this.obj, 'indexmenu_rmenu ' + this.config.theme);
         jQuery('#r' + this.obj)[0].oncontextmenu = indexmenu_stopevt;

@@ -1,10 +1,19 @@
+
+
+// Queue of loaded script files
+var indexmenu_jsqueue = new Array();
+// Context menu
+var indexmenu_contextmenu = {'all': new Array()};
+
 /* DOKUWIKI:include scripts/nojsindex.js */
 /* DOKUWIKI:include scripts/toolbarindexwizard.js */
+/* DOKUWIKI:include scripts/contextmenu.js */
 /* DOKUWIKI:include scripts/indexmenu.js */
 
 
+
 /**
- * Add button action for the link wizard button
+ * Add button action for the indexmenu wizard button
  *
  * @param  {jQuery}   $btn  Button element to add the action to
  * @param  {Array}    props Associative array of button properties
@@ -34,10 +43,7 @@ if (window.toolbar != undefined) {
 // Section below works only in release till 2012-09-10 "Adora Belle". Uncomment to use.
 // - Later releases has removed the old javascript library https://github.com/splitbrain/dokuwiki/commit/99421189
 
-// Queue of loaded script files
-var indexmenu_jsqueue = new Array();
-// Context menu
-var indexmenu_contextmenu = {'all': new Array()};
+
 
 function indexmenu_findExt(path) {
     var ext = "gif";

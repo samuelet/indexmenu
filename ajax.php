@@ -44,18 +44,18 @@ class ajax_indexmenu_plugin {
         header('Cache-Control: public, max-age=3600');
         header('Pragma: public');
         switch($req) {
-            case 'local':
+            case 'local':  //required for admin.php
                 //list themes
                 print $this->local_themes();
                 break;
-            case 'toc':
+            /*case 'toc':
                 //print toc preview
                 if(isset($_REQUEST['id'])) print $this->print_toc($_REQUEST['id']);
                 break;
             case 'index':
                 //print index
                 if(isset($_REQUEST['idx'])) print $this->print_index($_REQUEST['idx']);
-                break;
+                break;   */
         }
     }
 
@@ -123,8 +123,9 @@ class ajax_indexmenu_plugin {
      */
     function render_toc($toc) {
         global $lang;
-        $r      = new Doku_Renderer_xhtml;
+        $r = new Doku_Renderer_xhtml;
         $r->toc = $toc;
+
         $out = $lang['toc'];
         $out .= '</div>'.DOKU_LF;
         $out .= '<div class="indexmenu_toc_inside">'.DOKU_LF;

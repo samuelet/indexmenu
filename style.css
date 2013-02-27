@@ -120,6 +120,11 @@ div.dokuwiki div.indexmenu_list_themes {
     word-wrap: break-word;
 }
 
+.indexmenu_toc .tocheader.toctoggle {
+    background-color: __background_alt__;
+    padding: 2px 0;
+}
+
 .indexmenu_toc .indexmenu_toc_inside {
     border: 1px solid __border__;
     background-color: __background__;
@@ -157,7 +162,11 @@ div.dokuwiki div.indexmenu_list_themes {
     padding-bottom: 5px;
     width: 110px;
 }
-
+.indexmenu_rmenu li a,
+.indexmenu_rmenu li span.indexmenu_submenu {
+    padding: 1px 0;
+    display: block;
+}
 .indexmenu_rmenu ul, .indexmenu_rmenu li {
     list-style-type: none !important;
     list-style-image: none !important;

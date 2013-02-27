@@ -248,8 +248,6 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $this->nsort = $myns[5];
         $opts        = $myns[6];
         $this->hsort = $myns[7];
-        $output      = "";
-        $output_tmp  = "";
         $data        = array();
         $js_name     = "indexmenu_";
         $fsdir       = "/".utf8_encodeFN(str_replace(':', '/', $ns));
@@ -270,23 +268,19 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         }
 
         //javascript index
+        $output_tmp  = "";
         if($opts['js']) {
-            $output .= "<script type='text/javascript' charset='utf-8'>\n";
-            $output .= "<!--//--><![CDATA[//><!--\n";
-
             $ns         = str_replace('/', ':', $ns);
             $output_tmp = $this->_jstree($data, $ns, $js_opts, $js_name, $opts['max']);
+
             //remove unwanted nodes from standard index
             $this->_clean_data($data);
-
-            $output .= "//--><!]]>\n";
-            $output .= "</script>\n";
         }
 
         //Nojs dokuwiki index
-        $output .= "\n".'<div id="nojs_'.$js_name.'" data-jsajax="'.utf8_encodeFN($js_opts['jsajax']).'" class="indexmenu_nojs"';
-        $output .= ">\n";
-        $output .= html_buildlist($data, 'idx', array($this, "_html_list_index"), "html_li_index");
+        $output = "\n";
+        $output .= '<div id="nojs_'.$js_name.'" data-jsajax="'.utf8_encodeFN($js_opts['jsajax']).'" class="indexmenu_nojs">'."\n";
+        $output .=     html_buildlist($data, 'idx', array($this, "_html_list_index"), "html_li_index");
         $output .= "</div>\n";
         $output .= $output_tmp;
         return $output;
@@ -466,7 +460,6 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                     $a++;
                 }
             }
-            $i++;
         }
     }
 

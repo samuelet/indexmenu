@@ -23,7 +23,7 @@ var indexmenu_contextmenu = new Array(
         'Headpage here', '"javascript: indexmenu_reqpage(\'"+this.config.urlbase+"\',\'"+this.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"', 0, 1,
         'Edit', 'indexmenu_getid(this.config.urlbase,id)+"do=edit"', 1, 0,
         'Search', '"javascript: indexmenu_srchpage(\'"+this.config.urlbase+"\',\'"+this.config.sepchar+"\',\'"+node.isdir+"\',\'"+node.dokuid+"\');"', 1, 1,
-        'Toc preview', '"javascript: indexmenu_createTocMenu(\'req=toc&id="+id+"\',\'picker_"+this.obj+"\',\'s"+this.obj+node.id+"\');"', 1, 0,
+        'Toc preview', '"javascript: indexmenu_createTocMenu(\'call=indexmenu&req=toc&id="+id+"\',\'picker_"+this.obj+"\',\'s"+this.obj+node.id+"\');"', 1, 0,
         'Revisions', 'indexmenu_getid(this.config.urlbase,id)+"do=revisions"', 1, 0
     ),
 

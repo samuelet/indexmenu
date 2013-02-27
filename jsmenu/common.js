@@ -19,7 +19,7 @@ indexmenu_contextmenu['all']['pg'] = {
     'view': [
         ['<span class="indexmenu_titlemenu"><b>Page</b></span>'],
         ['Revisions', 'indexmenu_getid(index.config.urlbase,id)+"do=revisions"'],
-        ['Toc preview', '"javascript: indexmenu_createTocMenu(\'req=toc&id="+id+"\',\'picker_"+index.obj+"\',\'s"+index.obj+node.id+"\');"']
+        ['Toc preview', '"javascript: indexmenu_createTocMenu(\'call=indexmenu&req=toc&id="+id+"\',\'picker_"+index.obj+"\',\'s"+index.obj+node.id+"\');"']
     ],
     //Menu items in edit mode
     'edit': [

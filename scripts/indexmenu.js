@@ -43,6 +43,7 @@ function Node(dokuid, id, pid, name, hns, isdir, ajax) {
     this._cp = false;
 }
 // Tree object
+/** @constructor */
 function dTree(objName, theme) {
     var objExt = indexmenu_findExt(theme);
     this.config = {
@@ -265,12 +266,12 @@ dTree.prototype.getSelected = function () {
 dTree.prototype.s = function (id) {
     var eOld, eNew, cn = this.aNodes[id];
     if (this.selectedNode != id) {
-        eNew = $("s" + this.obj + id);
+        eNew = jQuery("#s" + this.obj + id)[0];
         if (!eNew) {
             return;
         }
         if (this.selectedNode || this.selectedNode === 0) {
-            eOld = $("s" + this.obj + this.selectedNode);
+            eOld = jQuery("#s" + this.obj + this.selectedNode)[0];
             eOld.className = "node";
         }
         eNew.className = "nodeSel";
@@ -450,17 +451,19 @@ dTree.prototype.fill = function (id) {
     if (id == -1 || this.aNodes[id]._ok) {
         return true;
     }
-    var n = id, eLoad, node, a, rd, ln, eDiv;
+    var n = id, $eLoad, a, rd, ln, eDiv;
     if (this.aNodes[n].ajax) {
-        eLoad = $('l' + this.obj);
-        node = $('s' + this.obj + n);
-        if (!eLoad) {
-            eLoad = indexmenu_createPicker('l' + this.obj);
+        $eLoad = jQuery('#l' + this.obj);
+        if (!$eLoad.length) {
+            $eLoad = indexmenu_createPicker('l' + this.obj);
         }
-        eLoad.innerHTML = 'Loading ...';
-        $('s' + this.obj + n).parentNode.appendChild(eLoad);
-        eLoad.style.width = 'auto';
-        eLoad.style.display = 'inline';
+        jQuery('#s' + this.obj + n).parent().append($eLoad);
+        $eLoad
+            .html('Loading ...')
+            .css({width: 'auto'})
+            .show();
+        //eLoad.style.width = 'auto';  TODO
+        //eLoad.style.display = 'inline';
         this.getAjax(n);
         return true;
     }
@@ -514,7 +517,7 @@ dTree.prototype.scroll = function (where, s, n, i) {
 	dtree = jQuery('#dtree_' + this.obj)[0];
     dtreel = parseInt(dtree.offsetLeft, 0);
     if (where == "r") {
-        $('left_' + this.obj).style.border = "thin inset";
+        jQuery('#left_' + this.obj)[0].style.border = "thin inset";
         this.scrollRight(dtreel, s);
     } else {
         nodeId = jQuery('#s' + this.obj + n)[0];
@@ -541,7 +544,7 @@ dTree.prototype.scrollLeft = function (lft, s, w, i) {
         return;
     }
     var self = this;
-    $('dtree_' + self.obj).style.left = lft + "px";
+    jQuery('#dtree_' + self.obj)[0].style.left = lft + "px";
     this.scrllTmr = setTimeout(function () {
         self.scrollLeft(lft - s, s + i, w, i);
     }, 20);
@@ -555,7 +558,7 @@ dTree.prototype.scrollRight = function (lft, s) {
         return;
     }
     var self = this;
-    $('dtree_' + self.obj).style.left = lft + "px";
+    jQuery('#dtree_' + self.obj)[0].style.left = lft + "px";
     if (lft > -15) {
         s = 1;
     }
@@ -565,7 +568,7 @@ dTree.prototype.scrollRight = function (lft, s) {
 };
 
 dTree.prototype.stopscroll = function () {
-    $('left_' + this.obj).style.border = "none";
+    jQuery('#left_' + this.obj)[0].style.border = "none";
     clearTimeout(this.scrllTmr);
     this.scrllTmr = 0;
 };
@@ -577,7 +580,7 @@ dTree.prototype.show_feat = function (n) {
 		div = jQuery('#t' + this.obj)[0];
         id = (this.aNodes[n].hns) ? this.aNodes[n].hns : this.aNodes[n].dokuid;
         div.onmousedown = function () {
-            indexmenu_createTocMenu('req=toc&id=' + decodeURIComponent(id), 'picker_' + self.obj, 't' + self.obj);
+            indexmenu_createTocMenu('call=indexmenu&req=toc&id=' + decodeURIComponent(id), 'picker_' + self.obj, 't' + self.obj);
         };
         node.parentNode.appendChild(div);
         if (div.style.display == "none") {
@@ -617,7 +620,7 @@ dTree.prototype.resizescroll = function (status) {
         return;
     }
     if (left.style.display == status) {
-        dtree = $('dtree_' + this.obj);
+        dtree = jQuery('#dtree_' + this.obj)[0];
         w = parseInt(dtree.offsetHeight / 3, 0);
         h = parseInt(w / 50, 0) * 50;
         if (h < 50) {
@@ -644,7 +647,7 @@ dTree.prototype.getAjax = function (n) {
         var i, ajxnodes, ajxnode, plus;
         plus = selft.aNodes.length - 1;
         eval(this.response);
-        if (!isArray(ajxnodes) || ajxnodes.length < 1) {
+        if (!ajxnodes instanceof Array || ajxnodes.length < 1) {
             ajxnodes = [
                 ['', 1, 0, '', 0, 1, 0]
             ];
@@ -662,7 +665,7 @@ dTree.prototype.getAjax = function (n) {
         } else {
             selft.openTo(node.id, false, true);
         }
-        $('l' + selft.obj).style.display = 'none';
+        jQuery('#l' + selft.obj)[0].style.display = 'none';
     };
     if (this.fajax) {
         req += '&nss=' + curns + '&max=1';

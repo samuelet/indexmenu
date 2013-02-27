@@ -134,6 +134,51 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         }
     }
 
+
+
+    /**
+     * Handles ajax requests for indexmenu
+     *
+     * @param Doku_Event $event
+     * @param mixed $param not defined
+     */
+    function _ajax_call(&$event, $param) {
+        if($event->data !== 'indexmenu') {
+            return;
+        }
+        //no other ajax call handlers needed
+        $event->stopPropagation();
+        $event->preventDefault();
+
+        global $INPUT;
+
+
+        switch($INPUT->str('req')) {
+            case 'local':
+                //list themes
+                header('Content-Type: application/json');
+
+                $data = $this->_getlocalThemes();
+
+                require_once DOKU_INC.'inc/JSON.php';
+                $json = new JSON();
+                echo ''.$json->encode($data).'';
+                break;
+
+            case 'toc':
+                //print toc preview
+                if(isset($_REQUEST['id'])) print $this->print_toc($_REQUEST['id']);
+                break;
+
+            case 'index':
+                //print index
+                if(isset($_REQUEST['idx'])) print $this->print_index($_REQUEST['idx']);
+                break;
+        }
+
+
+    }
+
     /**
      * Print a list of local themes
      *
@@ -167,42 +212,125 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     }
 
     /**
-     * Handles ajax requests for indexmenu
+     * Print a toc preview
      *
-     * @param Doku_Event $event
-     * @param mixed $param not defined
+     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Andreas Gohr <andi@splitbrain.org>
      */
-    function _ajax_call(&$event, $param) {
-        if($event->data !== 'indexmenu') {
-            return;
+    function print_toc($id) {
+        require_once(DOKU_INC.'inc/parser/xhtml.php');
+        $id = cleanID($id);
+        if(auth_quickaclcheck($id) < AUTH_READ) return '';
+
+        $meta = p_get_metadata($id);
+        $toc  = $meta['description']['tableofcontents'];
+
+        $out  = '<div class="tocheader toctoggle">'.DOKU_LF;
+        if(count($toc) > 1) {
+            //display ToC of two or more headings
+            $out .= $this->render_toc($toc);
+        } else {
+            //display page abstract
+            $out .= '<a href="'.wl($id).'">';
+            $out .=     ($meta['title']) ? htmlspecialchars($meta['title']) : htmlspecialchars(noNS($id));
+            $out .= '</a>'.DOKU_LF;
+            if($meta['description']['abstract']) {
+                $out .= '</div>'.DOKU_LF;
+                $out .= '<div class="indexmenu_toc_inside">'.DOKU_LF;
+                $out .=     p_render('xhtml', p_get_instructions($meta['description']['abstract']), $info);
+                $out .= '</div>'.DOKU_LF.'</div>'.DOKU_LF;
+            }
         }
-        //no other ajax call handlers needed
-        $event->stopPropagation();
-        $event->preventDefault();
+        $out .= '</div>'.DOKU_LF;
+        return $out;
+    }
 
-        global $INPUT;
+    /**
+     * Return the TOC rendered to XHTML
+     *
+     * @author Andreas Gohr <andi@splitbrain.org>
+     */
+    function render_toc($toc) {
+        global $lang;
+        $r = new Doku_Renderer_xhtml;
+        $r->toc = $toc;
 
-        $data = array();
-        switch($INPUT->str('req')) {
-            case 'local':
-                //list themes
-                $data = $this->_getlocalThemes();
+        $out = $lang['toc'];
+        $out .= '</div>'.DOKU_LF;
+        $out .= '<div class="indexmenu_toc_inside">'.DOKU_LF;
+        $out .=      html_buildlist($r->toc, 'toc', array($this, '_tocitem'));
+        $out .= '</div>'.DOKU_LF;
+        return $out;
+    }
 
-                break;
-         /* case 'toc':
-                //print toc preview
-                if(isset($_REQUEST['id'])) print $this->print_toc($_REQUEST['id']);
-                break;
-            case 'index':
-                //print index
-                if(isset($_REQUEST['idx'])) print $this->print_index($_REQUEST['idx']);
-                break;        */
+    /**
+     * Callback for html_buildlist
+     */
+    function _tocitem($item) {
+        $id = cleanID($_POST['id']);
+        return '<span class="li">'.
+                    '<a href="'.wl($id, '#'.$item['hid'], false, '').'" class="toc">'.
+                        htmlspecialchars($item['title']).
+                    '</a>'.
+               '</span>';
+    }
+
+    /**
+     * Print index nodes
+     *
+     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Andreas Gohr <andi@splitbrain.org>
+     * @author Rene Hadler <rene.hadler@iteas.at>
+     */
+    function print_index($ns) {
+        require_once(DOKU_PLUGIN.'indexmenu/syntax/indexmenu.php');
+        global $conf;
+        $idxm  = new syntax_plugin_indexmenu_indexmenu();
+        $ns = $idxm->_parse_ns(rawurldecode($ns));
+        $level = -1;
+        $max   = 0;
+        $data  = array();
+
+        if($_REQUEST['max'] > 0) {
+            $max   = $_REQUEST['max'];
+            $level = $max;
+        }
+        $nss         = ($_REQUEST['nss']) ? cleanID($_REQUEST['nss']) : '';
+        $idxm->sort  = $_REQUEST['sort'];
+        $idxm->msort = $_REQUEST['msort'];
+        $idxm->rsort = $_REQUEST['rsort'];
+        $idxm->nsort = $_REQUEST['nsort'];
+        $idxm->hsort = $_REQUEST['hsort'];
+        $fsdir       = "/".utf8_encodeFN(str_replace(':', '/', $ns));
+        $opts        = array(
+            'level'         => $level,
+            'nons'          => $_REQUEST['nons'],
+            'nss'           => array(array($nss, 1)),
+            'max'           => $max,
+            'js'            => false,
+            'nopg'          => $_REQUEST['nopg'],
+            'skip_index'    => $idxm->getConf('skip_index'),
+            'skip_file'     => $idxm->getConf('skip_file'),
+            'headpage'      => $idxm->getConf('headpage'),
+            'hide_headpage' => $idxm->getConf('hide_headpage')
+        );
+        if($idxm->sort || $idxm->msort || $idxm->rsort || $idxm->hsort) {
+            $idxm->_search($data, $conf['datadir'], array($idxm, '_search_index'), $opts, $fsdir);
+        } else {
+            search($data, $conf['datadir'], array($idxm, '_search_index'), $opts, $fsdir);
         }
 
-        require_once DOKU_INC.'inc/JSON.php';
-        $json = new JSON();
-        header('Content-Type: application/json');
-        echo ''.$json->encode($data).'';
+        $out   = '';
+        if($_REQUEST['nojs']) {
+            require_once(DOKU_INC.'inc/html.php');
+            $out_tmp = html_buildlist($data, 'idx', array($idxm, "_html_list_index"), "html_li_index");
+            $out .= preg_replace('/<ul class="idx">(.*)<\/ul>/s', "$1", $out_tmp);
+        } else {
+            $nodes = $idxm->_jsnodes($data, '', 0);
+            $out  = "ajxnodes = [";
+            $out .=     rtrim($nodes[0], ",");
+            $out .= "];";
+        }
+        return $out;
     }
 }
-

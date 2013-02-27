@@ -52,85 +52,108 @@ function indexmenu_findExt(path) {
     return ext;
 }
 
-function indexmenu_createTocMenu(get, picker, btn) {
-    var toc_picker = jQuery('#'+picker)[0];
-    if (!toc_picker) {
-        toc_picker = indexmenu_createPicker(picker);
-        toc_picker.className = 'dokuwiki indexmenu_toc';
-        toc_picker.innerHTML = '<a href="#"><img src="' + DOKU_BASE + 'lib/plugins/indexmenu/images/close.gif" class="indexmenu_close" /></a><div />';
-        jQuery(toc_picker.firstChild).click(function(event){
-            event.stopPropagation();
-            return indexmenu_showPicker(picker)
-        });
-    } else {
-        toc_picker.style.display = 'none';
-    }
-    indexmenu_ajaxmenu(get, toc_picker, jQuery('#'+btn)[0], toc_picker.childNodes[1]);
+/**
+ * create div with given id and class on body and return it
+ *
+ * @param {string} id picker id
+ * @param {string} cl class(es)
+ * @return {jQuery} jQuery div
+ */
+function indexmenu_createPicker(id, cl) {
+    return jQuery('<div>')
+        .addClass(cl || 'picker')
+        .attr('id', id)
+        .css({position: 'absolute'})
+        .hide()
+        .appendTo('.dokuwiki:first');
 }
 
-function indexmenu_ajaxmenu(get, picker, btn, container, oncomplete) {
-    var indx_list;
-    if (container) {
-        indx_list = container;
+/**
+ * Create or catch the picker and hide it, next call the ajax content loading to get the ToC
+ *
+ * @param {string} get    query string
+ * @param {string} picker id of picker
+ * @param {string} btn    id of button
+ */
+function indexmenu_createTocMenu(get, picker, btn) {
+    var $toc_picker = jQuery('#'+picker);
+    if (!$toc_picker.length) {
+        $toc_picker = indexmenu_createPicker(picker, 'indexmenu_toc');
+        $toc_picker
+            .html('<a href="#"><img src="' + DOKU_BASE + 'lib/plugins/indexmenu/images/close.gif" class="indexmenu_close" /></a><div />')
+            .children().first().click(function(event) {
+                event.stopPropagation();
+                return indexmenu_togglePicker($toc_picker);
+            });
     } else {
-        indx_list = picker;
+        $toc_picker.hide();
     }
-    if (!indexmenu_showPicker(picker, btn)) return;
+    indexmenu_ajaxmenu(get, $toc_picker, jQuery('#'+btn), $toc_picker.children().last());
+}
+/**
+ * Shows the picker and adds to it or to an internal containter the ajax content
+ *
+ * @param {string}   get        query string
+ * @param {jQuery}   $picker
+ * @param {jQuery}   $btn
+ * @param {jQuery}   $container if defined ajax result is added to it, otherwise to $picker
+ * @param {function} oncomplete called when defined to handle ajax result
+ */
+function indexmenu_ajaxmenu(get, $picker, $btn, $container, oncomplete) {
+    var $indx_list;
+    $indx_list = $container || $picker;
+
+    if (!indexmenu_togglePicker($picker, $btn)) return;
 
     var onComplete = function (data) {
-        indx_list.innerHTML = "";
+        $indx_list.html('');
         if (typeof oncomplete == 'function') {
-            oncomplete(data, indx_list);
+            oncomplete(data, $indx_list);
         } else {
-            indx_list.innerHTML = data;
+            $indx_list.html(data);
         }
     };
 
+    //get content for picker/container
     jQuery.ajax({
         type: "POST",
-        url: DOKU_BASE + 'lib/plugins/indexmenu/ajax.php',
+        url: DOKU_BASE + 'lib/exe/ajax.php',
         data: get,
         beforeSend: function () {
-            indx_list.innerHTML = '<div class="tocheader">Loading .....</div>';
+            $indx_list.html('<div class="tocheader">Loading .....</div>');
         },
         success: onComplete,
         dataType: 'html'
     });
 }
 
-function indexmenu_createPicker(id, cl) {
-    var indx_list = document.createElement('div');
-    indx_list.className = cl || 'picker';
-    indx_list.id = id;
-    indx_list.style.position = 'absolute';
-    indx_list.style.display = 'none';
-    var body = document.getElementsByTagName('body')[0];
-    body.appendChild(indx_list);
-    return indx_list;
-}
+/**
+ * hide/show picker, will be shown beside btn
+ *
+ * @param {string|jQuery} $picker
+ * @param {jQuery}        $btn
+ * @return {Boolean} true if open, false closed
+ */
+function indexmenu_togglePicker($picker, $btn) {
+    var x = 3, y = 3;
 
-function indexmenu_showPicker(pickerid, btn) {
-    var x = 3, y = 3, picker;
-    if(typeof pickerid == 'string') {
-        picker = jQuery('#'+pickerid)[0];
-    } else {
-        picker = pickerid;
-    }
-    if (picker.style.display == 'none') {
-        var pos = jQuery(btn).position();
+    if (!$picker.is(':visible')) {
+        var pos = $btn.offset();
         x += pos.left;
         y += pos.top;
-        if (picker.id != 'picker_plugin_indexmenu') {
-            x += btn.offsetWidth - 3;
-        } else {
-            y += btn.offsetHeight;
-        }
-        picker.style.display = 'block';
-        picker.style.left = x + 'px';
-        picker.style.top = y + 'px';
+        console.log($btn[0].offsetWidth);
+        x += $btn[0].offsetWidth + 5;
+        y += -3;
+
+        $picker
+            .show()
+            .css({
+                'left': x + 'px',
+                'top': y + 'px'
+            });
         return true;
     } else {
-        picker.style.display = 'none';
+        $picker.hide();
         return false;
     }
 }
@@ -230,7 +253,6 @@ function indexmenu_arrconcat(amenu, index, n) {
             } else {
                 item.innerHTML = cmenuentry;
             }
-            //jQuery('#r' + index.obj)[0].lastChild.appendChild(item);
             jQuery('#r' + index.obj).children().last().append(item);
     });
 

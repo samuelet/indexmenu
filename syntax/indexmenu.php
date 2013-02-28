@@ -267,7 +267,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             $js_name .= uniqid(rand());
         }
 
-        //javascript index
+        // javascript index
         $output_tmp  = "";
         if($opts['js']) {
             $ns         = str_replace('/', ':', $ns);
@@ -277,11 +277,13 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             $this->_clean_data($data);
         }
 
-        //Nojs dokuwiki index
+        // Nojs dokuwiki index
+        //    extra div needed when index is first element in sidebar of dokuwiki template, template uses this to toggle sidebar
+        //    the toggle interacts with hide needed for js option.
         $output = "\n";
-        $output .= '<div id="nojs_'.$js_name.'" data-jsajax="'.utf8_encodeFN($js_opts['jsajax']).'" class="indexmenu_nojs">'."\n";
+        $output .= '<div><div id="nojs_'.$js_name.'" data-jsajax="'.utf8_encodeFN($js_opts['jsajax']).'" class="indexmenu_nojs">'."\n";
         $output .=     html_buildlist($data, 'idx', array($this, "_html_list_index"), "html_li_index");
-        $output .= "</div>\n";
+        $output .= "</div></div>\n";//</div>
         $output .= $output_tmp;
         return $output;
     }

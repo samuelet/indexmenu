@@ -133,7 +133,8 @@ dTree.prototype.toString = function () {
         str += '</div>';
     }
     this.completed = true;
-    this.divdisplay('nojs_', 0);
+    //hide the fallback nojs indexmenu
+    jQuery('#nojs_' + this.obj).hide();
     return str;
 };
 
@@ -679,7 +680,7 @@ dTree.prototype.getAjax = function (n) {
         } else {
             selft.openTo(node.id, false, true);
         }
-        jQuery('#l' + selft.obj)[0].style.display = 'none';
+        jQuery('#l' + selft.obj).hide();
     };
 
     jQuery.post(

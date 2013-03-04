@@ -3,7 +3,7 @@
  * Configuration-manager metadata for indexmenu plugin
  *
  * @license:    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author:     Samuele Tognini <samuele@netsons.org>
+ * @author:     Samuele Tognini <samuele@samuele.netsons.org>
  */
 $meta['only_admins']   = array('onoff');
 $meta['aclcache']      = array('multichoice', '_choices' => array('none', 'user', 'groups'));

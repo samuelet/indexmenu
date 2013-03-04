@@ -3,7 +3,7 @@
  * Info Indexmenu: Show a customizable and sortable index for a namespace.
  *
  * @license     GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author      Samuele Tognini <samuele@netsons.org>
+ * @author      Samuele Tognini <samuele@samuele.netsons.org>
  *
  */
 
@@ -233,7 +233,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     /**
      * Return the index
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      *
      * This function is a simple hack of Dokuwiki html_index($ns)
      * @author Andreas Gohr <andi@splitbrain.org>
@@ -291,7 +291,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     /**
      * Build the browsable index of pages using javascript
      *
-     * @author  Samuele Tognini <samuele@netsons.org>
+     * @author  Samuele Tognini <samuele@samuele.netsons.org>
      * @author  Rene Hadler
      */
     function _jstree($data, $ns, $js_opts, $js_name, $max) {
@@ -337,7 +337,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     /**
      * Return array of javascript nodes and nodes to open.
      *
-     * @author  Samuele Tognini <samuele@netsons.org>
+     * @author  Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _jsnodes($data, $js_name, $noajax = 1) {
         if(empty($data)) return false;
@@ -391,7 +391,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     /**
      * Get page title, checking for headpages
      *
-     * @author  Samuele Tognini <samuele@netsons.org>
+     * @author  Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _getTitle($ns, $headpage, &$hns) {
         global $conf;
@@ -433,7 +433,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     /**
      * Parse namespace request
      *
-     * @author  Samuele Tognini <samuele@netsons.org>
+     * @author  Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _parse_ns($ns, $id = FALSE) {
         if(!$id) {
@@ -448,7 +448,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     /**
      * Clean index data from unwanted nodes in nojs mode.
      *
-     * @author  Samuele Tognini <samuele@netsons.org>
+     * @author  Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _clean_data(&$data) {
         foreach($data as $i=> $item) {
@@ -471,7 +471,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * $opts['ns'] is the current namespace
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
-     * modified by Samuele Tognini <samuele@netsons.org>
+     * modified by Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _search_index(&$data, $base, $file, $type, $lvl, $opts) {
         global $conf;
@@ -592,7 +592,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * User function for html_buildlist()
      *
      * @author Andreas Gohr <andi@splitbrain.org>
-     * modified by Samuele Tognini <samuele@netsons.org>
+     * modified by Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _html_list_index($item) {
         $ret = '';
@@ -634,7 +634,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @param   int       $lvl  Recursion Level
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
-     * @author  modified by Samuele Tognini <samuele@netsons.org>
+     * @author  modified by Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _search(&$data, $base, $func, $opts, $dir = '', $lvl = 1) {
         $dirs      = array();
@@ -701,7 +701,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     /**
      * Add sort information to item.
      *
-     * @author  Samuele Tognini <samuele@netsons.org>
+     * @author  Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _setorder($item) {
         global $conf;

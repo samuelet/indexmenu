@@ -3,7 +3,7 @@
  * English language for indexmenu plugin
  *
  * @license:    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author:     Samuele Tognini <samuele@netsons.org>
+ * @author:     Samuele Tognini <samuele@samuele.netsons.org>
  */
 $lang['checkupdate']   = "Check periodically for updates.";
 $lang['only_admins']   = "Allow indexmenu syntax only to admins.<br>Note that a page edited by a no-admin user will lost every contained indexmenu tree.";

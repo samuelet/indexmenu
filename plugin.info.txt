@@ -1,6 +1,6 @@
 base   indexmenu
 author Samuele Tognini
-email  samuele@netsons.org
+email  samuele@samuele.netsons.org
 date   2013-02-25
 name   Indexmenu Plugin
 desc   Show a customizable and sortable index for a namespace

@@ -3,7 +3,7 @@ class repo_indexmenu_plugin {
     /**
      * Send a zipped theme
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
 
     function send_theme($file) {

@@ -9,7 +9,7 @@
  | Updated: 17.04.2003                               |
  |---------------------------------------------------|
  | Modified for Dokuwiki by                          |
- | Samuele Tognini <samuele@netsons.org>             |
+ | Samuele Tognini <samuele@samuele.netsons.org>             |
  | under GPL 2 license                               |
  | (http://www.gnu.org/licenses/gpl.html)            |
  | Updated: 29.08.2009                               |

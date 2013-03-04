@@ -2,7 +2,7 @@
 /**
  * AJAX Backend for indexmenu
  *
- * @author Samuele Tognini <samuele@netsons.org>
+ * @author Samuele Tognini <samuele@samuele.netsons.org>
  * @license     GPL 2 (http://www.gnu.org/licenses/gpl.html)
  */
 
@@ -26,7 +26,7 @@ class ajax_indexmenu_plugin {
     /**
      * Output
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
 
     function render() {
@@ -62,7 +62,7 @@ class ajax_indexmenu_plugin {
     /**
      * Print a list of local themes
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
 
     function local_themes() {
@@ -89,7 +89,7 @@ class ajax_indexmenu_plugin {
     /**
      * Print a toc preview
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      * @author Andreas Gohr <andi@splitbrain.org>
      */
     function print_toc($id) {
@@ -146,7 +146,7 @@ class ajax_indexmenu_plugin {
     /**
      * Print index nodes
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      * @author Andreas Gohr <andi@splitbrain.org>
      * @author Rene Hadler <rene.hadler@iteas.at>
      */

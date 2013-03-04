@@ -3,7 +3,7 @@
  * Indexmenu Admin Plugin:   Indexmenu Component.
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Samuele Tognini <samuele@netsons.org>
+ * @author     Samuele Tognini <samuele@samuele.netsons.org>
  */
 
 if(!defined('DOKU_INC')) die();
@@ -112,7 +112,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
      * Connect to theme repository and list themes
      *
      * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
-     * @author     Samuele Tognini <samuele@netsons.org>
+     * @author     Samuele Tognini <samuele@samuele.netsons.org>
      */
     function dolist($n) {
         global $INFO;
@@ -176,7 +176,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
      * Download and install themes
      *
      * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
-     * @author     Samuele Tognini <samuele@netsons.org>
+     * @author     Samuele Tognini <samuele@samuele.netsons.org>
      */
     function install($n, $name) {
         $repo = $this->repos['url'][$n];
@@ -233,7 +233,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
      * Retrive and create themes tmp directory
      *
      * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
-     * @author     Samuele Tognini <samuele@netsons.org>
+     * @author     Samuele Tognini <samuele@samuele.netsons.org>
      */
     function checktmpsubdir() {
         $tmp = INDEXMENU_IMG_ABSDIR."/tmp";
@@ -248,7 +248,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
      * Upload a theme into my site
      *
      * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
-     * @author     Samuele Tognini <samuele@netsons.org>
+     * @author     Samuele Tognini <samuele@samuele.netsons.org>
      */
     function upload($theme, $info) {
         $return = true;
@@ -327,7 +327,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * Check for new messages from upstream
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _checkupdates() {
         require_once (DOKU_INC.'inc/HTTPClient.php');
@@ -359,7 +359,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * Get url response and check it
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _remotequery($url, $tag = true) {
         require_once (DOKU_INC.'inc/HTTPClient.php');
@@ -379,7 +379,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * Open an html form
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _form_open($act, $n = -1) {
         global $ID;
@@ -393,7 +393,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * Close the html form
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _form_close($act) {
         ptln('      <input type="submit" name="btn" '.$this->repos['status'][$n].' value="'.$this->getLang($act).'" />');
@@ -403,7 +403,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * Remove an installed theme
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _delete($theme) {
         if($theme == "default") return;
@@ -417,7 +417,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * Print the donate button.
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _donate() {
         $out = "<fieldset>\n";

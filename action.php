@@ -3,7 +3,7 @@
  * Indexmenu Action Plugin:   Indexmenu Component.
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Samuele Tognini <samuele@netsons.org>
+ * @author     Samuele Tognini <samuele@samuele.netsons.org>
  */
 
 if(!defined('DOKU_INC')) die();
@@ -27,7 +27,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     /**
      * Check if user has permission to insert indexmenu
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      *
      * @param Doku_Event $event
      * @param mixed $param not defined
@@ -42,7 +42,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     /**
      * Add additional info to $JSINFO
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      * @author Gerrit Uitslag <klapinklapin@gmail.com>
      *
      * @param Doku_Event $event
@@ -57,7 +57,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     /**
      * Check for pages changes and eventually purge cache.
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      *
      * @param Doku_Event $event
      * @param mixed $param not defined
@@ -99,7 +99,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     /**
      * Render a defined page as index.
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      *
      * @param Doku_Event $event
      * @param mixed $param not defined
@@ -118,7 +118,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     /**
      * Display the indexmenu sort number.
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      *
      * @param Doku_Event $event
      * @param mixed $param not defined
@@ -182,7 +182,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     /**
      * Print a list of local themes
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      * @author Gerrit Uitslag <klapinklapin@gmail.com>
      */
     private function _getlocalThemes() {
@@ -214,7 +214,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     /**
      * Print a toc preview
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      * @author Andreas Gohr <andi@splitbrain.org>
      */
     function print_toc($id) {
@@ -278,7 +278,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     /**
      * Print index nodes
      *
-     * @author Samuele Tognini <samuele@netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      * @author Andreas Gohr <andi@splitbrain.org>
      * @author Rene Hadler <rene.hadler@iteas.at>
      */

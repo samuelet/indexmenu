@@ -654,7 +654,7 @@ dTree.prototype.getAjax = function (n) {
     node = selft.aNodes[n];
 
     req = 'call=indexmenu&req=index&idx=' + node.dokuid + decodeURIComponent(this.config.jsajax);
-    curns = this.pageid.substring(0, this.config.sepchar);
+    curns = this.pageid.substring(0, this.pageid.lastIndexOf(this.config.sepchar));
 
     if (this.fajax) {
         req += '&nss=' + curns + '&max=1';

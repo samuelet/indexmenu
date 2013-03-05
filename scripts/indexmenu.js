@@ -106,6 +106,7 @@ dTree.prototype.openAll = function () {
 // Outputs the tree to the page
 dTree.prototype.toString = function () {
     var str = '';
+    this.pageid = this.pageid.replace(/:/g,this.config.sepchar);
     if (this.config.scroll) {
         str += '<div id="cdtree_' + this.obj + '" class="dtree" style="position:relative;overflow:hidden;width:100%;">';
     }
@@ -433,7 +434,7 @@ dTree.prototype.isOpen = function (id) {
 
 dTree.prototype.openCurNS = function (max) {
     var r, cn, match, t, i, n, cnsa, cna;
-    cns = this.pageid.replace(/:/g,this.config.sepchar);
+    cns = this.pageid;
     r = new RegExp("\\b" + this.config.sepchar + "\\b", "g");
     match = cns.match(r) || -1;
     if (max > 0 && match.length >= max) {
@@ -653,7 +654,7 @@ dTree.prototype.getAjax = function (n) {
     node = selft.aNodes[n];
 
     req = 'call=indexmenu&req=index&idx=' + node.dokuid + decodeURIComponent(this.config.jsajax);
-    curns = this.pageid.substring(0, this.pageid.lastIndexOf(":"));
+    curns = this.pageid.substring(0, this.config.sepchar);
 
     if (this.fajax) {
         req += '&nss=' + curns + '&max=1';

@@ -432,7 +432,8 @@ dTree.prototype.isOpen = function (id) {
 };
 
 dTree.prototype.openCurNS = function (max) {
-    var r, cn, match, t, i, n, cnsa, cna, cns = this.pageid;
+    var r, cn, match, t, i, n, cnsa, cna;
+    cns = this.pageid.replace(/:/g,this.config.sepchar);
     r = new RegExp("\\b" + this.config.sepchar + "\\b", "g");
     match = cns.match(r) || -1;
     if (max > 0 && match.length >= max) {
@@ -652,7 +653,7 @@ dTree.prototype.getAjax = function (n) {
     node = selft.aNodes[n];
 
     req = 'call=indexmenu&req=index&idx=' + node.dokuid + decodeURIComponent(this.config.jsajax);
-    curns = this.pageid.substring(0, this.pageid.lastIndexOf(this.config.sepchar));
+    curns = this.pageid.substring(0, this.pageid.lastIndexOf(":"));
 
     if (this.fajax) {
         req += '&nss=' + curns + '&max=1';

@@ -593,7 +593,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
    * modified by Samuele Tognini <samuele@netsons.org>
    */
   function _html_list_index($item){
+    global $INFO, $conf;	// needed to highlight current page [Rik Blok, 2013-03-10]
     $ret = '';
+    $navsel = $item['id']==$INFO['id'] || ($item['id'].':'.$conf['start'])==$INFO['id'];  // is current page? [Rik Blok, 2013-03-10]
+    if ($navsel) $ret .= '<span class="search_hit">';  // highlight if current page [Rik Blok, 2013-03-10]
     //namespace
     if($item['type']=='d' || $item['type']=='l'){
       $link=$item['id'];
@@ -615,6 +618,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
       //page link
       $ret .= html_wikilink(':'.$item['id']);
     }  
+    if ($navsel) $ret .= '</span>';  // close highlight if current page [Rik Blok, 2013-03-10]
     return $ret;
   }
 

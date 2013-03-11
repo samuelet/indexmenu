@@ -1,0 +1,7 @@
+base   indexmenu
+author Rik Blok
+email  rik.blok@ubc.ca
+date   2013-03-10
+name   indexmenu plugin
+desc   A dokuwiki plugin to show a customizable and sortable index for a namespace.
+url    http://dokuwiki.org/plugin:indexmenu

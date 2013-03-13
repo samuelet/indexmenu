@@ -150,10 +150,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         $event->stopPropagation();
         $event->preventDefault();
 
-        global $INPUT;
-
-
-        switch($INPUT->str('req')) {
+        switch($_REQUEST['req']) {
             case 'local':
                 //list themes
                 header('Content-Type: application/json');

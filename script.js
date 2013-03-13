@@ -39,11 +39,7 @@ if (window.toolbar != undefined) {
     }
 }
 
-
-// Section below works only in release till 2012-09-10 "Adora Belle". Uncomment to use.
-// - Later releases has removed the old javascript library https://github.com/splitbrain/dokuwiki/commit/99421189
-
-
+/* functions for js renderer and contextmenu */
 
 function indexmenu_findExt(path) {
     var ext = "gif";

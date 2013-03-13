@@ -592,7 +592,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     function _html_list_index($item) {
         global $INFO, $conf;  // needed to highlight current page [Rik Blok, 2013-03-12] 
         $ret = '';
-        $navsel = ($item['id'].':'.$conf['start'])==$INFO['id'];  // is current start page? [Rik Blok, 2013-03-12] 
+        $navsel = $this->getConf('hide_headpage') && ($item['id'].':'.$conf['start'])==$INFO['id'];  // is current start page? [Rik Blok, 2013-03-13] 
         if ($navsel) $ret .= '<span class="curid">';  // mark as current page [Rik Blok, 2013-03-12] 
         //namespace
         if($item['type'] == 'd' || $item['type'] == 'l') {

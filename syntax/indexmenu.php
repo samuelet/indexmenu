@@ -283,7 +283,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $output = "\n";
         $output .= '<div><div id="nojs_'.$js_name.'" data-jsajax="'.utf8_encodeFN($js_opts['jsajax']).'" class="indexmenu_nojs">'."\n";
         $output .=     html_buildlist($data, 'idx', array($this, "_html_list_index"), "html_li_index");
-        $output .= "</div></div>\n";//</div>
+        $output .= "</div></div>\n";
         $output .= $output_tmp;
         return $output;
     }
@@ -535,15 +535,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             //check hiddens and acl
             if(isHiddenPage($id) || auth_quickaclcheck($id) < AUTH_READ) return false;
             //Skip files in plugin conf
-            if(!empty($skip_file) &&
-                preg_match($skip_file, $id)
-            )
-                return false;
+            if(!empty($skip_file) && preg_match($skip_file, $id)) return false;
             //Skip headpages to hide
-            if(!$opts['nons'] &&
-                !empty($headpage) &&
-                $opts['hide_headpage']
-            ) {
+            if(!$opts['nons'] && !empty($headpage) && $opts['hide_headpage']) {
+                //start page is in root
                 if($id == $conf['start']) return false;
                 $ahp = explode(",", $headpage);
                 foreach($ahp as $hp) {

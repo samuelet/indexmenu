@@ -20,7 +20,7 @@ var indexmenu_wiz = {
             }
         },
         div2: {
-            class: 'js theme',
+            tlbclass: 'js theme',
             elems: {
                 el1: {headerid: 'theme'}
             }
@@ -30,9 +30,9 @@ var indexmenu_wiz = {
                 el2: {headerid: 'navigation'},
                 navbar: {},
                 context: {},
-                nocookie: {class: 'js'},
-                noscroll: {class: 'js'},
-                notoc: {class: 'js'}
+                nocookie: {tlbclass: 'js'},
+                noscroll: {tlbclass: 'js'},
+                notoc: {tlbclass: 'js'}
             }
         },
         div4: {
@@ -54,12 +54,12 @@ var indexmenu_wiz = {
             }
         },
         div6: {
-            class: 'js',
+            tlbclass: 'js',
             elems: {
                 el5: {headerid: 'performance'},
-                max: {class: 'js', number: ['maxn', 'maxm']},
-                maxjs: {class: 'js', number: ['maxjsn']},
-                id: {class: 'js', number: ['idn']}
+                max: {tlbclass: 'js', number: ['maxn', 'maxm']},
+                maxjs: {tlbclass: 'js', number: ['maxjsn']},
+                id: {tlbclass: 'js', number: ['idn']}
             }
         }
     },
@@ -109,7 +109,7 @@ var indexmenu_wiz = {
         var $opt_fieldset = jQuery('#indexmenu__wiz fieldset.options');
 
         jQuery.each(indexmenu_wiz.fields, function(i,section) {
-            var div = jQuery('<div>').addClass(section.class);
+            var div = jQuery('<div>').addClass(section.tlbclass);
 
             jQuery.each(section.elems, function(elid,props){
                 if(props.headerid) {
@@ -117,7 +117,7 @@ var indexmenu_wiz = {
                 } else {
                     //checkbox
                     jQuery("<label>")
-                        .addClass(props.class).addClass(props.number ? ' num':'')
+                        .addClass(props.tlbclass).addClass(props.number ? ' num':'')
                         .html('<input id="'+elid+'" type="checkbox">'+elid)
                         .attr({title: LANG.plugins.indexmenu[elid]})
                         .appendTo(div);
@@ -127,7 +127,7 @@ var indexmenu_wiz = {
                         jQuery.each(props.number, function(j,numid){
                              jQuery("<label>")
                                 .attr({title: LANG.plugins.indexmenu[elid]})
-                                .addClass("number "+props.class )
+                                .addClass("number "+props.tlbclass )
                                 .html('#<input type="text" id="'+numid+'">')
                                 .appendTo(div);
                         });

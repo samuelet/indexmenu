@@ -222,23 +222,13 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         $meta = p_get_metadata($id);
         $toc  = $meta['description']['tableofcontents'];
 
-        $out  = '<div class="tocheader toctoggle">'.DOKU_LF;
         if(count($toc) > 1) {
             //display ToC of two or more headings
-            $out .= $this->render_toc($toc);
+            $out = $this->render_toc($toc);
         } else {
             //display page abstract
-            $out .= '<a href="'.wl($id).'">';
-            $out .=     ($meta['title']) ? htmlspecialchars($meta['title']) : htmlspecialchars(noNS($id));
-            $out .= '</a>'.DOKU_LF;
-            if($meta['description']['abstract']) {
-                $out .= '</div>'.DOKU_LF;
-                $out .= '<div class="indexmenu_toc_inside">'.DOKU_LF;
-                $out .=     p_render('xhtml', p_get_instructions($meta['description']['abstract']), $info);
-                $out .= '</div>'.DOKU_LF.'</div>'.DOKU_LF;
-            }
+            $out = $this->render_abstract($id,$meta);
         }
-        $out .= '</div>'.DOKU_LF;
         return $out;
     }
 
@@ -246,30 +236,52 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * Return the TOC rendered to XHTML
      *
      * @author Andreas Gohr <andi@splitbrain.org>
+     * @author Gerrit Uitslag <klapinklapin@gmail.com>
      */
     function render_toc($toc) {
         global $lang;
-        $r = new Doku_Renderer_xhtml;
-        $r->toc = $toc;
-
-        $out = $lang['toc'];
+        $out  = '<div class="tocheader">'.DOKU_LF;
+        $out .=     $lang['toc'];
         $out .= '</div>'.DOKU_LF;
         $out .= '<div class="indexmenu_toc_inside">'.DOKU_LF;
-        $out .=      html_buildlist($r->toc, 'toc', array($this, '_tocitem'));
+        $out .=     html_buildlist($toc,'toc',array($this, '_indexmenu_list_toc') ,'html_li_default',true);
         $out .= '</div>'.DOKU_LF;
+        return $out;
+    }
+    /**
+     * Return the page abstract rendered to XHTML
+     */
+    function render_abstract($id, &$meta) {
+        $out  = '<div class="tocheader">'.DOKU_LF;
+        $out .= '<a href="'.wl($id).'">';
+        $out .=     ($meta['title']) ? htmlspecialchars($meta['title']) : htmlspecialchars(noNS($id));
+        $out .= '</a>'.DOKU_LF;
+        $out .= '</div>'.DOKU_LF;
+        if($meta['description']['abstract']) {
+            $out .= '<div class="indexmenu_toc_inside">'.DOKU_LF;
+            $out .=     p_render('xhtml', p_get_instructions($meta['description']['abstract']), $info);
+            $out .= '</div>'.DOKU_LF.'</div>'.DOKU_LF;
+        }
         return $out;
     }
 
     /**
      * Callback for html_buildlist
      */
-    function _tocitem($item) {
-        $id = cleanID($_POST['id']);
-        return '<span class="li">'.
-                    '<a href="'.wl($id, '#'.$item['hid'], false, '').'" class="toc">'.
-                        htmlspecialchars($item['title']).
-                    '</a>'.
-               '</span>';
+    function _indexmenu_list_toc($item){
+        $id = cleanID($_REQUEST['id']);
+
+        if(isset($item['hid'])){
+            $link = '#'.$item['hid'];
+        }else{
+            $link = $item['link'];
+        }
+
+        //prefix anchers with page id
+        if($link[0]=='#'){
+            $link = wl($id, $link, false, '');
+        }
+        return '<a href="'.$link.'">'.hsc($item['title']).'</a>';
     }
 
     /**

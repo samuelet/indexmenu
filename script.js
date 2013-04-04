@@ -137,22 +137,21 @@ function indexmenu_ajaxmenu(get, $picker, $btn, $container, oncomplete) {
  * @return {Boolean} true if open, false closed
  */
 function indexmenu_togglePicker($picker, $btn) {
-    var x = 3, y = 3;
+    var x = 8, y = 0;
 
     if (!$picker.is(':visible')) {
         var pos = $btn.offset();
-        x += pos.left;
+        //position + width of button
+        x += pos.left + $btn[0].offsetWidth;
         y += pos.top;
-//        console.log($btn[0].offsetWidth);
-        x += $btn[0].offsetWidth + 5;
-        y += -3;
 
         $picker
             .show()
-            .css({
-                'left': x + 'px',
-                'top': y + 'px'
+            .offset({
+                left: x,
+                top: y
             });
+
         return true;
     } else {
         $picker.hide();

@@ -120,7 +120,14 @@ div.dokuwiki div.indexmenu_list_themes {
     word-wrap: break-word;
 }
 
-.indexmenu_toc .tocheader.toctoggle {
+/*
+ * Temporary fix for vector template
+ * .toc is style for tabel of ToC in mediawiki styles, included in vector, but of no use in DokuWiki
+ */
+.indexmenu_toc ul.toc {
+    border: 0 none;
+}
+.indexmenu_toc .tocheader {
     background-color: __background_alt__;
     padding: 2px 0;
 }
@@ -131,7 +138,6 @@ div.dokuwiki div.indexmenu_list_themes {
     text-align: left;
     padding: 0.5em 0 0.7em 0;
     max-height: 300px;
-    height: expression( this.scrollHeight > 300 ? "300px" : "auto" );
     overflow: auto;
 }
 

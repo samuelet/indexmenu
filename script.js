@@ -143,7 +143,7 @@ function indexmenu_togglePicker($picker, $btn) {
         var pos = $btn.offset();
         x += pos.left;
         y += pos.top;
-        console.log($btn[0].offsetWidth);
+//        console.log($btn[0].offsetWidth);
         x += $btn[0].offsetWidth + 5;
         y += -3;
 

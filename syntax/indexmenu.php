@@ -590,7 +590,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * modified by Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _html_list_index($item) {
+        global $INFO, $conf;  // needed to highlight current page [Rik Blok, 2013-03-12] 
         $ret = '';
+        $navsel = $this->getConf('hide_headpage') && ($item['id'].':'.$conf['start'])==$INFO['id'];  // is current start page? [Rik Blok, 2013-03-13] 
+        if ($navsel) $ret .= '<span class="curid">';  // mark as current page [Rik Blok, 2013-03-12] 
         //namespace
         if($item['type'] == 'd' || $item['type'] == 'l') {
             $link = $item['id'];
@@ -612,6 +615,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             //page link
             $ret .= html_wikilink(':'.$item['id']);
         }
+        if ($navsel) $ret .= '</span>';  // close span on current start page [Rik Blok, 2013-03-12] 
         return $ret;
     }
 

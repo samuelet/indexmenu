@@ -587,15 +587,17 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * User function for html_buildlist()
      *
      * @author Andreas Gohr <andi@splitbrain.org>
-     * modified by Samuele Tognini <samuele@samuele.netsons.org>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
+     * @author Rik Blok
      */
     function _html_list_index($item) {
-        global $INFO, $conf;  // needed to highlight current page [Rik Blok, 2013-03-12] 
+        global $INFO;
         $ret = '';
-        $navsel = $this->getConf('hide_headpage') && ($item['id'].':'.$conf['start'])==$INFO['id'];  // is current start page? [Rik Blok, 2013-03-13] 
-        if ($navsel) $ret .= '<span class="curid">';  // mark as current page [Rik Blok, 2013-03-12] 
+
         //namespace
         if($item['type'] == 'd' || $item['type'] == 'l') {
+            $markCurrentPage = false;
+
             $link = $item['id'];
             $more = 'idx='.$item['id'];
             //namespace link
@@ -603,19 +605,23 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 $link  = $item['hns'];
                 $tagid = "indexmenu_idx_head";
                 $more  = '';
+                //current page is shown?
+                $markCurrentPage = $this->getConf('hide_headpage') && $item['hns'] == $INFO['id'];
             } else {
-                //namespace with headpage
+                //namespace without headpage
                 $tagid = "indexmenu_idx";
                 if($item['open']) $tagid .= ' open';
             }
+
+            if ($markCurrentPage) $ret .= '<span class="curid">';
             $ret .= '<a href="'.wl($link, $more).'" class="'.$tagid.'">';
             $ret .= $item['title'];
             $ret .= '</a>';
+            if ($markCurrentPage) $ret .= '</span>';
         } else {
             //page link
             $ret .= html_wikilink(':'.$item['id']);
         }
-        if ($navsel) $ret .= '</span>';  // close span on current start page [Rik Blok, 2013-03-12] 
         return $ret;
     }
 

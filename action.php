@@ -299,6 +299,8 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         $level = -1;
         $max   = 0;
         $data  = array();
+        $skipfile = array();
+        $skipns = array();
 
         if($_REQUEST['max'] > 0) {
             $max   = $_REQUEST['max'];
@@ -311,6 +313,22 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         $idxm->nsort = $_REQUEST['nsort'];
         $idxm->hsort = $_REQUEST['hsort'];
         $fsdir       = "/".utf8_encodeFN(str_replace(':', '/', $ns));
+
+        $skipf = utf8_decodeFN($_REQUEST['skipfile']);
+        if(isset($skipf)) {
+            if($skipf[1] == '+') {
+                $skipfile[] = $this->getConf('skip_file');
+            }
+            $skipfile[] = substr($skipf, 1);
+        }
+        $skipn = utf8_decodeFN($_REQUEST['skipns']);
+        if(isset($skipn)) {
+            if($skipn[1] == '+') {
+                $skipns[] = $this->getConf('skip_index');
+            }
+            $skipns[] = substr($skipn, 1);
+        }
+
         $opts        = array(
             'level'         => $level,
             'nons'          => $_REQUEST['nons'],
@@ -318,8 +336,8 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
             'max'           => $max,
             'js'            => false,
             'nopg'          => $_REQUEST['nopg'],
-            'skip_index'    => $idxm->getConf('skip_index'),
-            'skip_file'     => $idxm->getConf('skip_file'),
+            'skip_index'    => $skipns,
+            'skip_file'     => $skipfile,
             'headpage'      => $idxm->getConf('headpage'),
             'hide_headpage' => $idxm->getConf('hide_headpage')
         );

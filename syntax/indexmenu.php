@@ -65,6 +65,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $max    = 0;
         $jsajax = '';
         $nss    = array();
+        $skipns = array();
+        $skipfile = array();
         $match  = substr($match, 12, -2);
         //split namespace,level,theme
         $match = preg_split('/\|/u', $match, 2);
@@ -150,8 +152,29 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         if($nopg) $jsajax .= "&nopg=1";
         //max js option
         if(preg_match('/maxjs#(\d+)/u', $match[1], $maxtmp) > 0) $maxjs = $maxtmp[1];
+        //skip namespaces in index
+        if(preg_match('/skipns[\+=](\S+)/u', $match[1], $sns) > 0) {
+            //first sign is: '+' (parallel to conf) or '=' (replace conf)
+            $action = $sns[0][6];
+            if($action == '+') {
+                $skipns[] = $this->getConf('skip_index');
+            }
+            $skipns[] = $sns[1];
+            $jsajax .= "&skipns=".utf8_encodeFN(($action == '+' ? '+' : '=').$sns[1]);
+        }
+        //skip file
+        if(preg_match('/skipfile[\+=](\S+)/u', $match[1], $sf) > 0) {
+            //first sign is: '+' (parallel to conf) or '=' (replace conf)
+            $action = $sf[0][8];
+            if($action == '+') {
+                $skipfile[] = $this->getConf('skip_file');
+            }
+            $skipfile[] = $sf[1];
+            $jsajax .= "&skipfile=".utf8_encodeFN(($action == '+' ? '+' : '=').$sf[1]);
+        }
         //js options
         $js_opts = compact('theme', 'gen_id', 'nocookie', 'navbar', 'noscroll', 'maxjs', 'notoc', 'jsajax', 'context', 'nomenu');
+
         return array(
             $ns,
             $js_opts,
@@ -166,8 +189,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 'nss'           => $nss,
                 'max'           => $max,
                 'js'            => $js,
-                'skip_index'    => $this->getConf('skip_index'),
-                'skip_file'     => $this->getConf('skip_file'),
+                'skip_index'    => $skipns,
+                'skip_file'     => $skipfile,
                 'headpage'      => $this->getConf('headpage'),
                 'hide_headpage' => $this->getConf('hide_headpage')
             ),
@@ -485,8 +508,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $id         = pathID($file);
         if($type == 'd') {
             // Skip folders in plugin conf
-            if(!empty($skip_index) && preg_match($skip_index, $id))
-                return false;
+            foreach($skip_index as $skipi) {
+                if(!empty($skipi) && preg_match($skipi, $id))
+                    return false;
+            }
             //check ACL (for sneaky_index namespaces too).
             if($this->getConf('sneaky_index') && auth_quickaclcheck($id.':') < AUTH_READ) return false;
             //Open requested level
@@ -535,7 +560,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             //check hiddens and acl
             if(isHiddenPage($id) || auth_quickaclcheck($id) < AUTH_READ) return false;
             //Skip files in plugin conf
-            if(!empty($skip_file) && preg_match($skip_file, $id)) return false;
+            foreach($skip_file as $skipf) {
+                if(!empty($skipf) && preg_match($skipf, $id))
+                    return false;
+            }
             //Skip headpages to hide
             if(!$opts['nons'] && !empty($headpage) && $opts['hide_headpage']) {
                 //start page is in root

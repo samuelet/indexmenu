@@ -280,7 +280,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             search($data, $conf['datadir'], array($this, '_search_index'), $opts, $fsdir);
         }
         if(!$data) return false;
-dbg($data);
+
         // Id generation method
         if(is_numeric($js_opts['gen_id'])) {
             $js_name .= $js_opts['gen_id'];

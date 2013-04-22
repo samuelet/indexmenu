@@ -56,18 +56,18 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * Handle the match
      */
     function handle($match, $state, $pos, &$handler) {
-        $theme  = "default";
-        $ns     = ".";
-        $level  = -1;
-        $nons   = true;
-        $gen_id = 'random';
-        $maxjs  = 0;
-        $max    = 0;
-        $jsajax = '';
-        $nss    = array();
-        $skipns = array();
+        $theme    = "default";
+        $ns       = ".";
+        $level    = -1;
+        $nons     = true;
+        $gen_id   = 'random';
+        $maxjs    = 0;
+        $max      = 0;
+        $jsajax   = '';
+        $nss      = array();
+        $skipns   = array();
         $skipfile = array();
-        $match  = substr($match, 12, -2);
+        $match    = substr($match, 12, -2);
         //split namespace,level,theme
         $match = preg_split('/\|/u', $match, 2);
         //split options
@@ -291,7 +291,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         }
 
         // javascript index
-        $output_tmp  = "";
+        $output_tmp = "";
         if($opts['js']) {
             $ns         = str_replace('/', ':', $ns);
             $output_tmp = $this->_jstree($data, $ns, $js_opts, $js_name, $opts['max']);
@@ -305,7 +305,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         //    the toggle interacts with hide needed for js option.
         $output = "\n";
         $output .= '<div><div id="nojs_'.$js_name.'" data-jsajax="'.utf8_encodeFN($js_opts['jsajax']).'" class="indexmenu_nojs">'."\n";
-        $output .=     html_buildlist($data, 'idx', array($this, "_html_list_index"), "html_li_index");
+        $output .= html_buildlist($data, 'idx', array($this, "_html_list_index"), "html_li_index");
         $output .= "</div></div>\n";
         $output .= $output_tmp;
         return $output;
@@ -641,11 +641,11 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 if($item['open']) $tagid .= ' open';
             }
 
-            if ($markCurrentPage) $ret .= '<span class="curid">';
+            if($markCurrentPage) $ret .= '<span class="curid">';
             $ret .= '<a href="'.wl($link, $more).'" class="'.$tagid.'">';
             $ret .= $item['title'];
             $ret .= '</a>';
-            if ($markCurrentPage) $ret .= '</span>';
+            if($markCurrentPage) $ret .= '</span>';
         } else {
             //page link
             $ret .= html_wikilink(':'.$item['id']);

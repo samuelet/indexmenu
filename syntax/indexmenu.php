@@ -280,7 +280,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             search($data, $conf['datadir'], array($this, '_search_index'), $opts, $fsdir);
         }
         if(!$data) return false;
-
+dbg($data);
         // Id generation method
         if(is_numeric($js_opts['gen_id'])) {
             $js_name .= $js_opts['gen_id'];
@@ -587,7 +587,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 }
             }
             //Set title
-            if($conf['useheading'] == 1 || $conf['useheading'] == 'navigation') {
+            if($conf['useheading'] === 1 || $conf['useheading'] === 'navigation') {
                 $title = p_get_first_heading($id, FALSE);
             }
             if(is_null($title)) $title = noNS($id);

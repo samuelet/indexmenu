@@ -586,8 +586,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                     }
                 }
             }
+
             //Set title
-            if($conf['useheading'] === 1 || $conf['useheading'] === 'navigation') {
+            if($conf['useheading'] == 1 || $conf['useheading'] === 'navigation') {
                 $title = p_get_first_heading($id, FALSE);
             }
             if(is_null($title)) $title = noNS($id);

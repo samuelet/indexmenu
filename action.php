@@ -313,18 +313,22 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         $fsdir       = "/".utf8_encodeFN(str_replace(':', '/', $ns));
 
         $skipf = utf8_decodeFN($_REQUEST['skipfile']);
+        $skipfile[] = $this->getConf('skip_file');
         if(isset($skipf)) {
+            $index = 0;
             if($skipf[1] == '+') {
-                $skipfile[] = $this->getConf('skip_file');
+                $index = 1;
             }
-            $skipfile[] = substr($skipf, 1);
+            $skipfile[$index] = substr($skipf, 1);
         }
         $skipn = utf8_decodeFN($_REQUEST['skipns']);
+        $skipns[] = $this->getConf('skip_index');
         if(isset($skipn)) {
+            $index = 0;
             if($skipn[1] == '+') {
-                $skipns[] = $this->getConf('skip_index');
+                $index = 1;
             }
-            $skipns[] = substr($skipn, 1);
+            $skipns[$index] = substr($skipn, 1);
         }
 
         $opts = array(

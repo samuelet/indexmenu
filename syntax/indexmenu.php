@@ -153,25 +153,30 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         //max js option
         if(preg_match('/maxjs#(\d+)/u', $match[1], $maxtmp) > 0) $maxjs = $maxtmp[1];
         //skip namespaces in index
+        $skipns[] = $this->getConf('skip_index');
         if(preg_match('/skipns[\+=](\S+)/u', $match[1], $sns) > 0) {
             //first sign is: '+' (parallel to conf) or '=' (replace conf)
             $action = $sns[0][6];
+            $index = 0;
             if($action == '+') {
-                $skipns[] = $this->getConf('skip_index');
+                $index = 1;
             }
-            $skipns[] = $sns[1];
+            $skipns[$index] = $sns[1];
             $jsajax .= "&skipns=".utf8_encodeFN(($action == '+' ? '+' : '=').$sns[1]);
         }
         //skip file
+        $skipfile[] = $this->getConf('skip_file');
         if(preg_match('/skipfile[\+=](\S+)/u', $match[1], $sf) > 0) {
             //first sign is: '+' (parallel to conf) or '=' (replace conf)
             $action = $sf[0][8];
+            $index = 0;
             if($action == '+') {
-                $skipfile[] = $this->getConf('skip_file');
+                $index = 1;
             }
-            $skipfile[] = $sf[1];
+            $skipfile[$index] = $sf[1];
             $jsajax .= "&skipfile=".utf8_encodeFN(($action == '+' ? '+' : '=').$sf[1]);
         }
+
         //js options
         $js_opts = compact('theme', 'gen_id', 'nocookie', 'navbar', 'noscroll', 'maxjs', 'notoc', 'jsajax', 'context', 'nomenu');
 

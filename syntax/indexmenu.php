@@ -56,16 +56,18 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * Handle the match
      */
     function handle($match, $state, $pos, &$handler) {
-        $theme  = "default";
-        $ns     = ".";
-        $level  = -1;
-        $nons   = true;
-        $gen_id = 'random';
-        $maxjs  = 0;
-        $max    = 0;
-        $jsajax = '';
-        $nss    = array();
-        $match  = substr($match, 12, -2);
+        $theme    = "default";
+        $ns       = ".";
+        $level    = -1;
+        $nons     = true;
+        $gen_id   = 'random';
+        $maxjs    = 0;
+        $max      = 0;
+        $jsajax   = '';
+        $nss      = array();
+        $skipns   = array();
+        $skipfile = array();
+        $match    = substr($match, 12, -2);
         //split namespace,level,theme
         $match = preg_split('/\|/u', $match, 2);
         //split options
@@ -150,8 +152,34 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         if($nopg) $jsajax .= "&nopg=1";
         //max js option
         if(preg_match('/maxjs#(\d+)/u', $match[1], $maxtmp) > 0) $maxjs = $maxtmp[1];
+        //skip namespaces in index
+        $skipns[] = $this->getConf('skip_index');
+        if(preg_match('/skipns[\+=](\S+)/u', $match[1], $sns) > 0) {
+            //first sign is: '+' (parallel to conf) or '=' (replace conf)
+            $action = $sns[0][6];
+            $index = 0;
+            if($action == '+') {
+                $index = 1;
+            }
+            $skipns[$index] = $sns[1];
+            $jsajax .= "&skipns=".utf8_encodeFN(($action == '+' ? '+' : '=').$sns[1]);
+        }
+        //skip file
+        $skipfile[] = $this->getConf('skip_file');
+        if(preg_match('/skipfile[\+=](\S+)/u', $match[1], $sf) > 0) {
+            //first sign is: '+' (parallel to conf) or '=' (replace conf)
+            $action = $sf[0][8];
+            $index = 0;
+            if($action == '+') {
+                $index = 1;
+            }
+            $skipfile[$index] = $sf[1];
+            $jsajax .= "&skipfile=".utf8_encodeFN(($action == '+' ? '+' : '=').$sf[1]);
+        }
+
         //js options
         $js_opts = compact('theme', 'gen_id', 'nocookie', 'navbar', 'noscroll', 'maxjs', 'notoc', 'jsajax', 'context', 'nomenu');
+
         return array(
             $ns,
             $js_opts,
@@ -166,8 +194,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 'nss'           => $nss,
                 'max'           => $max,
                 'js'            => $js,
-                'skip_index'    => $this->getConf('skip_index'),
-                'skip_file'     => $this->getConf('skip_file'),
+                'skip_index'    => $skipns,
+                'skip_file'     => $skipfile,
                 'headpage'      => $this->getConf('headpage'),
                 'hide_headpage' => $this->getConf('hide_headpage')
             ),
@@ -268,7 +296,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         }
 
         // javascript index
-        $output_tmp  = "";
+        $output_tmp = "";
         if($opts['js']) {
             $ns         = str_replace('/', ':', $ns);
             $output_tmp = $this->_jstree($data, $ns, $js_opts, $js_name, $opts['max']);
@@ -282,7 +310,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         //    the toggle interacts with hide needed for js option.
         $output = "\n";
         $output .= '<div><div id="nojs_'.$js_name.'" data-jsajax="'.utf8_encodeFN($js_opts['jsajax']).'" class="indexmenu_nojs">'."\n";
-        $output .=     html_buildlist($data, 'idx', array($this, "_html_list_index"), "html_li_index");
+        $output .= html_buildlist($data, 'idx', array($this, "_html_list_index"), "html_li_index");
         $output .= "</div></div>\n";
         $output .= $output_tmp;
         return $output;
@@ -485,8 +513,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $id         = pathID($file);
         if($type == 'd') {
             // Skip folders in plugin conf
-            if(!empty($skip_index) && preg_match($skip_index, $id))
-                return false;
+            foreach($skip_index as $skipi) {
+                if(!empty($skipi) && preg_match($skipi, $id))
+                    return false;
+            }
             //check ACL (for sneaky_index namespaces too).
             if($this->getConf('sneaky_index') && auth_quickaclcheck($id.':') < AUTH_READ) return false;
             //Open requested level
@@ -535,7 +565,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             //check hiddens and acl
             if(isHiddenPage($id) || auth_quickaclcheck($id) < AUTH_READ) return false;
             //Skip files in plugin conf
-            if(!empty($skip_file) && preg_match($skip_file, $id)) return false;
+            foreach($skip_file as $skipf) {
+                if(!empty($skipf) && preg_match($skipf, $id))
+                    return false;
+            }
             //Skip headpages to hide
             if(!$opts['nons'] && !empty($headpage) && $opts['hide_headpage']) {
                 //start page is in root
@@ -558,8 +591,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                     }
                 }
             }
+
             //Set title
-            if($conf['useheading'] == 1 || $conf['useheading'] == 'navigation') {
+            if($conf['useheading'] == 1 || $conf['useheading'] === 'navigation') {
                 $title = p_get_first_heading($id, FALSE);
             }
             if(is_null($title)) $title = noNS($id);
@@ -613,11 +647,11 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 if($item['open']) $tagid .= ' open';
             }
 
-            if ($markCurrentPage) $ret .= '<span class="curid">';
+            if($markCurrentPage) $ret .= '<span class="curid">';
             $ret .= '<a href="'.wl($link, $more).'" class="'.$tagid.'">';
             $ret .= $item['title'];
             $ret .= '</a>';
-            if ($markCurrentPage) $ret .= '</span>';
+            if($markCurrentPage) $ret .= '</span>';
         } else {
             //page link
             $ret .= html_wikilink(':'.$item['id']);

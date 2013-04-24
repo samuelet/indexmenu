@@ -1,5 +1,5 @@
   * **2013-04-24 Version 5.0**:
-	    * Reformat of all code to Dokuwiki code style
+            * Reformat of all code to Dokuwiki code style
             * Rewrite all javascript to jQuery instead of old js api (includes improvements from [[tindexmenu]] plugin)
             * Added a new toolbar wizard
             * Used Dokuwikis javascript include mechanism

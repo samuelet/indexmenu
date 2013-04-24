@@ -56,3 +56,9 @@ Fabian Pfannes:
 
 Urban:
 	Context menu patch and other suggestions
+
+Gerrit Uitslag (Klap-in):
+        Rewrite of indexmenu to add new dokuwiki compatibility
+        Added a new toolbar wizard
+        add ''hsort'' for sorting [[config:startpage]] pages to top of listing
+        many others improvements

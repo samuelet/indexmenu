@@ -1,3 +1,19 @@
+  * **2013-04-24 Version 5.0**:
+	    ** The Indexmenu repository has changed, new release is available at [[https://github.com/samuelet/indexmenu|github]] **
+            * Reformat of all code to Dokuwiki code style
+            * Rewrite all javascript to jQuery instead of old js api (includes improvements from [[tindexmenu]] plugin)
+            * Added a new toolbar wizard
+            * Used Dokuwikis javascript include mechanism
+            * add ''hsort'' for sorting [[config:startpage]] pages to top of listing
+            * Rewrite the ajax stuff into action plugin (not theme handling stuff)
+            * Change configuration via menu js files to one file.
+            * add option ''nomenu''
+            * Improved support for [[config:useheading]] option. Page titles are //only shown// when useheading is 'always' or 'navigation'.
+            * Added syntax option to add ''skipfile+/regexp/'' and ''skipns+/regexp/''. Using ''+'' add regexp parallel to global config, using ''='' replaces the global config.
+            * Adding curid span like DokuWiki performs on internal links.
+            * Fixed: When only had indexmenu syntax in sidebar, in js rendered index the backup index wasn't hidden.
+            * Fixed: Ajax completion supports Korean characters too.
+
   * **2009-08-29 Version 4.6**:
             * //New Feature//: Namespace declaration complies with dokuwiki [[:namespaces#creating namespaces|namespaces]]. :!: **Important before upgrading from previuos versions**: according to the new dokuwiki syntax, a simple //main namespace// without relative declaration prefix (i.e: "playground") doesn't refer anymore to the subnamespace in the root namespace but in the **current** namespace. To refer to the root namespace, you need to prepend the ":" declaration to it. :!:
             * //New Feature//: Added the //context// option. It resolves relative requested namespaces starting from the current user location instead of the page containing the indexmenu syntax.

@@ -135,7 +135,7 @@ dTree.prototype.toString = function () {
     }
     this.completed = true;
     //hide the fallback nojs indexmenu
-    jQuery('#nojs_' + this.obj).hide();
+    jQuery('#nojs_' + this.obj).css("display", "none"); //using  .hide(); let's  crash opera
     return str;
 };
 

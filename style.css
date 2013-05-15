@@ -158,7 +158,9 @@ div.dokuwiki div.indexmenu_list_themes {
     overflow: hidden;
     width: 100px;
 }
-
+div.dokuwiki .indexmenu_rmenu ul {
+    margin: 0;
+}
 .indexmenu_rmenu, .indexmenu_rmenu li ul {
     position: absolute;
     z-index: 100;

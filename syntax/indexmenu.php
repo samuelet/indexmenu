@@ -127,31 +127,35 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $rsort = in_array('rsort', $opts);
         //javascript option
         if(!$js = in_array('js', $opts)) {
-            //split theme
-            if(preg_match('/js#(\S*)/u', $match[1], $tmp_theme) > 0) {
+            //split theme (should not match maxjs#n)
+            if(preg_match('/(?:^|\s)js#(\S*)/u', $match[1], $tmp_theme) > 0) {
                 if(is_dir(INDEXMENU_IMG_ABSDIR."/".$tmp_theme[1])) {
                     $theme = $tmp_theme[1];
                 }
                 $js = true;
             }
         }
-        //id generation method
-        if(preg_match('/id#(\S+)/u', $match[1], $id) > 0) $gen_id = $id[1];
-        //max option
-        if(preg_match('/max#(\d+)($|\s+|#(\d+))/u', $match[1], $maxtmp) > 0) {
-            $max = $maxtmp[1];
-            if($maxtmp[3]) $jsajax = "&max=".$maxtmp[3];
-            //disable cookie to avoid javascript errors
-            $nocookie = true;
+        if($js) {
+            //id generation method
+            if(preg_match('/id#(\S+)/u', $match[1], $id) > 0) $gen_id = $id[1];
+            //max option
+            if(preg_match('/max#(\d+)($|\s+|#(\d+))/u', $match[1], $maxtmp) > 0) {
+                $max = $maxtmp[1];
+                if($maxtmp[3]) $jsajax = "&max=".$maxtmp[3];
+                //disable cookie to avoid javascript errors
+                $nocookie = true;
+            }
+            //max js option
+            if(preg_match('/maxjs#(\d+)/u', $match[1], $maxtmp) > 0) $maxjs = $maxtmp[1];
         }
+
         if($sort) $jsajax .= "&sort=".$sort;
         if($msort) $jsajax .= "&msort=".$msort;
         if($rsort) $jsajax .= "&rsort=1";
         if($nsort) $jsajax .= "&nsort=1";
         if($hsort) $jsajax .= "&hsort=1";
         if($nopg) $jsajax .= "&nopg=1";
-        //max js option
-        if(preg_match('/maxjs#(\d+)/u', $match[1], $maxtmp) > 0) $maxjs = $maxtmp[1];
+
         //skip namespaces in index
         $skipns[] = $this->getConf('skip_index');
         if(preg_match('/skipns[\+=](\S+)/u', $match[1], $sns) > 0) {

@@ -139,7 +139,7 @@ var indexmenu_wiz = {
 
         indexmenu_wiz.includeThemes();
 
-        if(JSINFO.namespace){
+        if(JSINFO && JSINFO.namespace){
             jQuery('#namespace').val(':'+JSINFO.namespace);
         }
 

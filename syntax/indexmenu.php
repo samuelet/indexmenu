@@ -138,6 +138,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         if($js) {
             //id generation method
             if(preg_match('/id#(\S+)/u', $match[1], $id) > 0) $gen_id = $id[1];
+
             //max option
             if(preg_match('/max#(\d+)($|\s+|#(\d+))/u', $match[1], $maxtmp) > 0) {
                 $max = $maxtmp[1];
@@ -147,6 +148,14 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             }
             //max js option
             if(preg_match('/maxjs#(\d+)/u', $match[1], $maxtmp) > 0) $maxjs = $maxtmp[1];
+        }
+        // Id generation method
+        if(is_numeric($gen_id)) {
+            $identifier =  $gen_id;
+        } elseif($gen_id == 'ns') {
+            $identifier = sprintf("%u", crc32($ns));
+        } else {
+            $identifier = uniqid(rand());
         }
 
         if($sort) $jsajax .= "&sort=".$sort;
@@ -182,7 +191,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         }
 
         //js options
-        $js_opts = compact('theme', 'gen_id', 'nocookie', 'navbar', 'noscroll', 'maxjs', 'notoc', 'jsajax', 'context', 'nomenu');
+        $js_opts = compact('theme', 'identifier', 'nocookie', 'navbar', 'noscroll', 'maxjs', 'notoc', 'jsajax', 'context', 'nomenu');
 
         return array(
             $ns,
@@ -269,6 +278,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      *
      * This function is a simple hack of Dokuwiki html_index($ns)
      * @author Andreas Gohr <andi@splitbrain.org>
+     *
+     * @param array $myns the options for indexmenu
+     * @return bool|string return html for a nojs index and when enabled the js rendered index, otherwise false
      */
     function _indexmenu($myns) {
         global $conf;
@@ -281,7 +293,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $opts        = $myns[6];
         $this->hsort = $myns[7];
         $data        = array();
-        $js_name     = "indexmenu_";
+        $js_name     = "indexmenu_".$js_opts['identifier'];
         $fsdir       = "/".utf8_encodeFN(str_replace(':', '/', $ns));
         if($this->sort || $this->msort || $this->rsort || $this->hsort) {
             $this->_search($data, $conf['datadir'], array($this, '_search_index'), $opts, $fsdir);
@@ -289,15 +301,6 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             search($data, $conf['datadir'], array($this, '_search_index'), $opts, $fsdir);
         }
         if(!$data) return false;
-
-        // Id generation method
-        if(is_numeric($js_opts['gen_id'])) {
-            $js_name .= $js_opts['gen_id'];
-        } elseif($js_opts['gen_id'] == 'ns') {
-            $js_name .= sprintf("%u", crc32($ns));
-        } else {
-            $js_name .= uniqid(rand());
-        }
 
         // javascript index
         $output_tmp = "";
@@ -325,42 +328,63 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      *
      * @author  Samuele Tognini <samuele@samuele.netsons.org>
      * @author  Rene Hadler
+     *
+     * @param array  $data    array with items of the tree
+     * @param string $ns      requested namespace
+     * @param array  $js_opts options for javascript renderer
+     * @param string $js_name identifier for this index
+     * @param int    $max     the node at $max level will retrieve all its child nodes through the AJAX mechanism
+     * @return bool|string returns inline javascript or false
      */
     function _jstree($data, $ns, $js_opts, $js_name, $max) {
         global $conf;
         $hns = false;
         if(empty($data)) return false;
+
         //Render requested ns as root
         $headpage = $this->getConf('headpage');
+        //if rootnamespace and headpage, then add startpage as headpage - TODO seems not logic, when desired use $conf[headpage]=:start: ??
         if(empty($ns) && !empty($headpage)) $headpage .= ','.$conf['start'];
         $title = $this->_getTitle($ns, $headpage, $hns);
         if(empty($title)) {
-            (empty($ns)) ? $title = htmlspecialchars($conf['title'], ENT_QUOTES) : $title = $ns;
+            if(empty($ns)){
+                $title = htmlspecialchars($conf['title'], ENT_QUOTES);
+            } else{
+                $title = $ns;
+            }
         }
+        // inline javascript
         $out = "<script type='text/javascript' charset='utf-8'>\n";
         $out .= "<!--//--><![CDATA[//><!--\n";
         $out .= "var $js_name = new dTree('".$js_name."','".$js_opts['theme']."');\n";
+        //javascript config options
         $sepchar = idfilter(':');
         $out .= "$js_name.config.urlbase='".substr(wl(":"), 0, -1)."';\n";
         $out .= "$js_name.config.sepchar='".$sepchar."';\n";
-        if($js_opts['notoc']) $out .= "$js_name.config.toc=false;\n";
-        if($js_opts['nocookie']) $out .= "$js_name.config.useCookies=false;\n";
-        if($js_opts['noscroll']) $out .= "$js_name.config.scroll=false;\n";
-        if($js_opts['maxjs'] > 0) $out .= "$js_name.config.maxjs=".$js_opts['maxjs'].";\n";
+        if($js_opts['notoc'])          $out .= "$js_name.config.toc=false;\n";
+        if($js_opts['nocookie'])       $out .= "$js_name.config.useCookies=false;\n";
+        if($js_opts['noscroll'])       $out .= "$js_name.config.scroll=false;\n";
+        if($js_opts['maxjs'] > 0)      $out .= "$js_name.config.maxjs=".$js_opts['maxjs'].";\n";
         if(!empty($js_opts['jsajax'])) $out .= "$js_name.config.jsajax='".utf8_encodeFN($js_opts['jsajax'])."';\n";
+        //add root node
         $out .= $js_name.".add('".idfilter(cleanID($ns))."',0,-1,'".$title."'";
         if($hns) $out .= ",'".idfilter(cleanID($hns))."'";
         $out .= ");\n";
+        //add nodes
         $anodes = $this->_jsnodes($data, $js_name);
         $out .= $anodes[0];
+        //write to document
         $out .= "document.write(".$js_name.");\n";
+        //initialize index
         $out .= "jQuery(function(){".$js_name.".init(";
         $out .= (int) is_file(INDEXMENU_IMG_ABSDIR.'/'.$js_opts['theme'].'/style.css').",";
         $out .= (int) $js_opts['nocookie'].",";
         $out .= '"'.$anodes[1].'",';
-        $out .= (int) $js_opts['navbar'].",$max";
+        $out .= (int) $js_opts['navbar'].",";
+        $out .= (int) $max;
         if($js_opts['nomenu']) $out .= ",1";
         $out .= ");});\n";
+
         $out .= "//--><!]]>\n";
         $out .= "</script>\n";
         return $out;
@@ -370,6 +394,12 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * Return array of javascript nodes and nodes to open.
      *
      * @author  Samuele Tognini <samuele@samuele.netsons.org>
+     * @param array  $data    array with items of the tree
+     * @param string $js_name identifier for this index
+     * @param int    $noajax  return as inline js (=1) or array for ajax response (=0)
+     * @return array|bool returns array with
+     *     - a string of the javascript nodes
+     *     - and a string of space separated numbers of the opened nodes
      */
     function _jsnodes($data, $js_name, $noajax = 1) {
         if(empty($data)) return false;
@@ -421,9 +451,13 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     }
 
     /**
-     * Get page title, checking for headpages
+     * Get namespace title, checking for headpages
      *
      * @author  Samuele Tognini <samuele@samuele.netsons.org>
+     * @param string $ns namespace
+     * @param string $headpage commaseparated headpages options and headpages
+     * @param string $hns reference pageid of headpage, false when not existing
+     * @return string when headpage & heading on: title of headpage, otherwise: namespace name
      */
     function _getTitle($ns, $headpage, &$hns) {
         global $conf;
@@ -466,6 +500,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * Parse namespace request
      *
      * @author  Samuele Tognini <samuele@samuele.netsons.org>
+     * @param string $ns namespaceid
+     * @param bool   $id page id to resolve $ns relative to.
+     * @return string id of namespace
      */
     function _parse_ns($ns, $id = FALSE) {
         if(!$id) {
@@ -481,6 +518,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * Clean index data from unwanted nodes in nojs mode.
      *
      * @author  Samuele Tognini <samuele@samuele.netsons.org>
+     * @param array $data nodes of the tree
+     * @return void
      */
     function _clean_data(&$data) {
         foreach($data as $i=> $item) {
@@ -500,10 +539,26 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     /**
      * Build the browsable index of pages
      *
-     * $opts['ns'] is the current namespace
+     * $opts['skip_index'] string regexp matching namespaceids to skip
+     * $opts['skip_file']  string regexp matching pageids to skip
+     * $opts['headpage']   string headpages options or pageids
+     * $opts['level']      int    desired depth of main namespace, -1 = all levels
+     * $opts['nss']        array with entries: array(namespaceid,level) specifying namespaces with their own level
+     * $opts['nons']       bool   exclude namespace nodes
+     * $opts['max']        int    If initially closed, the node at max level will retrieve all its child nodes through the AJAX mechanism
+     * $opts['nopg']       bool   exclude page nodes
+     * $opts['hide_headpage'] int don't hide (0) or hide (1)
+     * $opts['js']         bool   use js-render
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
      * modified by Samuele Tognini <samuele@samuele.netsons.org>
+     * @param array  $data Already collected nodes
+     * @param string $base Where to start the search, usually this is $conf['datadir']
+     * @param string $file Current file or directory relative to $base
+     * @param string $type Type either 'd' for directory or 'f' for file
+     * @param int    $lvl  Current recursion depht
+     * @param array  $opts Option array as given to search(), see above.
+     * @return bool if this directory should be traversed (true) or not (false)
      */
     function _search_index(&$data, $base, $file, $type, $lvl, $opts) {
         global $conf;
@@ -557,6 +612,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             }
             //Set title and headpage
             $title = $this->_getTitle($id, $headpage, $hns);
+            //link namespace nodes to start pages when excluding page nodes
             if(!$hns && $opts['nopg']) $hns = $id.":".$conf['start'];
         } else {
             //Nopg.Dont show pages
@@ -669,6 +725,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * This function recurses into a given base directory
      * and calls the supplied function for each file and directory
      *
+     * Similar to search() of inc/search.php, but has extended sorting options
+     *
      * @param   array     $data The results of the search are stored here
      * @param   string    $base Where to start the search
      * @param   callback  $func Callback (function name or array with object,method)
@@ -745,6 +803,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * Add sort information to item.
      *
      * @author  Samuele Tognini <samuele@samuele.netsons.org>
+     * @param array $item
+     * @return bool|int|mixed|string
      */
     function _setorder($item) {
         global $conf;

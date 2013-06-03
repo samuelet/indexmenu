@@ -41,7 +41,7 @@ indexmenu_contextmenu['all']['ns'] = {
 };
 
 
-if (JSINFO.isadmin) {
+if (JSINFO && JSINFO.isadmin) {
     /**
      * Right Context Menu configuration for admin users:
      */
@@ -72,7 +72,7 @@ if (JSINFO.isadmin) {
         ]
     };
 
-} else if (JSINFO.isauth) {
+} else if (JSINFO && JSINFO.isauth) {
     /**
      * Right Context Menu configuration for admin users:
      */

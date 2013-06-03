@@ -29,28 +29,29 @@ class indexmenu_syntax_indexmenu_test extends DokuWikiTest {
 
     /**
      * Create from list of values the output array of handle()
+     *
      * @param array $values
      * @return array aligned similar to output of handle()
      */
     function createData($values) {
 
-        list($ns, $theme, $gen_id, $nocookie, $navbar, $noscroll, $maxjs, $notoc, $jsajax, $context, $nomenu,
+        list($ns, $theme, $identifier, $nocookie, $navbar, $noscroll, $maxjs, $notoc, $jsajax, $context, $nomenu,
             $sort, $msort, $rsort, $nsort, $level, $nons, $nopg, $nss, $max, $js, $skipns, $skipfile, $hsort,
             $headpage, $hide_headpage) = $values;
 
         return array(
             $ns,
             Array(
-                'theme'    => $theme,
-                'gen_id'   => $gen_id,
-                'nocookie' => $nocookie,
-                'navbar'   => $navbar,
-                'noscroll' => $noscroll,
-                'maxjs'    => $maxjs,
-                'notoc'    => $notoc,
-                'jsajax'   => $jsajax,
-                'context'  => $context,
-                'nomenu'   => $nomenu,
+                'theme'      => $theme,
+                'identifier' => $identifier,
+                'nocookie'   => $nocookie,
+                'navbar'     => $navbar,
+                'noscroll'   => $noscroll,
+                'maxjs'      => $maxjs,
+                'notoc'      => $notoc,
+                'jsajax'     => $jsajax,
+                'context'    => $context,
+                'nomenu'     => $nomenu,
             ),
             $sort,
             $msort,
@@ -84,7 +85,8 @@ class indexmenu_syntax_indexmenu_test extends DokuWikiTest {
         $null   = null;
         $result = $plugin->handle($this->exampleIndex, 0, 40, $null);
 
-        $tests = array(
+        $idcalculatedfromns = sprintf("%u", crc32(''));
+        $tests              = array(
             //root ns (empty is not recognized..)
             array(
                 'syntax'=> "{{indexmenu>:}}",
@@ -134,14 +136,15 @@ class indexmenu_syntax_indexmenu_test extends DokuWikiTest {
             array(
                 'syntax'=> "{{indexmenu>#1|js#bj_ubuntu.png navbar context nocookie noscroll notoc nomenu dsort msort#date:modified hsort rsort nsort nons nopg max#2#4 maxjs#3 id#54321}}",
                 'data'  => array(
-                    '', 'bj_ubuntu.png', '54321', true, true, true, 3, true, '&max=4&sort=d&msort=date modified&rsort=1&nsort=1&hsort=1&nopg=1', true, true,
+                    '', 'bj_ubuntu.png', 54321, true, true, true, 3, true, '&max=4&sort=d&msort=date modified&rsort=1&nsort=1&hsort=1&nopg=1', true, true,
                     'd', 'date modified', true, true, 1, true, true, array(), 2, true, array(''), array(''), true,
                     ":start:,:same:,:inside:", 1
                 )
             ),
             //root ns, #levels=1, skipfile and ns
+
             array(
-                'syntax'=> "{{indexmenu>#1 test|skipfile+/(^myusers:spaces$|privatens:userss)/ skipns=/(^myusers:spaces$|privatens:users)/}}",
+                'syntax'=> "{{indexmenu>#1 test|skipfile+/(^myusers:spaces$|privatens:userss)/ skipns=/(^myusers:spaces$|privatens:users)/ id#ns}}",
                 'data'  => array(
                     '', 'default', 'random', false, false, false, 0, false, '&skipns=%3D/%28%5Emyusers%3Aspaces%24%7Cprivatens%3Ausers%29/&skipfile=%2B/%28%5Emyusers%3Aspaces%24%7Cprivatens%3Auserss%29/', false, false,
                     0, false, false, false, 1, false, false, array(array('test', -1)), 0, false, array('/(^myusers:spaces$|privatens:users)/'), array('', '/(^myusers:spaces$|privatens:userss)/'), false,
@@ -150,9 +153,9 @@ class indexmenu_syntax_indexmenu_test extends DokuWikiTest {
             ),
             //root ns, #levels=1, js renderer, skipfile and ns
             array(
-                'syntax'=> "{{indexmenu>#1 test|js skipfile=/(^myusers:spaces$|privatens:userss)/ skipns+/(^myusers:spaces$|privatens:userssss)/}}",
+                'syntax'=> "{{indexmenu>#1 test|js skipfile=/(^myusers:spaces$|privatens:userss)/ skipns+/(^myusers:spaces$|privatens:userssss)/ id#ns}}",
                 'data'  => array(
-                    '', 'default', 'random', false, false, false, 0, false, '&skipns=%2B/%28%5Emyusers%3Aspaces%24%7Cprivatens%3Auserssss%29/&skipfile=%3D/%28%5Emyusers%3Aspaces%24%7Cprivatens%3Auserss%29/', false, false,
+                    '', 'default', 0, false, false, false, 0, false, '&skipns=%2B/%28%5Emyusers%3Aspaces%24%7Cprivatens%3Auserssss%29/&skipfile=%3D/%28%5Emyusers%3Aspaces%24%7Cprivatens%3Auserss%29/', false, false,
                     0, false, false, false, 1, false, false, array(array('test', -1)), 0, true, array('', '/(^myusers:spaces$|privatens:userssss)/'), array('/(^myusers:spaces$|privatens:userss)/'), false,
                     ":start:,:same:,:inside:", 1
                 )
@@ -163,6 +166,11 @@ class indexmenu_syntax_indexmenu_test extends DokuWikiTest {
             $null   = null;
             $result = $plugin->handle($test['syntax'], 0, 40, $null);
 
+            //copy unique generated number, which is about 23 characters
+            $len_id = strlen($result[1]['identifier']);
+            if(!is_numeric($test['data'][2]) && ($len_id > 20||$len_id<=23)) {
+                $test['data'][2] = $result[1]['identifier'];
+            }
             $data = $this->createData($test['data']);
 
             $this->assertEquals($data, $result, 'Data array corrupted');
@@ -179,13 +187,13 @@ class indexmenu_syntax_indexmenu_test extends DokuWikiTest {
     function testRenderEmptymsg() {
         global $conf;
 
-        $noexistns = 'nonexisting:namespace';
+        $noexistns        = 'nonexisting:namespace';
         $emptyindexsyntax = "{{indexmenu>$noexistns}}";
 
-        $xhtml = new Doku_Renderer_xhtml();
+        $xhtml  = new Doku_Renderer_xhtml();
         $plugin = new syntax_plugin_indexmenu_indexmenu();
 
-        $null = null;
+        $null   = null;
         $result = $plugin->handle($emptyindexsyntax, 0, 10, $null);
 
         //no empty message

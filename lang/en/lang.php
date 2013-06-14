@@ -63,3 +63,36 @@ $lang['js']['id']    = 'Self defined cookie id for this indexmenu';
 $lang['js']['insert']        = 'Insert indexmenu';
 $lang['js']['metanum']       = 'Meta number for sorting';
 $lang['js']['insertmetanum'] = 'Insert metanumber';
+
+/* contextmenu.js */
+$lang['js']['page'] = 'Page';
+$lang['js']['revs'] = 'Revisions';
+$lang['js']['tocpreview'] = 'Toc preview';
+$lang['js']['editmode'] = 'Edit mode';
+$lang['js']['insertdwlink'] = 'Insert as DWlink';
+$lang['js']['insertdwlinktooltip'] = 'Insert the link of this page in the edit box at cursor position';
+$lang['js']['ns'] = 'Namespace';
+$lang['js']['search'] = 'Search ...';
+$lang['js']['searchtooltip'] = 'Search for pages within this namespace';
+$lang['js']['create'] = 'Create';
+$lang['js']['more'] = 'More';
+$lang['js']['headpage'] = 'Headpage';
+$lang['js']['headpagetooltip'] = 'Create a new headpage under this page';
+$lang['js']['startpage'] = 'Start page';
+$lang['js']['startpagetooltip'] = 'Create a new start page under this page';
+$lang['js']['custompage'] = 'Custom page';
+$lang['js']['custompagetooltip'] = 'Create a new page under this page';
+$lang['js']['acls'] = 'Acls';
+$lang['js']['purgecache'] = 'Purge cache';
+$lang['js']['exporthtml'] = 'Export as HTML';
+$lang['js']['exporttext'] = 'Export as text';
+$lang['js']['headpagehere'] = 'Headpage here';
+$lang['js']['headpageheretooltip'] = 'Create a new headpage inside this namespace';
+$lang['js']['newpage'] = 'New page';
+$lang['js']['newpagetooltip'] = 'Create a new page inside this namespace';
+$lang['js']['newpagehere'] = 'New page here';
+$lang['js']['insertkeywords'] = 'Insert keyword(s) to search for within this namespace';
+$lang['js']['insertpagename'] = 'Insert the pagename to create';
+$lang['js']['edit'] = 'Edit';
+
+

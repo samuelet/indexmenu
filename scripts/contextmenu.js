@@ -22,21 +22,21 @@
  */
 indexmenu_contextmenu['all']['pg'] = {
     'view': [
-        ['<span class="indexmenu_titlemenu"><b>Page</b></span>'],
-        ['Revisions', 'indexmenu_getid(index.config.urlbase,id)+"do=revisions"'],
-        ['Toc preview', '"javascript: indexmenu_createTocMenu(\'call=indexmenu&req=toc&id="+id+"\',\'picker_"+index.obj+"\',\'s"+index.obj+node.id+"\');"']
+        ['<span class="indexmenu_titlemenu"><b>'+LANG.plugins.indexmenu.page+'</b></span>'],
+        [LANG.plugins.indexmenu.revs, 'indexmenu_getid(index.config.urlbase,id)+"do=revisions"'],
+        [LANG.plugins.indexmenu.tocpreview, '"javascript: indexmenu_createTocMenu(\'call=indexmenu&req=toc&id="+id+"\',\'picker_"+index.obj+"\',\'s"+index.obj+node.id+"\');"']
     ],
     //Menu items in edit mode, when previewing
     'edit': [
-        ['<span class="indexmenu_titlemenu"><b>Edit mode</b></span>'],
-        ['Insert as DWlink', '"javascript: indexmenu_insertTags(\'"+id+"\',\'"+index.config.sepchar+"\');"+index.obj+".divdisplay(\'r\',0);"', 'Insert the link of this page in the edit box at cursor position']
+        ['<span class="indexmenu_titlemenu"><b>'+LANG.plugins.indexmenu.editmode+'</b></span>'],
+        [LANG.plugins.indexmenu.insertdwlink, '"javascript: indexmenu_insertTags(\'"+id+"\',\'"+index.config.sepchar+"\');"+index.obj+".divdisplay(\'r\',0);"', LANG.plugins.indexmenu.insertdwlinktooltip]
     ]
 };
 
 indexmenu_contextmenu['all']['ns'] = {
     'view': [
-        ['<span class="indexmenu_titlemenu"><b>Namespace</b></span>'],
-        ['Search ...', '"javascript: indexmenu_srchpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.isdir+"\',\'"+node.dokuid+"\');"', 'Search for pages within this namespace']
+        ['<span class="indexmenu_titlemenu"><b>'+LANG.plugins.indexmenu.ns+'</b></span>'],
+        [LANG.plugins.indexmenu.search, '"javascript: indexmenu_srchpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.isdir+"\',\'"+node.dokuid+"\');"', LANG.plugins.indexmenu.searchtooltip]
     ]
 };
 
@@ -47,27 +47,27 @@ if (JSINFO && JSINFO.isadmin) {
      */
     indexmenu_contextmenu['pg'] = {
         'view': [
-            ['Edit', 'indexmenu_getid(index.config.urlbase,id)+"do=edit"'],
-            ['<em>Create--></em>', [
-                ['Headpage', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"', 'Create a new headpage under this page'],
-                ['Start page', 'indexmenu_getid(index.config.urlbase,id+index.config.sepchar+"start")+"do=edit"', 'Create a new start page under this page'],
-                ['Custom page', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"', 'Create a new page under this page']
+            [LANG.plugins.indexmenu.edit, 'indexmenu_getid(index.config.urlbase,id)+"do=edit"'],
+            ['<em>'+LANG.plugins.indexmenu.create+'--></em>', [
+                [LANG.plugins.indexmenu.headpage, '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"', LANG.plugins.indexmenu.headpagetooltip],
+                [LANG.plugins.indexmenu.startpage, 'indexmenu_getid(index.config.urlbase,id+index.config.sepchar+"start")+"do=edit"', LANG.plugins.indexmenu.startpagetooltip],
+                [LANG.plugins.indexmenu.custompage, '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"', LANG.plugins.indexmenu.custompagetooltip]
             ]],
-            ['<em>More--></em>', [
-                ['Acls', 'indexmenu_getid(index.config.urlbase,id)+"do=admin&page=acl"'],
-                ['Purge cache', 'indexmenu_getid(index.config.urlbase,id)+"purge=true"'],
-                ['Export as HTML', 'indexmenu_getid(index.config.urlbase,id)+"do=export_xhtml"'],
-                ['Export as text', 'indexmenu_getid(index.config.urlbase,id)+"do=export_raw"']
+            ['<em>'+LANG.plugins.indexmenu.more+'--></em>', [
+                [LANG.plugins.indexmenu.acls, 'indexmenu_getid(index.config.urlbase,id)+"do=admin&page=acl"'],
+                [LANG.plugins.indexmenu.purgecache, 'indexmenu_getid(index.config.urlbase,id)+"purge=true"'],
+                [LANG.plugins.indexmenu.exporthtml, 'indexmenu_getid(index.config.urlbase,id)+"do=export_xhtml"'],
+                [LANG.plugins.indexmenu.exporttext, 'indexmenu_getid(index.config.urlbase,id)+"do=export_raw"']
             ]]
         ]
     };
 
     indexmenu_contextmenu['ns'] = {
         'view': [
-            ['New page', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"', 'Create a new page inside this namespace'],
-            ['<em>More--></em>', [
-                ['Headpage here', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"', 'Create a new headpage inside this namespace'],
-                ['Acls', 'indexmenu_getid(index.config.urlbase,node.dokuid)+"do=admin&page=acl"']
+            [LANG.plugins.indexmenu.newpage, '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"', LANG.plugins.indexmenu.newpagetooltip],
+            ['<em>'+LANG.plugins.indexmenu.more+'--></em>', [
+                [LANG.plugins.indexmenu.headpagehere, '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"', LANG.plugins.indexmenu.headpageheretooltip],
+                [LANG.plugins.indexmenu.acls, 'indexmenu_getid(index.config.urlbase,node.dokuid)+"do=admin&page=acl"']
             ]]
         ]
     };
@@ -78,12 +78,12 @@ if (JSINFO && JSINFO.isadmin) {
      */
     indexmenu_contextmenu['pg'] = {
         'view': [
-            ['New page here', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"'],
-            ['Edit', 'indexmenu_getid(index.config.urlbase,id)+"do=edit"', 1, 0 ],
-            ['<em>More--></em>', [
-                ['Headpage here', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"'],
-                ['Purge cache', 'indexmenu_getid(index.config.urlbase,id)+"purge=true"'],
-                ['Export as HTML', 'indexmenu_getid(index.config.urlbase,id)+"do=export_xhtml"']
+            [LANG.plugins.indexmenu.newpagehere, '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"'],
+            [LANG.plugins.indexmenu.edit, 'indexmenu_getid(index.config.urlbase,id)+"do=edit"', 1, 0 ],
+            ['<em>'+LANG.plugins.indexmenu.more+'--></em>', [
+                [LANG.plugins.indexmenu.headpagehere, '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"'],
+                [LANG.plugins.indexmenu.purgecache, 'indexmenu_getid(index.config.urlbase,id)+"purge=true"'],
+                [LANG.plugins.indexmenu.exporthtml, 'indexmenu_getid(index.config.urlbase,id)+"do=export_xhtml"']
             ]]
         ]
     };
@@ -96,7 +96,7 @@ if (JSINFO && JSINFO.isadmin) {
  */
 
 function indexmenu_srchpage(u, s, isdir, nid) {
-    var r = prompt("Insert keyword(s) to search for within this namespace", "");
+    var r = prompt(LANG.plugins.indexmenu.insertkeywords, "");
     if (r) {
         var fnid = nid;
         if (isdir == "0") {
@@ -120,7 +120,7 @@ function indexmenu_reqpage(b, s, id, n) {
     if (n) {
         r = id + s + n;
     } else {
-        r = prompt("Insert the pagename to create", "");
+        r = prompt(LANG.plugins.indexmenu.insertpagename, "");
         if (!r) {
             return;
         }

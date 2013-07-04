@@ -1,5 +1,4 @@
 
-
 // Queue of loaded script files
 var indexmenu_jsqueue = new Array();
 // Context menu
@@ -67,7 +66,7 @@ function indexmenu_createPicker(id, cl) {
         .attr('id', id)
         .css({position: 'absolute'})
         .hide()
-        .appendTo('.dokuwiki:first');
+        .appendTo('body');
 }
 
 /**

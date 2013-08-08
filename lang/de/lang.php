@@ -2,8 +2,8 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
- * @author Gerrit Uitslag <klapinklapin@gmail.com>
+ *
+ * @author Fabian Pfannes <fpfannes@web.de>
  */
 $lang['menu']                  = 'Indexmenu Werkzeuge';
 $lang['fetch']                 = 'Anzeigen';

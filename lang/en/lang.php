@@ -2,7 +2,8 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
+ * @author Samuele Tognini <samuele@samuele.netsons.org>
  * @author Gerrit Uitslag <klapinklapin@gmail.com>
  */
 $lang['menu']                  = 'Indexmenu Utilities';

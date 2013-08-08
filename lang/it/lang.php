@@ -3,7 +3,7 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
- * @author Gerrit Uitslag <klapinklapin@gmail.com>
+ * @author     Samuele Tognini <samuele@samuele.netsons.org>
  */
 $lang['menu']                  = 'Utility di Indexmenu';
 $lang['fetch']                 = 'Mostra';

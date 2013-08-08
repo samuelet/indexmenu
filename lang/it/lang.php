@@ -4,6 +4,7 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
  * @author     Samuele Tognini <samuele@samuele.netsons.org>
+ * @author Edmondo Di Tucci <snarchio@gmail.com>
  */
 $lang['menu']                  = 'Utility di Indexmenu';
 $lang['fetch']                 = 'Mostra';
@@ -26,3 +27,30 @@ $lang['noupdates']             = 'Indexmenu non ha bisogno di essere aggiornato.
 $lang['infos']                 = 'Puoi creare il tuo tema seguendo le istruzioni nella pagina del <a href="https://www.dokuwiki.org/plugin:indexmenu#theme_tutorial">Tutorial dei temi</a>.<br /> Poi potreste rendere felice pi&ugrave gente :-) inviandolo nel repository pubblico di indexemnu tramite il pulsante "condividi" sotto il tema della lista.';
 $lang['showsort']              = 'Ordinamento in indexmenu: ';
 $lang['donation_text']         = 'Il plugin indexmenu non &egrave sponsorizzato da nessuno, ma lo sviluppo e supporto gratuitamente nel mio tempo libero. Se guadagni qualcosa grazie a questo plugin o vuoi supportarne lo sviluppo, puoi farlo con una donazione.';
+$lang['js']['index']           = 'Indice';
+$lang['js']['options']         = 'Opzioni';
+$lang['js']['navigation']      = 'Navigazione';
+$lang['js']['sort']            = 'Ordine';
+$lang['js']['filter']          = 'Filtro';
+$lang['js']['performance']     = 'Performance';
+$lang['js']['namespace']       = 'Namespace';
+$lang['js']['nsdepth']         = 'Profondità';
+$lang['js']['js']              = 'Albero renderizzato da Javascript. Puoi definire il tuo tema personalizzato.';
+$lang['js']['theme']           = 'Tema';
+$lang['js']['navbar']          = 'L\'albero apre il namespace corrente';
+$lang['js']['context']         = 'Visualizza l\'albero del contesto del namespace corrente';
+$lang['js']['nocookie']        = 'Non ricordare di aprire/chiudere i nodi durante la navigazione utente';
+$lang['js']['noscroll']        = 'Previene lo scorrimento dell\'albero quando non rientra nella larghezza del contenitore';
+$lang['js']['notoc']           = 'Disabilita l\'anteprima della TOC (Tabella dei contenuti)';
+$lang['js']['tsort']           = 'Per titolo';
+$lang['js']['dsort']           = 'Per data';
+$lang['js']['msort']           = 'Per meta tag';
+$lang['js']['nsort']           = 'Ordina anche i namespaces';
+$lang['js']['rsort']           = 'Inverti l\'ordine delle pagine';
+$lang['js']['nons']            = 'Mostra solo le pagine';
+$lang['js']['nopg']            = 'Mostra solo in namespaces';
+$lang['js']['maxjs']           = 'Quanti livelli visualizzare nel browser quando un nodo è aperto';
+$lang['js']['id']              = 'Cookie ID per questo indexmenu';
+$lang['js']['insert']          = 'Inserisci indexmenu';
+$lang['js']['metanum']         = 'Meta numero per ordinare';
+$lang['js']['insertmetanum']   = 'Inserisci un metanumero';

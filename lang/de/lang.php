@@ -2,8 +2,9 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- *
+ * 
  * @author Fabian Pfannes <fpfannes@web.de>
+ * @author Martin Wigger <wigger.martin@gmail.com>
  */
 $lang['menu']                  = 'Indexmenu Werkzeuge';
 $lang['fetch']                 = 'Anzeigen';
@@ -25,3 +26,14 @@ $lang['checkupdates']          = 'Plugin updaten';
 $lang['noupdates']             = 'Indexmenu muss nicht upgedated werden. Sie haben bereits die aktuellste Version:';
 $lang['infos']                 = 'Sie k&ouml;nnen eine neue Designvorlage erstellen. Beachten Sie die Anleitung im <a href="https://www.dokuwiki.org/plugin:indexmenu#theme_tutorial">Designvorlagen Tutorial</a. <br />Wenn Sie den "Hochladen" Button unter der Desingvorlage dr&uuml;cken k&ouml;nnen Sie viele Leute gl&uuml;cklich machen :-) dadurch, dass Sie sie im &ouml;ffentliche Indexmenu Repository bereitstellen.';
 $lang['showsort']              = 'Indexmenu Sortierungsnummer: ';
+$lang['js']['index']           = 'Index';
+$lang['js']['options']         = 'Optionen';
+$lang['js']['navigation']      = 'Navigation';
+$lang['js']['sort']            = 'Sortierung';
+$lang['js']['filter']          = 'Filter';
+$lang['js']['namespace']       = 'Namensraum';
+$lang['js']['nsdepth']         = 'Tiefe';
+$lang['js']['navbar']          = 'Der Baum öffnet im aktuellen Namensraum';
+$lang['js']['tsort']           = 'Nach Titel';
+$lang['js']['dsort']           = 'Nach Datum';
+$lang['js']['msort']           = 'Nach Meta Tag';

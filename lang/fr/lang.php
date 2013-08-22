@@ -3,7 +3,7 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
- * @author QoStik <gene.umb@gmail.com>
+ * @author QoStik <gene.umb@gmail.com>, Johan Binard <johan.binard@gmail.com>
  */
 $lang['menu']          = 'Utilitaires Indexmenu';
 $lang['fetch']         = 'Montrer';

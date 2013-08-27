@@ -2,9 +2,9 @@
 /**
  * French language for indexmenu plugin
  *
- * @license:    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author:     Samuele Tognini <samuele@samuele.netsons.org>
- * @author:     Johan Binard <johan.binard@gmail.com>
+ * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+ * @author     Samuele Tognini <samuele@samuele.netsons.org>
+ * @author     Johan Binard <johan.binard@gmail.com>
  */
 $lang['checkupdate']   = "Vérifier périodiquement les mises à jour.";
 $lang['only_admins']   = "N'autoriser la syntaxe d'indexmenu qu'aux admins.<br>Notez qu'une page éditée par un utilisateur non-admin perdra tout arborescence contenue à l'intérieur.";

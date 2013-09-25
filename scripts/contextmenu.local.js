@@ -2,7 +2,7 @@
  * Right Context Menu local configuration -- this file is NOT modified by plugin updates --
  * How to change:
  *  - Make here your modifications
- *  - and go to the configuration manager and save the config again (this clears the cached javascript)
+ *  - and go to the Configuration Manager and save the config again (this clears the cached javascript)
  *
  * See for information about available variables, menu structure, override and adding menu entries in the scripts/contextmenu.js
  */
@@ -17,7 +17,7 @@ if (!indexmenu_contextmenu['all']['ns']) indexmenu_contextmenu['all']['ns'] = {'
 
 
 // Override title of page menu
-indexmenu_contextmenu['all']['pg']['view'][0] = [];
+//indexmenu_contextmenu['all']['pg']['view'][0] = ['Custom Title'];
 
 // add option to page menu
 //indexmenu_contextmenu['all']['pg']['view'].splice(1, 0, ['Input new page', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"']);

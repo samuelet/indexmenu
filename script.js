@@ -1,14 +1,14 @@
 
 // Queue of loaded script files
-var indexmenu_jsqueue = new Array();
+var indexmenu_jsqueue = [];
 // Context menu
-var indexmenu_contextmenu = {'all': new Array()};
+var indexmenu_contextmenu = {'all': []};
 
 /* DOKUWIKI:include scripts/nojsindex.js */
 /* DOKUWIKI:include scripts/toolbarindexwizard.js */
 /* DOKUWIKI:include scripts/contextmenu.js */
 /* DOKUWIKI:include scripts/indexmenu.js */
-
+/* DOKUWIKI:include scripts/contextmenu.local.js */
 
 
 /**

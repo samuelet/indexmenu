@@ -1,21 +1,73 @@
 /**
  * Right Context Menu configuration
  *
- * Menu is built from four array items: title, link, show if page or headpage, show if namespace.
- * Link is not created if it's 0, otherwise it's evaluated.
- * Second array is displayed only in edit mode.
- *
  * Some usefull variables:
- * node.hns = headpage id;
- * node.isdir = node is namespace;
- * node.dokuid = the DW id (namespace parent in case of headpage);
- * id = the DW id of the selected node (headpage id in case of headpage);
- * index.config.urlbase = Url Base;
- * index.config.sepchar = Url separator;
+ *   node.hns = headpage id;
+ *   node.isdir = node is namespace;
+ *   node.dokuid = the DW id (namespace parent in case of headpage);
+ *   id = the DW id of the selected node (headpage id in case of headpage);
+ *   index.config.urlbase = Url Base;
+ *   index.config.sepchar = Url separator;
  *
- * To Override the common menu title, add in your user type menu a line like this:
- * indexmenu_contextmenu['all']['pg']['view'][0] = ['customtitle'];
+ * HOWTO EDIT:
+ *
+ * To override menu entries or add a menu entry:
+ *  - PLEASE EDIT ONLY the scripts/contextmenu.local.js file
+ *  - DON'T EDIT this file, it is overwritten at plugin update
+ *
+ * Base structure of the context menu is displayed below.
+ * The entries with 'pg' are shown for page noded, these with 'ns' only for namespaces.
+ *
+ * Current available for everybody:
+ *   indexmenu_contextmenu['all']['pg']['view'] = [...array with menu description here... ];
+ *   indexmenu_contextmenu['all']['pg']['edit'] = [ ... ];
+ *   indexmenu_contextmenu['all']['ns']['view'] = [ ... ];
+ *
+ * Current available for admins:
+ *   indexmenu_contextmenu['pg']['view'] = [ ... ];
+ *   indexmenu_contextmenu['ns']['view'] = [ ... ];
+ *
+ * Current available for admins:
+ *   indexmenu_contextmenu['pg']['view'] = [ ... ];
+ *   indexmenu_contextmenu['ns']['view'] = [ ... ];
+ *
+ * A menu description may contain four kind of entries:
+ *  - section title: array with one entry e.g.:
+ *      ['Section title (html allowed)']
+ *  - menu action: array with two entries e.g.:
+ *      ['Title of action 1 (html allowed)', 'javascript here ... see for examples scripts/contextmenu.js']
+ *  - menu action with custom tooltip: array with three entries e.g.:
+ *      ['Title of action 1 (html allowed)', 'javascript here ... see for examples scripts/contextmenu.js', 'Customized title']
+ *  - submenu: array with two entries where second entry is an array that describes again a menu e.g.:
+ *      ['title of submenu (html allowed)', [ ...array with menu actions... ]]
+ *
+ *
+ *  Examples:
+ *  A menu description array:
+ *   ... = [
+ *           ['section title'],
+ *           ['title of action 1', 'javascript here'],
+ *           ['title of submenu', [['title of subaction 1', 'javascript here'], ['title of subaction 1', 'javascript here', 'Click here for action']] ]
+ *         ];
+ *
+ * To Override the common menu title:
+ *  indexmenu_contextmenu['all']['pg']['view'][0] = ['customtitle'];
+ *
+ * To override a menu entry, for example the menu title:
+ *   indexmenu_contextmenu['all']['pg']['view'][0] = ['Custom Title'];
+ *
+ * To add option to page menu:
+ *   Array.splice(index, howManyToRemove, description1)
+ *     index = position to start (start counting at zero)
+ *     howManyToRemove = number of elements that are removed (set to 1 to replace a element)
+ *     description1 = array with menu entry description
+ *     -> optional: description2 = optional you can add more elements at once by splice(index, howManyToRemove, description1, description2, etc)
+ *
+ *   indexmenu_contextmenu['all']['pg']['view'].splice(1, 0, ['Input new page', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"']);
  */
+
+// IMPORTANT: DON'T MODIFY THIS FILE, BUT EDIT contextmenu.local.js PLEASE!
+// THIS FILE IS OVERWRITTEN WHEN PLUGIN IS UPDATED
 
 /**
  * Right Context Menu configuration for all users:
@@ -74,7 +126,7 @@ if (JSINFO && JSINFO.isadmin) {
 
 } else if (JSINFO && JSINFO.isauth) {
     /**
-     * Right Context Menu configuration for admin users:
+     * Right Context Menu configuration for authenticated users:
      */
     indexmenu_contextmenu['pg'] = {
         'view': [
@@ -92,7 +144,7 @@ if (JSINFO && JSINFO.isadmin) {
 
 /**
  * Common functions
- * Insert your custom functions avaiable for all users here.
+ * Insert your custom functions (available for all users) here.
  */
 
 function indexmenu_srchpage(u, s, isdir, nid) {

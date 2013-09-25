@@ -25,7 +25,7 @@ $lang['checkupdates']          = 'Plugin updates';
 $lang['noupdates']             = 'Indexmenu heeft geen update nodig. Je hebt al de laatste versie:';
 $lang['infos']                 = 'Je kunt je eigen thema maken met de instructies op de  <a href="https://www.dokuwiki.org/plugin:indexmenu#theme_tutorial">Thema handleiding</a> op de plugin wikipagina. <br /> Je kunt ook meer mensen blijmaken door het thema te delen. Stuur het dan naar de publieke indexmenu repositorie met de "Delen" knop onder dat thema.';
 $lang['showsort']              = 'Indexmenu sorteernummer:';
-$lang['donation_text']         = 'De indexmenu plugin wordt door niemand gesponsord, maar i ontwikkel en steun het in mijn vrije tijd. Je kunt bedanken of ondersteunen via een donatie.';
+$lang['donation_text']         = 'De indexmenu plugin wordt door niemand gesponsord, maar ik ontwikkel en ondersteun het in mijn vrije tijd. Je kunt mij bedanken of ondersteunen via een donatie.';
 $lang['js']['indexmenuwizard'] = 'Indexmenu Wizard';
 $lang['js']['index']           = 'Index';
 $lang['js']['options']         = 'Opties';

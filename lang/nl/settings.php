@@ -14,3 +14,6 @@ $lang['page_index']            = 'De pagina die de hoofdindex van DokuWiki verva
 $lang['empty_msg']             = 'Bericht dat wordt weergegeven als de indexmenu leeg is. Gebruik de DokuWiki-syntax, geen html code. De <code>{{ns}}</code> variabele geeft de gevraagde namespace naam weer.';
 $lang['skip_index']            = 'Namespace-id\'s om over te slaan. Gebruik het Regular Expression formaat. Voorbeeld <code>/(sidebars|private:myns)/</code>';
 $lang['skip_file']             = 'Pagina-id\'s om over te slaan. Gebruik het Regular Expression formaat. Voorbeeld <code>/(:start$|^public:newstart$)/</code>';
+$lang['show_sort']             = 'Laat beheerders het indexmenu sorteernummer zien als melding bovenaan de pagina';
+$lang['themes_url']            = 'Download de javascript thema\'s van deze http url';
+$lang['be_repo']               = 'Laat anderen thema\'s downloaden van jouw site.';

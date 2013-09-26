@@ -1,13 +1,12 @@
 /**
- * Right Context Menu local configuration -- this file is NOT modified by plugin updates --
+ * Right Context Menu local configuration -- RENAME THIS FILE TO contextmenu.local.js --
  * How to change:
- *  - Make here your modifications
+ *  - Rename this file to contextmenu.local.js
+ *  - Make in this file your modifications
  *  - and go to the Configuration Manager and save the config again (this clears the cached javascript)
  *
  * See for information about available variables, menu structure, override and adding menu entries in the scripts/contextmenu.js
  */
-
-
 
 /**
  * Right Context Menu configuration for all users:

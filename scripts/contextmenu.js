@@ -27,7 +27,7 @@
  *   indexmenu_contextmenu['pg']['view'] = [ ... ];
  *   indexmenu_contextmenu['ns']['view'] = [ ... ];
  *
- * Current available for admins:
+ * Current available for authenticated users:
  *   indexmenu_contextmenu['pg']['view'] = [ ... ];
  *   indexmenu_contextmenu['ns']['view'] = [ ... ];
  *

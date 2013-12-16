@@ -40,7 +40,7 @@ class syntax_plugin_indexmenu_tag extends DokuWiki_Syntax_Plugin {
     /**
      * Handle the match
      */
-    function handle($match, $state, $pos, &$handler) {
+    function handle($match, $state, $pos, Doku_Handler &$handler) {
         $match = substr($match, 14, -2);
         return array($match);
     }
@@ -48,7 +48,7 @@ class syntax_plugin_indexmenu_tag extends DokuWiki_Syntax_Plugin {
     /**
      * Render output
      */
-    function render($mode, &$renderer, $data) {
+    function render($mode, Doku_Renderer &$renderer, $data) {
         if(is_numeric($data[0])) $renderer->meta['indexmenu_n'] = $data[0];
     }
 }

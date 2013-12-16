@@ -15,7 +15,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      *
      * @param Doku_Event_Handler $controller DokuWiki's event controller object.
      */
-    function register(&$controller) {
+    function register(Doku_Event_Handler $controller) {
         if($this->getConf('only_admins')) $controller->register_hook('IO_WIKIPAGE_WRITE', 'BEFORE', $this, '_checkperm');
         if($this->getConf('page_index') != '') $controller->register_hook('TPL_ACT_RENDER', 'BEFORE', $this, '_loadindex');
         $controller->register_hook('DOKUWIKI_STARTED', 'AFTER', $this, '_extendJSINFO');

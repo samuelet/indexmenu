@@ -46,10 +46,11 @@ if (JSINFO && JSINFO.isadmin) {
 /**
  * Common available functions:
  *
- * Some common functions are added by [indexmenu plugin folcer]/scripts/contextmenu.js
- *  - indexmenu_srchpage(u, s, isdir, nid)
- *  - indexmenu_getid(u, id)
- *  - indexmenu_reqpage(b, s, id, n)
+ * Some common functions are added by [indexmenu plugin folder]/scripts/contextmenu.js
+ *  - IndexmenuContextmenu.srchpage(u, s, isdir, nid)
+ *  - IndexmenuContextmenu.getid(u, id)
+ *  - IndexmenuContextmenu.reqpage(b, s, id, n)
+ *  - IndexmenuContextmenu.insertTags(lnk, sep)
  *
  * Insert your custom functions (available for all users) at the bottom of this file.
  */
@@ -59,7 +60,7 @@ if (JSINFO && JSINFO.isadmin) {
  *
  * @param {string}   id
  * @param {Boolean}  isdir
- * @return {Boolean} true if nice, false is nothing
+ * @return {*} ...
  */
 /*
 function indexmenu_custom_dosomething(a, isdir) {

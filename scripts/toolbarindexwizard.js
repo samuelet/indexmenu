@@ -163,7 +163,7 @@ var indexmenu_wiz = {
         jQuery('#indexmenu__insert').click(indexmenu_wiz.insertIndexmenu);
         jQuery('#indexmenu__insertmetanum').click(indexmenu_wiz.insertMetaNumber);
 
-        jQuery('#indexmenu__wiz .ui-dialog-titlebar-close').click(indexmenu_wiz.hide);
+        jQuery('#indexmenu__wiz').find('.ui-dialog-titlebar-close').click(indexmenu_wiz.hide);
     },
 
     /**
@@ -181,7 +181,7 @@ var indexmenu_wiz = {
                 var themeName =theme.split('.');
 
                 var $ico = jQuery('<div>')
-                    .css({ background: 'url('+ DOKU_BASE + data.themebase + '/' + theme + '/base.' + indexmenu_wiz.getExtension(theme)+') no-repeat center' });
+                    .css({ background: 'url('+ DOKU_BASE + data.themebase + '/' + theme + '/base.' + IndexmenuUtils.determineExtension(theme)+') no-repeat center' });
                 var $btn = jQuery('<button>')
                     .addClass('themebutton toolbutton')
                     .attr('id', theme)
@@ -209,25 +209,6 @@ var indexmenu_wiz = {
     selectTheme: function(){
         jQuery('.themebutton').toggleClass('selected', false);
         jQuery(this).toggleClass('selected', true);
-    },
-
-    /**
-     * determine extension from foldername
-     *
-     * @param foldername
-     * @return {String}
-     */
-    getExtension: function(foldername) {
-        var ext = "gif";
-        var cext = foldername.lastIndexOf(".");
-        if (cext > -1) {
-            cext++;
-            cext = foldername.substring(cext, foldername.length).toLowerCase();
-            if ((cext == "png") || (cext == "jpg")) {
-                ext = cext;
-            }
-        }
-        return ext;
     },
 
     /**

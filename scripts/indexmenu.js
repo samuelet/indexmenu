@@ -67,7 +67,7 @@ function Node(dokuid, id, pid, name, hns, isdir, ajax) {
  * @constructor
  */
 function dTree(objName, theme) {
-    var objExt = indexmenu_findExt(theme);
+    var objExt = IndexmenuUtils.determineExtension(theme);
     this.config = {
         urlbase: DOKU_BASE + 'doku.php?id=',           // base of dokuwiki (set in page)
         plugbase: DOKU_BASE + 'lib/plugins/indexmenu', // base of plugin folder
@@ -246,7 +246,7 @@ dTree.prototype.noderr = function (node, nodeId) {
  */
 dTree.prototype.node = function (node, nodeId) {
     var h = 1, jsfnc, str;
-    jsfnc = 'onmouseover="' + this.obj + '.show_feat(\'' + nodeId + '\');" onmousedown="return indexmenu_checkcontextm(\'' + nodeId + '\',' + this.obj + ',event);" oncontextmenu="return indexmenu_stopevt(event)"';
+    jsfnc = 'onmouseover="' + this.obj + '.show_feat(\'' + nodeId + '\');" onmousedown="return IndexmenuContextmenu.checkcontextm(\'' + nodeId + '\',' + this.obj + ',event);" oncontextmenu="return IndexmenuContextmenu.stopevt(event)"';
     if (node._lv > this.config.maxjs) {
         h = 0;
     } else {
@@ -602,7 +602,7 @@ dTree.prototype.fill = function (id) {
         //temporary load indicator
         $eLoad = jQuery('#l' + this.obj);
         if (!$eLoad.length) {
-            $eLoad = indexmenu_createPicker('l' + this.obj);
+            $eLoad = IndexmenuUtils.createPicker('l' + this.obj);
         }
         jQuery('#s' + this.obj + n).parent().append($eLoad);
         $eLoad
@@ -759,7 +759,7 @@ dTree.prototype.show_feat = function (n) {
 		div = jQuery('#t' + this.obj)[0];
         id = (this.aNodes[n].hns) ? this.aNodes[n].hns : this.aNodes[n].dokuid;
         div.onmousedown = function () {
-            indexmenu_createTocMenu('call=indexmenu&req=toc&id=' + decodeURIComponent(id), 'picker_' + self.obj, 't' + self.obj);
+            IndexmenuContextmenu.createTocMenu('call=indexmenu&req=toc&id=' + decodeURIComponent(id), 'picker_' + self.obj, 't' + self.obj);
         };
         node.parentNode.appendChild(div);
         if (div.style.display == "none") {
@@ -892,19 +892,19 @@ dTree.prototype.contextmenu = function (n, e) {
     if (!rmenu) {
         return true;
     }
-    indexmenu_mouseposition(rmenu, e);
+    IndexmenuContextmenu.mouseposition(rmenu, e);
     var cmenu = window.indexmenu_contextmenu;
     node = this.aNodes[n];
     rmenu.innerHTML = '<div class="indexmenu_rmenuhead" title="' + node.name + '">' + node.name + "</div>";
     rmenu.appendChild(document.createElement('ul'));
     type = (node.isdir || node._hc) ? 'ns' : 'pg';
-    indexmenu_arrconcat(cmenu['all'][type], this, n);
+    IndexmenuContextmenu.arrconcat(cmenu['all'][type], this, n);
     if (node.hns) {
-        indexmenu_arrconcat(cmenu[type], this, n);
+        IndexmenuContextmenu.arrconcat(cmenu[type], this, n);
         type = 'pg';
-        indexmenu_arrconcat(cmenu['all'][type], this, n);
+        IndexmenuContextmenu.arrconcat(cmenu['all'][type], this, n);
     }
-    indexmenu_arrconcat(cmenu[type], this, n);
+    IndexmenuContextmenu.arrconcat(cmenu[type], this, n);
     rmenu.style.display = 'inline';
     return false;
 };
@@ -950,8 +950,8 @@ dTree.prototype.init = function (hasstyle, nocookies, opennodes, nav, max, nomen
     //create contextmenu
     if (!nomenu) {
         var self = this;
-        indexmenu_createPicker('r' + this.obj, 'indexmenu_rmenu ' + this.config.theme);
-        jQuery('#r' + this.obj)[0].oncontextmenu = indexmenu_stopevt;
+        IndexmenuUtils.createPicker('r' + this.obj, 'indexmenu_rmenu ' + this.config.theme);
+        jQuery('#r' + this.obj)[0].oncontextmenu = IndexmenuContextmenu.stopevt;
 		jQuery(document).click(function() {
             self.divdisplay('r', 0);
         });

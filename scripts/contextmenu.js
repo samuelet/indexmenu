@@ -63,7 +63,7 @@
  *     description1 = array with menu entry description
  *     -> optional: description2 = optional you can add more elements at once by splice(index, howManyToRemove, description1, description2, etc)
  *
- *   indexmenu_contextmenu['all']['pg']['view'].splice(1, 0, ['Input new page', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"']);
+ *   indexmenu_contextmenu['all']['pg']['view'].splice(1, 0, ['Input new page', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"']);
  */
 
 // IMPORTANT: DON'T MODIFY THIS FILE, BUT EDIT contextmenu.local.js PLEASE!
@@ -75,20 +75,20 @@
 indexmenu_contextmenu['all']['pg'] = {
     'view': [
         ['<span class="indexmenu_titlemenu"><b>Page</b></span>'],
-        ['Revisions', 'indexmenu_getid(index.config.urlbase,id)+"do=revisions"'],
-        ['Toc preview', '"javascript: indexmenu_createTocMenu(\'call=indexmenu&req=toc&id="+id+"\',\'picker_"+index.obj+"\',\'s"+index.obj+node.id+"\');"']
+        ['Revisions', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=revisions"'],
+        ['Toc preview', '"javascript: IndexmenuContextmenu.createTocMenu(\'call=indexmenu&req=toc&id="+id+"\',\'picker_"+index.obj+"\',\'s"+index.obj+node.id+"\');"']
     ],
     //Menu items in edit mode, when previewing
     'edit': [
         ['<span class="indexmenu_titlemenu"><b>Edit mode</b></span>'],
-        ['Insert as DWlink', '"javascript: indexmenu_insertTags(\'"+id+"\',\'"+index.config.sepchar+"\');"+index.obj+".divdisplay(\'r\',0);"', 'Insert the link of this page in the edit box at cursor position']
+        ['Insert as DWlink', '"javascript: IndexmenuContextmenu.insertTags(\'"+id+"\',\'"+index.config.sepchar+"\');"+index.obj+".divdisplay(\'r\',0);"', 'Insert the link of this page in the edit box at cursor position']
     ]
 };
 
 indexmenu_contextmenu['all']['ns'] = {
     'view': [
         ['<span class="indexmenu_titlemenu"><b>Namespace</b></span>'],
-        ['Search ...', '"javascript: indexmenu_srchpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.isdir+"\',\'"+node.dokuid+"\');"', 'Search for pages within this namespace']
+        ['Search ...', '"javascript: IndexmenuContextmenu.srchpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.isdir+"\',\'"+node.dokuid+"\');"', 'Search for pages within this namespace']
     ]
 };
 
@@ -101,25 +101,25 @@ if (JSINFO && JSINFO.isadmin) {
         'view': [
             ['Edit', 'indexmenu_getid(index.config.urlbase,id)+"do=edit"'],
             ['<em>Create--></em>', [
-                ['Headpage', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"', 'Create a new headpage under this page'],
-                ['Start page', 'indexmenu_getid(index.config.urlbase,id+index.config.sepchar+"start")+"do=edit"', 'Create a new start page under this page'],
-                ['Custom page', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"', 'Create a new page under this page']
+                ['Headpage', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"', 'Create a new headpage under this page'],
+                ['Start page', 'IndexmenuContextmenu.getid(index.config.urlbase,id+index.config.sepchar+"start")+"do=edit"', 'Create a new start page under this page'],
+                ['Custom page', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"', 'Create a new page under this page']
             ]],
             ['<em>More--></em>', [
-                ['Acls', 'indexmenu_getid(index.config.urlbase,id)+"do=admin&page=acl"'],
-                ['Purge cache', 'indexmenu_getid(index.config.urlbase,id)+"purge=true"'],
-                ['Export as HTML', 'indexmenu_getid(index.config.urlbase,id)+"do=export_xhtml"'],
-                ['Export as text', 'indexmenu_getid(index.config.urlbase,id)+"do=export_raw"']
+                ['Acls', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=admin&page=acl"'],
+                ['Purge cache', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"purge=true"'],
+                ['Export as HTML', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=export_xhtml"'],
+                ['Export as text', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=export_raw"']
             ]]
         ]
     };
 
     indexmenu_contextmenu['ns'] = {
         'view': [
-            ['New page', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"', 'Create a new page inside this namespace'],
+            ['New page', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"', 'Create a new page inside this namespace'],
             ['<em>More--></em>', [
-                ['Headpage here', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"', 'Create a new headpage inside this namespace'],
-                ['Acls', 'indexmenu_getid(index.config.urlbase,node.dokuid)+"do=admin&page=acl"']
+                ['Headpage here', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"', 'Create a new headpage inside this namespace'],
+                ['Acls', 'IndexmenuContextmenu.getid(index.config.urlbase,node.dokuid)+"do=admin&page=acl"']
             ]]
         ]
     };
@@ -130,53 +130,261 @@ if (JSINFO && JSINFO.isadmin) {
      */
     indexmenu_contextmenu['pg'] = {
         'view': [
-            ['New page here', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"'],
-            ['Edit', 'indexmenu_getid(index.config.urlbase,id)+"do=edit"', 1, 0 ],
+            ['New page here', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"'],
+            ['Edit', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=edit"', 1, 0 ],
             ['<em>More--></em>', [
-                ['Headpage here', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"'],
-                ['Purge cache', 'indexmenu_getid(index.config.urlbase,id)+"purge=true"'],
-                ['Export as HTML', 'indexmenu_getid(index.config.urlbase,id)+"do=export_xhtml"']
+                ['Headpage here', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"'],
+                ['Purge cache', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"purge=true"'],
+                ['Export as HTML', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=export_xhtml"']
             ]]
         ]
     };
 
 }
 
-/**
- * Common functions
- * Insert your custom functions (available for all users) here.
- */
+var IndexmenuContextmenu = {
 
-function indexmenu_srchpage(u, s, isdir, nid) {
-    var r = prompt("Insert keyword(s) to search for within this namespace", "");
-    if (r) {
-        var fnid = nid;
-        if (isdir == "0") {
-            fnid = fnid.substring(0, nid.lastIndexOf(s));
+    /**
+     * Common functions
+     * Insert your custom functions (available for all users) here.
+     */
+
+    srchpage: function (u, s, isdir, nid) {
+        var r = prompt("Insert keyword(s) to search for within this namespace", "");
+        if (r) {
+            var fnid = nid;
+            if (isdir == "0") {
+                fnid = fnid.substring(0, nid.lastIndexOf(s));
+            }
+            var b = u, re = new RegExp(s, 'g');
+            fnid = fnid.replace(re, ":");
+            b += (u.indexOf("?id=") < 0) ? '?id=' : '';
+            window.location.href = IndexmenuContextmenu.getid(b, r + " @" + fnid) + "do=search";
         }
-        var b = u, re = new RegExp(s, 'g');
-        fnid = fnid.replace(re, ":");
-        b += (u.indexOf("?id=") < 0) ? '?id=' : '';
-        window.location.href = indexmenu_getid(b, r + " @" + fnid) + "do=search";
-    }
-}
+    },
 
-function indexmenu_getid(u, id) {
-    var url = (u || '') + encodeURI(id || '');
-    url += (u.indexOf("?") < 0) ? '?' : '&';
-    return url;
-}
+    getid: function (u, id) {
+        var url = (u || '') + encodeURI(id || '');
+        url += (u.indexOf("?") < 0) ? '?' : '&';
+        return url;
+    },
 
-function indexmenu_reqpage(b, s, id, n) {
-    var r, u = b;
-    if (n) {
-        r = id + s + n;
-    } else {
-        r = prompt("Insert the pagename to create", "");
-        if (!r) {
+    reqpage: function (b, s, id, n) {
+        var r;
+        if (n) {
+            r = id + s + n;
+        } else {
+            r = prompt("Insert the pagename to create", "");
+            if (!r) {
+                return;
+            }
+            r = id + s + r;
+        }
+        if (r) window.location.href = IndexmenuContextmenu.getid(b, r) + "do=edit";
+    },
+
+    insertTags: function (lnk, sep) {
+        var r, l = lnk;
+        if (sep) {
+            r = new RegExp(sep, "g");
+            l = lnk.replace(r, ':');
+        }
+        insertTags('wiki__text', '[[', ']]', l);
+    },
+
+    /**
+     * Create or catch the picker and hide it, next call the ajax content loading to get the ToC
+     *
+     * @param {string} get    query string
+     * @param {string} picker id of picker
+     * @param {string} btn    id of button
+     */
+    createTocMenu: function (get, picker, btn) {
+        var $toc_picker = jQuery('#' + picker);
+        if (!$toc_picker.length) {
+            $toc_picker = IndexmenuUtils.createPicker(picker, 'indexmenu_toc');
+            $toc_picker
+                .html('<a href="#"><img src="' + DOKU_BASE + 'lib/plugins/indexmenu/images/close.gif" class="indexmenu_close" /></a><div />')
+                .children().first().click(function (event) {
+                    event.stopPropagation();
+                    return IndexmenuContextmenu.togglePicker($toc_picker, jQuery('#' + btn));
+                });
+        } else {
+            $toc_picker.hide();
+        }
+        IndexmenuContextmenu.ajaxmenu(get, $toc_picker, jQuery('#' + btn), $toc_picker.children().last(), null);
+    },
+
+    /**
+     * Shows the picker and adds to it or to an internal containter the ajax content
+     *
+     * @param {string}   get        query string
+     * @param {jQuery}   $picker
+     * @param {jQuery}   $btn
+     * @param {jQuery}   $container if defined ajax result is added to it, otherwise to $picker
+     * @param {function} oncomplete called when defined to handle ajax result
+     */
+    ajaxmenu: function (get, $picker, $btn, $container, oncomplete) {
+        var $indx_list;
+        $indx_list = $container || $picker;
+
+        if (!IndexmenuContextmenu.togglePicker($picker, $btn)) return;
+
+        var onComplete = function (data) {
+            $indx_list.html('');
+            if (typeof oncomplete == 'function') {
+                oncomplete(data, $indx_list);
+            } else {
+                $indx_list.html(data);
+            }
+        };
+
+        //get content for picker/container
+        jQuery.ajax({
+            type: "POST",
+            url: DOKU_BASE + 'lib/exe/ajax.php',
+            data: get,
+            beforeSend: function () {
+                $indx_list.html('<div class="tocheader">Loading .....</div>');
+            },
+            success: onComplete,
+            dataType: 'html'
+        });
+    },
+
+
+    /**
+     * Hide/show picker, will be shown beside btn
+     *
+     * @param {string|jQuery} $picker
+     * @param {jQuery}        $btn
+     * @return {Boolean} true if open, false closed
+     */
+    togglePicker: function ($picker, $btn) {
+        var x = 8, y = 0;
+
+        if (!$picker.is(':visible')) {
+            var pos = $btn.offset();
+            //position + width of button
+            x += pos.left + $btn[0].offsetWidth;
+            y += pos.top;
+
+            $picker
+                .show()
+                .offset({
+                    left: x,
+                    top: y
+                });
+
+            return true;
+        } else {
+            $picker.hide();
+            return false;
+        }
+    },
+
+    /**
+     * Concatenates contextmenu configuration arrays
+     *
+     * @param amenu
+     * @param index
+     * @param n
+     */
+    arrconcat: function (amenu, index, n) {
+        var html, id, item, a, li;
+        if (typeof amenu == 'undefined' || typeof amenu['view'] == 'undefined') {
             return;
         }
-        r = id + s + r;
+        var cmenu = amenu['view'];
+        if (jQuery('#tool__bar')[0] && amenu['edit'] instanceof Array) {
+            cmenu = amenu['edit'].concat(cmenu);
+        }
+        var node = index.aNodes[n];
+        id = node.hns || node.dokuid;
+
+        var createCMenuEntry = function (entry) {
+            return '<a title="' + ((entry[2]) ? entry[2] : entry[0]) + '" href="' + eval(entry[1]) + '">' + entry[0] + '</a>';
+        };
+
+        jQuery.each(cmenu, function (i, cmenuentry) {
+            if (cmenuentry == '') {
+                return true;
+            }
+            item = document.createElement('li');
+            var $cmenu = jQuery('#r' + index.obj);
+            if (cmenuentry[1]) {
+                if (cmenuentry[1] instanceof Array) {
+                    html = document.createElement('ul');
+                    jQuery.each(cmenuentry[1], function (a, subcmenuentry) {
+                        li = document.createElement('li');
+                        li.innerHTML = createCMenuEntry(subcmenuentry);
+                        html.appendChild(li);
+                    });
+
+                    //}
+                    item.innerHTML = '<span class="indexmenu_submenu">' + cmenuentry[0] + '</span>';
+                    html.left = $cmenu[0].width;
+                    item.appendChild(html);
+                } else {
+                    item.innerHTML = createCMenuEntry(cmenuentry);
+                }
+            } else {
+                item.innerHTML = cmenuentry;
+            }
+            $cmenu.children().last().append(item);
+        });
+    },
+
+    /**
+     *
+     *
+     * @param obj
+     * @param e
+     */
+    mouseposition: function (obj, e) {
+        //http://www.quirksmode.org/js/events_properties.html
+        var X = 0, Y = 0;
+        if (!e) e = window.event;
+        if (e.pageX || e.pageY) {
+            X = e.pageX;
+            Y = e.pageY;
+        }
+        else if (e.clientX || e.clientY) {
+            X = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+            Y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+        }
+        obj.style.left = X - 5 + 'px';
+        obj.style.top = Y - 5 + 'px';
+    },
+
+    /**
+     *
+     *
+     * @param n
+     * @param obj
+     * @param e
+     */
+    checkcontextm: function (n, obj, e) {
+        e = e || event;
+        if ((e.which == 3 || e.button == 2) || (window.opera && e.which == 1 && e.ctrlKey)) {
+            obj.contextmenu(n, e);
+            IndexmenuContextmenu.stopevt(e);
+        }
+    },
+
+    /**
+     *
+     *
+     * @param e
+     * @returns {boolean}
+     */
+    stopevt: function (e) {
+        if (!window.indexmenu_contextmenu) {
+            return true;
+        }
+        e = e || event;
+        e.preventDefault ? e.preventDefault() : e.returnValue = false;
+        return false;
     }
-    if (r) window.location.href = indexmenu_getid(u, r) + "do=edit";
-}
+};
+

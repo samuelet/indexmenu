@@ -445,7 +445,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             }
             //check headpage
             if(@file_exists(wikiFN($page)) && auth_quickaclcheck($page) >= AUTH_READ) {
-                if($conf['useheading'] == 1 || $conf['useheading'] == 'navigation') {
+                if($conf['useheading'] == 1 || $conf['useheading'] === 'navigation') {
                     $title_tmp = p_get_first_heading($page, FALSE);
                     if(!is_null($title_tmp)) $title = $title_tmp;
                 }

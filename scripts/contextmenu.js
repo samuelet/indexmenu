@@ -99,7 +99,7 @@ if (JSINFO && JSINFO.isadmin) {
      */
     indexmenu_contextmenu['pg'] = {
         'view': [
-            ['Edit', 'indexmenu_getid(index.config.urlbase,id)+"do=edit"'],
+            ['Edit', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=edit"'],
             ['<em>Create--></em>', [
                 ['Headpage', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"', 'Create a new headpage under this page'],
                 ['Start page', 'IndexmenuContextmenu.getid(index.config.urlbase,id+index.config.sepchar+"start")+"do=edit"', 'Create a new start page under this page'],

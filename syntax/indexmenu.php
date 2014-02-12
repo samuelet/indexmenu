@@ -269,7 +269,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     function _indexmenu($myns) {
         global $conf;
         $ns          = $myns[0];
-        $js_opts     = $myns[1];
+        $js_opts     = $myns[1]; //theme, gen_id, nocookie, navbar, noscroll, maxjs, notoc, jsajax, context, nomenu
         $this->sort  = $myns[2];
         $this->msort = $myns[3];
         $this->rsort = $myns[4];
@@ -504,7 +504,6 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     function _search_index(&$data, $base, $file, $type, $lvl, $opts) {
         global $conf;
         $hns        = false;
-        $return     = false;
         $isopen     = false;
         $title      = null;
         $skip_index = $opts['skip_index'];

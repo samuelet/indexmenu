@@ -65,6 +65,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     function _purgecache(&$event, $param) {
         global $ID;
         global $conf;
+        /** @var cache_parser $cache */
         $cache = &$event->data;
 
         if(!isset($cache->page)) return;

@@ -89,3 +89,4 @@ $lang['js']['newpagehere']     = 'New page here';
 $lang['js']['insertkeywords']  = 'Insert keyword(s) to search for within this namespace';
 $lang['js']['insertpagename']  = 'Insert the pagename to create';
 $lang['js']['edit']            = 'Edit';
+$lang['js']['loading']         = 'Loading...';

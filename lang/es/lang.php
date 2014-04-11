@@ -3,7 +3,7 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
- * @author     Digna González Otero <digna.gonzalezotero [at] gmail [dot] com>
+ * @author Digna González Otero <digna.gonzalezotero [at] gmail [dot] com>
  */
 $lang['menu']                  = 'Utilidades de Indexmenu';
 $lang['fetch']                 = 'Mostrar';

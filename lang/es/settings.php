@@ -3,7 +3,7 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
- * @author     Digna González Otero <digna.gonzalezotero [at] gmail [dot] com>
+ * @author Digna González Otero <digna.gonzalezotero [at] gmail [dot] com>
  */
 $lang['checkupdate']           = 'Comprobar actualizaciones periódicamente.';
 $lang['only_admins']           = 'Denegar sintaxis indexmenu a los no-administradores.<br>Tener en cuenta que una página editada por un usuario no administrador perderá cualquier árbol de indexmenu que contenga.';

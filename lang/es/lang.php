@@ -3,7 +3,8 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
- * @author     Digna González Otero <digna.gonzalezotero [at] gmail [dot] com>
+ * @author Digna González Otero <digna.gonzalezotero [at] gmail [dot] com>
+ * @author Eloy <ej.perezgomez@gmail.com>
  */
 $lang['menu']                  = 'Utilidades de Indexmenu';
 $lang['fetch']                 = 'Mostrar';
@@ -25,3 +26,19 @@ $lang['checkupdates']          = 'Actualizaciones de plugin';
 $lang['noupdates']             = 'No es necesario actualizar Indexmenu. Ya tienes la última versión:';
 $lang['infos']                 = 'Puedes crear tu tema siguiendo las instrucciones de la página <a href="https://www.dokuwiki.org/plugin:indexmenu#theme_tutorial">Theme Tutorial</a>. <br />Después puedes hacer feliz a más gente:-) enviándolo al repositorio público de indexmenu, con el botón de "compartir" bajo ese tema.';
 $lang['showsort']              = 'Número de posición de Indexmenu: ';
+$lang['js']['index']           = 'Indice';
+$lang['js']['options']         = 'Opciones';
+$lang['js']['navigation']      = 'Navegación';
+$lang['js']['sort']            = 'Ordenar';
+$lang['js']['filter']          = 'Filtrar';
+$lang['js']['performance']     = 'Rendimiento';
+$lang['js']['namespace']       = 'Espacio de nombres';
+$lang['js']['nsdepth']         = 'Profundidad';
+$lang['js']['theme']           = 'Tema';
+$lang['js']['context']         = 'Muestra el árbol del contexto del espacio de nombres de la wiki actual';
+$lang['js']['nocookie']        = 'No recordar los nodos abiertos/cerrados durante la navegación del usuario';
+$lang['js']['tsort']           = 'Por título';
+$lang['js']['dsort']           = 'Por fecha';
+$lang['js']['nsort']           = 'Ordenar también espacios de nombres';
+$lang['js']['nons']            = 'Mostrar solo páginas';
+$lang['js']['nopg']            = 'Mostrar solo espacios de nombres';

@@ -32,7 +32,12 @@
 /*Properties that can be edit*/
 
 /*Link properties*/
-.dtree a {
+.dokuwiki .dtree a,
+.dokuwiki .aside .dtree a,
+.dokuwiki .dtree a:visited,
+.dokuwiki .aside .dtree a:visited,
+.dokuwiki .dtree a:link,
+.dokuwiki .aside .dtree a:link {
     color: __existing__;
     text-decoration: none;
 }
@@ -49,7 +54,8 @@
 }
 
 /* Current page highlighting*/
-.dtree a.navSel {
+.dokuwiki .dtree a.navSel,
+.dokuwiki .aside .dtree a.navSel {
     background-color: __highlight__;
 }
 
@@ -79,7 +85,10 @@ div.dokuwiki div.indexmenu_list_themes {
 }
 
 /*Mouseover property*/
-.dtree a.nodeFdUrl:hover, .dtree a.nodeSel:hover, a.navSel:hover, .dtree a.nodeUrl:hover {
+.dokuwiki .dtree a.nodeFdUrl:hover,
+.dokuwiki .dtree a.nodeSel:hover,
+.dokuwiki a.navSel:hover,
+.dokuwiki .dtree a.nodeUrl:hover {
     color: __existing__;
     text-decoration: underline;
     background-color: __background_alt__;

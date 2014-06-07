@@ -267,7 +267,14 @@ var indexmenu_wiz = {
         options = options ? '|'+jQuery.trim(options) : '';
 
         var sel, ns, depth, syntax, eo;
-        sel = getSelection(indexmenu_wiz.textArea);
+        
+        // XXX: Compatibility Fix for 2014-05-05 "Ponder Stibbons", splitbrain/dokuwiki#505
+        if(DWgetSelection) {
+            sel = DWgetSelection(indexmenu_wiz.textArea);
+        } else {
+            sel = getSelection(indexmenu_wiz.textArea);
+        }
+        
 
         ns = jQuery('#namespace').val();
         depth = parseInt(jQuery('#nsdepth').val());
@@ -286,7 +293,14 @@ var indexmenu_wiz = {
      */
     insertMetaNumber: function(){
         var sel, selnum, syntax, number;
-        sel = getSelection(indexmenu_wiz.textArea);
+
+        // XXX: Compatibility Fix for 2014-05-05 "Ponder Stibbons", splitbrain/dokuwiki#505
+        if(DWgetSelection) {
+            sel = DWgetSelection(indexmenu_wiz.textArea);
+        } else {
+            sel = getSelection(indexmenu_wiz.textArea);
+        }
+
         selnum = parseInt(sel.getText());
         number = parseInt(jQuery('input#metanumber').val());
         number = number || selnum || 1;
@@ -300,7 +314,13 @@ var indexmenu_wiz = {
      * Show the indexmenu wizard
      */
     show: function(){
-        indexmenu_wiz.selection  = getSelection(indexmenu_wiz.textArea);
+        // XXX: Compatibility Fix for 2014-05-05 "Ponder Stibbons", splitbrain/dokuwiki#505
+        if(DWgetSelection) {
+            indexmenu_wiz.selection = DWgetSelection(indexmenu_wiz.textArea);
+        } else {
+            indexmenu_wiz.selection = getSelection(indexmenu_wiz.textArea);
+        }
+
         indexmenu_wiz.$wiz.show();
         jQuery('#namespace').focus();
     },

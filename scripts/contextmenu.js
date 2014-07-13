@@ -74,21 +74,21 @@
  */
 indexmenu_contextmenu['all']['pg'] = {
     'view': [
-        ['<span class="indexmenu_titlemenu"><b>Page</b></span>'],
-        ['Revisions', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=revisions"'],
-        ['Toc preview', '"javascript: IndexmenuContextmenu.createTocMenu(\'call=indexmenu&req=toc&id="+id+"\',\'picker_"+index.obj+"\',\'s"+index.obj+node.id+"\');"']
+        ['<span class="indexmenu_titlemenu"><b>'+LANG.plugins.indexmenu.page+'</b></span>'],
+        [LANG.plugins.indexmenu.revs, 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=revisions"'],
+        [LANG.plugins.indexmenu.tocpreview, '"javascript: IndexmenuContextmenu.createTocMenu(\'call=indexmenu&req=toc&id="+id+"\',\'picker_"+index.obj+"\',\'s"+index.obj+node.id+"\');"']
     ],
     //Menu items in edit mode, when previewing
     'edit': [
-        ['<span class="indexmenu_titlemenu"><b>Edit mode</b></span>'],
-        ['Insert as DWlink', '"javascript: IndexmenuContextmenu.insertTags(\'"+id+"\',\'"+index.config.sepchar+"\');"+index.obj+".divdisplay(\'r\',0);"', 'Insert the link of this page in the edit box at cursor position']
+        ['<span class="indexmenu_titlemenu"><b>'+LANG.plugins.indexmenu.editmode+'</b></span>'],
+        [LANG.plugins.indexmenu.insertdwlink, '"javascript: IndexmenuContextmenu.insertTags(\'"+id+"\',\'"+index.config.sepchar+"\');"+index.obj+".divdisplay(\'r\',0);"', LANG.plugins.indexmenu.insertdwlinktooltip]
     ]
 };
 
 indexmenu_contextmenu['all']['ns'] = {
     'view': [
-        ['<span class="indexmenu_titlemenu"><b>Namespace</b></span>'],
-        ['Search ...', '"javascript: IndexmenuContextmenu.srchpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.isdir+"\',\'"+node.dokuid+"\');"', 'Search for pages within this namespace']
+        ['<span class="indexmenu_titlemenu"><b>'+LANG.plugins.indexmenu.ns+'</b></span>'],
+        [LANG.plugins.indexmenu.search, '"javascript: indexmenu_srchpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.isdir+"\',\'"+node.dokuid+"\');"', LANG.plugins.indexmenu.searchtooltip]
     ]
 };
 
@@ -99,27 +99,27 @@ if (JSINFO && JSINFO.isadmin) {
      */
     indexmenu_contextmenu['pg'] = {
         'view': [
-            ['Edit', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=edit"'],
-            ['<em>Create--></em>', [
-                ['Headpage', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"', 'Create a new headpage under this page'],
-                ['Start page', 'IndexmenuContextmenu.getid(index.config.urlbase,id+index.config.sepchar+"start")+"do=edit"', 'Create a new start page under this page'],
-                ['Custom page', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"', 'Create a new page under this page']
+            [LANG.plugins.indexmenu.edit, 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=edit"'],
+            ['<em>'+LANG.plugins.indexmenu.create+'--></em>', [
+                [LANG.plugins.indexmenu.headpage, '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"', LANG.plugins.indexmenu.headpagetooltip],
+                [LANG.plugins.indexmenu.startpage, 'IndexmenuContextmenu.getid(index.config.urlbase,id+index.config.sepchar+"start")+"do=edit"', LANG.plugins.indexmenu.startpagetooltip],
+                [LANG.plugins.indexmenu.custompage, '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"', LANG.plugins.indexmenu.custompagetooltip]
             ]],
-            ['<em>More--></em>', [
-                ['Acls', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=admin&page=acl"'],
-                ['Purge cache', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"purge=true"'],
-                ['Export as HTML', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=export_xhtml"'],
-                ['Export as text', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=export_raw"']
+            ['<em>'+LANG.plugins.indexmenu.more+'--></em>', [
+                [LANG.plugins.indexmenu.acls, 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=admin&page=acl"'],
+                [LANG.plugins.indexmenu.purgecache, 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"purge=true"'],
+                [LANG.plugins.indexmenu.exporthtml, 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=export_xhtml"'],
+                [LANG.plugins.indexmenu.exporttext, 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=export_raw"']
             ]]
         ]
     };
 
     indexmenu_contextmenu['ns'] = {
         'view': [
-            ['New page', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"', 'Create a new page inside this namespace'],
-            ['<em>More--></em>', [
-                ['Headpage here', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"', 'Create a new headpage inside this namespace'],
-                ['Acls', 'IndexmenuContextmenu.getid(index.config.urlbase,node.dokuid)+"do=admin&page=acl"']
+            [LANG.plugins.indexmenu.newpage, '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"', LANG.plugins.indexmenu.newpagetooltip],
+            ['<em>'+LANG.plugins.indexmenu.more+'--></em>', [
+                [LANG.plugins.indexmenu.headpagehere, '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"', LANG.plugins.indexmenu.headpageheretooltip],
+                [LANG.plugins.indexmenu.acls, 'IndexmenuContextmenu.getid(index.config.urlbase,node.dokuid)+"do=admin&page=acl"']
             ]]
         ]
     };
@@ -130,12 +130,12 @@ if (JSINFO && JSINFO.isadmin) {
      */
     indexmenu_contextmenu['pg'] = {
         'view': [
-            ['New page here', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"'],
+            [LANG.plugins.indexmenu.newpagehere, '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"'],
             ['Edit', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=edit"', 1, 0 ],
-            ['<em>More--></em>', [
-                ['Headpage here', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"'],
-                ['Purge cache', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"purge=true"'],
-                ['Export as HTML', 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=export_xhtml"']
+            ['<em>'+LANG.plugins.indexmenu.more+'--></em>', [
+                [LANG.plugins.indexmenu.headpagehere, '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\',\'"+node.name+"\');"'],
+                [LANG.plugins.indexmenu.purgecache, 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"purge=true"'],
+                [LANG.plugins.indexmenu.exporthtml, 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=export_xhtml"']
             ]]
         ]
     };
@@ -150,7 +150,7 @@ var IndexmenuContextmenu = {
      */
 
     srchpage: function (u, s, isdir, nid) {
-        var r = prompt("Insert keyword(s) to search for within this namespace", "");
+        var r = prompt(LANG.plugins.indexmenu.insertkeywords, "");
         if (r) {
             var fnid = nid;
             if (isdir == "0") {
@@ -174,7 +174,7 @@ var IndexmenuContextmenu = {
         if (n) {
             r = id + s + n;
         } else {
-            r = prompt("Insert the pagename to create", "");
+            r = prompt(LANG.plugins.indexmenu.insertpagename, "");
             if (!r) {
                 return;
             }
@@ -245,7 +245,7 @@ var IndexmenuContextmenu = {
             url: DOKU_BASE + 'lib/exe/ajax.php',
             data: get,
             beforeSend: function () {
-                $indx_list.html('<div class="tocheader">Loading .....</div>');
+                $indx_list.html('<div class="tocheader">'+LANG.plugins.indexmenu.loading+'</div>');
             },
             success: onComplete,
             dataType: 'html'

@@ -25,7 +25,7 @@
 }
 
 .dtree img {
-    border: 0px;
+    border: 0;
     vertical-align: top;
 }
 
@@ -111,8 +111,6 @@ div.dokuwiki div.indexmenu_list_themes {
 /*scrolling arrow property*/
 .dtree .indexmenu_larrow {
     position: absolute;
-    filter: alpha(opacity = 60);
-    -moz-opacity: .60;
     opacity: .60;
     background: transparent url(images/larrow.gif) repeat-y scroll;
     padding-left: 22px;
@@ -160,14 +158,14 @@ div.dokuwiki div.indexmenu_list_themes {
 
 .indexmenu_rmenuhead {
     background-color: #CCFFCC;
-    margin: 0pt;
+    margin: 0;
     text-align: center;
     padding: 1px 5px;
     vertical-align: middle;
     overflow: hidden;
     width: 100px;
 }
-div.dokuwiki .indexmenu_rmenu ul {
+.indexmenu_rmenu ul {
     margin: 0;
 }
 .indexmenu_rmenu, .indexmenu_rmenu li ul {
@@ -189,7 +187,7 @@ div.dokuwiki .indexmenu_rmenu ul {
     list-style-type: none !important;
     list-style-image: none !important;
     color: #000 !important;
-    padding: 0px;
+    padding: 0;
     text-align: center;
     position: relative;
 }

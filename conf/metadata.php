@@ -5,7 +5,7 @@
  * @license:    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author:     Samuele Tognini <samuele@samuele.netsons.org>
  */
-$meta['only_admins']   = array('onoff');
+$meta['only_admins']   = array('onoff','_caution' => 'warning');
 $meta['aclcache']      = array('multichoice', '_choices' => array('none', 'user', 'groups'));
 $meta['headpage']      = array('multicheckbox', '_choices' => array(':start:', ':same:', ':inside:'));
 $meta['hide_headpage'] = array('onoff');

@@ -48,7 +48,10 @@ class syntax_plugin_indexmenu_tag extends DokuWiki_Syntax_Plugin {
     /**
      * Render output
      */
-    function render($mode, Doku_Renderer &$renderer, $data) {
-        if(is_numeric($data[0])) $renderer->meta['indexmenu_n'] = $data[0];
+    function render($mode, Doku_Renderer $renderer, $data) {
+        if($mode == 'metadata') {
+            /** @var Doku_Renderer_metadata $renderer */
+            if(is_numeric($data[0])) $renderer->meta['indexmenu_n'] = $data[0];
+        }
     }
 }

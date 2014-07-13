@@ -300,7 +300,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $this->msort = $myns[3];
         $this->rsort = $myns[4];
         $this->nsort = $myns[5];
-        $opts        = $myns[6];
+        $opts        = $myns[6]; //level, nons, nopg, nss, max, js, skip_index, skip_file, headpage, hide_headpage
         $this->hsort = $myns[7];
         $data        = array();
         $js_name     = "indexmenu_".$js_opts['identifier'];
@@ -833,7 +833,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
 
         $sort = false;
         $page = false;
-        if($item['type'] == 'd') {
+        if($item['type'] == 'd' || $item['type'] == 'l') {
             //Fake order info when nsort is not requested
             ($this->nsort) ? $page = $item['hns'] : $sort = 0;
         }

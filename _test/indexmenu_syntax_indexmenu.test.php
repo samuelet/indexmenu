@@ -82,7 +82,7 @@ class indexmenu_syntax_indexmenu_test extends DokuWikiTest {
 
         $plugin = new syntax_plugin_indexmenu_indexmenu();
 
-        $null   = null;
+        $null   = new Doku_Handler();
         $result = $plugin->handle($this->exampleIndex, 0, 40, $null);
 
         $idcalculatedfromns = sprintf("%u", crc32(''));
@@ -163,7 +163,7 @@ class indexmenu_syntax_indexmenu_test extends DokuWikiTest {
         );
 
         foreach($tests as $test) {
-            $null   = null;
+            $null   = new Doku_Handler();
             $result = $plugin->handle($test['syntax'], 0, 40, $null);
 
             //copy unique generated number, which is about 23 characters
@@ -193,7 +193,7 @@ class indexmenu_syntax_indexmenu_test extends DokuWikiTest {
         $xhtml  = new Doku_Renderer_xhtml();
         $plugin = new syntax_plugin_indexmenu_indexmenu();
 
-        $null   = null;
+        $null   = new Doku_Handler();
         $result = $plugin->handle($emptyindexsyntax, 0, 10, $null);
 
         //no empty message

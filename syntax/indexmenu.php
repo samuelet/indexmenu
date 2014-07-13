@@ -368,7 +368,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $out .= "<!--//--><![CDATA[//><!--\n";
         $out .= "var $js_name = new dTree('".$js_name."','".$js_opts['theme']."');\n";
         //javascript config options
-        $sepchar = idfilter(':');
+        $sepchar = idfilter(':', false);
         $out .= "$js_name.config.urlbase='".substr(wl(":"), 0, -1)."';\n";
         $out .= "$js_name.config.sepchar='".$sepchar."';\n";
         if($js_opts['notoc'])          $out .= "$js_name.config.toc=false;\n";
@@ -377,8 +377,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         if($js_opts['maxjs'] > 0)      $out .= "$js_name.config.maxjs=".$js_opts['maxjs'].";\n";
         if(!empty($js_opts['jsajax'])) $out .= "$js_name.config.jsajax='".utf8_encodeFN($js_opts['jsajax'])."';\n";
         //add root node
-        $out .= $js_name.".add('".idfilter(cleanID($ns))."',0,-1,'".$title."'";
-        if($hns) $out .= ",'".idfilter(cleanID($hns))."'";
+        $out .= $js_name.".add('".idfilter(cleanID($ns), false)."',0,-1,'".$title."'";
+        if($hns) $out .= ",'".idfilter(cleanID($hns), false)."'";
         $out .= ");\n";
         //add nodes
         $anodes = $this->_jsnodes($data, $js_name);
@@ -422,10 +422,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $extra = '';
         if($noajax) {
             $jscmd = $js_name.".add";
-            $com   = ";\n";
+            $separator   = ";\n";
         } else {
             $jscmd = "new Array ";
-            $com   = ",";
+            $separator   = ",";
         }
         foreach($data as $i=> $item) {
             $i++;
@@ -449,13 +449,13 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 //insert node in last position
                 array_push($q, $i);
             }
-            $out .= $jscmd."('".idfilter($item['id'])."',$i,".$father.",'".$item['title']."'";
+            $out .= $jscmd."('".idfilter($item['id'], false)."',$i,".$father.",'".$item['title']."'";
             //hns
-            ($item['hns']) ? $out .= ",'".idfilter($item['hns'])."'" : $out .= ",0";
+            ($item['hns']) ? $out .= ",'".idfilter($item['hns'], false)."'" : $out .= ",0";
             ($item['type'] == 'd' || $item['type'] == 'l') ? $out .= ",1" : $out .= ",0";
             //MAX option
             ($item['type'] == 'l') ? $out .= ",1" : $out .= ",0";
-            $out .= ")".$com;
+            $out .= ")".$separator;
         }
         $extra = rtrim($extra, ' ');
         return array($out, $extra);

@@ -40,7 +40,7 @@ class syntax_plugin_indexmenu_tag extends DokuWiki_Syntax_Plugin {
     /**
      * Handle the match
      */
-    function handle($match, $state, $pos, Doku_Handler &$handler) {
+    function handle($match, $state, $pos, Doku_Handler $handler) {
         $match = substr($match, 14, -2);
         return array($match);
     }

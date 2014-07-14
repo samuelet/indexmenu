@@ -587,7 +587,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                     return false;
             }
             //check ACL (for sneaky_index namespaces too).
-            if($this->getConf('sneaky_index') && auth_quickaclcheck($id.':') < AUTH_READ) return false;
+            if($conf['sneaky_index'] && auth_quickaclcheck($id.':') < AUTH_READ) return false;
             //Open requested level
             if($opts['level'] > $lvl || $opts['level'] == -1) $isopen = true;
             //Search optional namespaces

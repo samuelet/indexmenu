@@ -62,7 +62,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @return  array Return an array with all data you want to use in render
      */
     public function handle($match, $state, $pos, Doku_Handler $handler) {
-        $theme    = "default";
+        $theme    = 'default';
         $level    = -1;
         $gen_id   = 'random';
         $maxjs    = 0;
@@ -71,15 +71,21 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $nss      = array();
         $skipns   = array();
         $skipfile = array();
-        $match    = substr($match, 12, -2);
+
+        $defaultsstr = $this->getConf('defaultoptions');
+        $defaults = explode(' ', $defaultsstr);
+
+        $match = substr($match, 12, -2);
         //split namespace,level,theme
-        $match = preg_split('/\|/u', $match, 2);
+        list($nsstr, $optsstr) = explode('|', $match, 2);
         //split options
-        $opts = preg_split('/ /u', $match[1]);
+        $opts = explode(' ', $optsstr);
+
         //Context option
-        $context = in_array('context', $opts);
+        $context = $this->hasOption($defaults, $opts, 'context');
+
         //split optional namespaces
-        $nss_temp = preg_split("/ /u", $match[0], -1, PREG_SPLIT_NO_EMPTY);
+        $nss_temp = preg_split("/ /u", $nsstr, -1, PREG_SPLIT_NO_EMPTY);
         //Array optional namespace => level
         for($i = 1; $i < count($nss_temp); $i++) {
             $nsss = preg_split("/#/u", $nss_temp[$i]);
@@ -99,79 +105,115 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         if(!$context) {
             $ns = $this->_parse_ns($ns);
         }
+
         //nocookie option (disable for uncached pages)
-        $nocookie = $context || in_array('nocookie', $opts);
+        $nocookie = $context || $this->hasOption($defaults, $opts, 'nocookie');
         //noscroll option
-        $noscroll = in_array('noscroll', $opts);
+        $noscroll = $this->hasOption($defaults, $opts, 'noscroll');
         //Open at current namespace option
-        $navbar = in_array('navbar', $opts);
+        $navbar = $this->hasOption($defaults, $opts, 'navbar');
         //no namespaces  options
-        $nons = in_array('nons', $opts);
+        $nons = $this->hasOption($defaults, $opts, 'nons');
         //no pages option
-        $nopg = in_array('nopg', $opts);
+        $nopg = $this->hasOption($defaults, $opts, 'nopg');
         //disable toc preview
-        $notoc = in_array('notoc', $opts);
+        $notoc = $this->hasOption($defaults, $opts, 'notoc');
         //disable the right context menu
-        $nomenu = in_array('nomenu', $opts);
+        $nomenu = $this->hasOption($defaults, $opts, 'nomenu');
         //Main sort method
-        if(in_array('tsort', $opts)) {
+        $tsort = $this->hasOption($defaults, $opts, 'tsort');
+        $dsort = $this->hasOption($defaults, $opts, 'dsort');
+        if($tsort) {
             $sort = 't';
-        } elseif(in_array('dsort', $opts)) {
+        } elseif($dsort) {
             $sort = 'd';
         } else $sort = 0;
-        //Directory sort
-        $nsort = in_array('nsort', $opts);
+        //sort directories in the same way as files
+        $nsort = $this->hasOption($defaults, $opts, 'nsort');
         //sort headpages up
-        $hsort = in_array('hsort', $opts);
+        $hsort = $this->hasOption($defaults, $opts, 'hsort');
         //Metadata sort method
-        if($msort = in_array('msort', $opts)) {
+        if($msort = $this->hasOption($defaults, $opts, 'msort')) {
             $msort = 'indexmenu_n';
-        } elseif(preg_match('/msort#(\S+)/u', $match[1], $msort_tmp) > 0) $msort = str_replace(':', ' ', $msort_tmp[1]);
+        } elseif($value = $this->getOption($defaultsstr, $optsstr, '/msort#(\S+)/u')) {
+            $msort = str_replace(':', ' ', $value);
+        }
         //reverse sort
-        $rsort = in_array('rsort', $opts);
+        $rsort = $this->hasOption($defaults, $opts, 'rsort');
+
+        if($sort) $jsajax .= "&sort=" . $sort;
+        if($msort) $jsajax .= "&msort=" . $msort;
+        if($rsort) $jsajax .= "&rsort=1";
+        if($nsort) $jsajax .= "&nsort=1";
+        if($hsort) $jsajax .= "&hsort=1";
+        if($nopg) $jsajax .= "&nopg=1";
+
         //javascript option
-        if(!$js = in_array('js', $opts)) {
-            //split theme (should not match maxjs#n)
-            if(preg_match('/(?:^|\s)js#(\S*)/u', $match[1], $tmp_theme) > 0) {
-                if(is_dir(INDEXMENU_IMG_ABSDIR."/".$tmp_theme[1])) {
-                    $theme = $tmp_theme[1];
-                }
-                $js = true;
+        $dir = '';
+        //check defaults for js,js#theme, #theme
+        if(!$js = in_array('js', $defaults)) {
+            if(preg_match('/(?:^|\s)(js)?#(\S*)/u', $defaultsstr, $match_djs) > 0) {
+                if(!empty($match_djs[1])) $js = true;
+                if(isset($match_djs[2])) $dir = $match_djs[2];
             }
         }
+        //check opts for nojs,#theme or js,js#theme
         if($js) {
+            if(in_array('nojs', $opts)) {
+                $js = false;
+            } else {
+                if(preg_match('/(?:^|\s)(?:js)?#(\S*)/u', $optsstr, $match_ojs) > 0) {
+                    if(isset($match_ojs[1])) $dir = $match_ojs[1];
+                }
+            }
+        } else {
+            if($js = in_array('js', $opts)) {
+                //use theme from the defaults
+            } else {
+                if(preg_match('/(?:^|\s)js#(\S*)/u', $optsstr, $match_ojs) > 0) {
+                    $js = true;
+                    if(isset($match_ojs[1])) $dir = $match_ojs[1];
+                }
+            }
+        }
+
+        if($js) {
+            //exist theme?
+            if(!empty($dir) && is_dir(INDEXMENU_IMG_ABSDIR . "/" . $dir)) {
+                $theme = $dir;
+            }
+
             //id generation method
-            if(preg_match('/id#(\S+)/u', $match[1], $id) > 0) $gen_id = $id[1];
+            $gen_id = $this->getOption($defaultsstr, $optsstr, '/id#(\S+)/u');
 
             //max option
-            if(preg_match('/max#(\d+)($|\s+|#(\d+))/u', $match[1], $maxtmp) > 0) {
-                $max = $maxtmp[1];
-                if($maxtmp[3]) $jsajax = "&max=".$maxtmp[3];
+            if($maxmatches = $this->getOption($defaultsstr, $optsstr, '/max#(\d+)($|\s+|#(\d+))/u', true)) {
+                $max = $maxmatches[1];
+                if($maxmatches[3]) {
+                    $jsajax .= "&max=" . $maxmatches[3];
+                }
                 //disable cookie to avoid javascript errors
                 $nocookie = true;
+            } else {
+                $max = 0;
             }
+
             //max js option
-            if(preg_match('/maxjs#(\d+)/u', $match[1], $maxtmp) > 0) $maxjs = $maxtmp[1];
+            if($maxjsvalue = $this->getOption($defaultsstr, $optsstr, '/maxjs#(\d+)/u')) {
+                $maxjs = $maxjsvalue;
+            }
         }
-        // Id generation method
         if(is_numeric($gen_id)) {
-            $identifier =  $gen_id;
+            $identifier = $gen_id;
         } elseif($gen_id == 'ns') {
             $identifier = sprintf("%u", crc32($ns));
         } else {
             $identifier = uniqid(rand());
         }
 
-        if($sort) $jsajax .= "&sort=".$sort;
-        if($msort) $jsajax .= "&msort=".$msort;
-        if($rsort) $jsajax .= "&rsort=1";
-        if($nsort) $jsajax .= "&nsort=1";
-        if($hsort) $jsajax .= "&hsort=1";
-        if($nopg) $jsajax .= "&nopg=1";
-
         //skip namespaces in index
         $skipns[] = $this->getConf('skip_index');
-        if(preg_match('/skipns[\+=](\S+)/u', $match[1], $sns) > 0) {
+        if(preg_match('/skipns[\+=](\S+)/u', $optsstr, $sns) > 0) {
             //first sign is: '+' (parallel to conf) or '=' (replace conf)
             $action = $sns[0][6];
             $index = 0;
@@ -179,11 +221,11 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 $index = 1;
             }
             $skipns[$index] = $sns[1];
-            $jsajax .= "&skipns=".utf8_encodeFN(($action == '+' ? '+' : '=').$sns[1]);
+            $jsajax .= "&skipns=" . utf8_encodeFN(($action == '+' ? '+' : '=') . $sns[1]);
         }
         //skip file
         $skipfile[] = $this->getConf('skip_file');
-        if(preg_match('/skipfile[\+=](\S+)/u', $match[1], $sf) > 0) {
+        if(preg_match('/skipfile[\+=](\S+)/u', $optsstr, $sf) > 0) {
             //first sign is: '+' (parallel to conf) or '=' (replace conf)
             $action = $sf[0][8];
             $index = 0;
@@ -191,7 +233,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 $index = 1;
             }
             $skipfile[$index] = $sf[1];
-            $jsajax .= "&skipfile=".utf8_encodeFN(($action == '+' ? '+' : '=').$sf[1]);
+            $jsajax .= "&skipfile=" . utf8_encodeFN(($action == '+' ? '+' : '=') . $sf[1]);
         }
 
         //js options
@@ -218,6 +260,56 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             ),
             $hsort
         );
+    }
+
+
+    /**
+     * Looks if the default options and syntax options has the requested option
+     *
+     * @param array  $defaultsopts array of default options
+     * @param array  $opts         array of options provided via syntax
+     * @param string $optionname   name of requested option
+     * @return bool has optionname?
+     */
+    private function hasOption($defaultsopts, $opts, $optionname) {
+        $name = $optionname;
+        if(substr($optionname, 0, 2) == 'no') {
+            $inversename = substr($optionname, 2);
+        } else {
+            $inversename = 'no' . $optionname;
+        }
+
+        if(in_array($name, $defaultsopts)) {
+            return !in_array($inversename, $opts);
+        } else {
+            return in_array($name, $opts);
+        }
+    }
+
+    /**
+     * Looks for the value of the requested option in the default options and syntax options
+     *
+     * @param string $defaultsstr     default options string
+     * @param string $optsstr         syntax options string
+     * @param string $matchpattern    pattern to search for
+     * @param bool   $multiplematches if multiple returns array, otherwise the first match
+     * @return string|array
+     */
+    private function getOption($defaultsstr, $optsstr, $matchpattern, $multiplematches = false) {
+        if(preg_match($matchpattern, $optsstr, $match_o) > 0) {
+            if($multiplematches) {
+                return $match_o;
+            } else {
+                return $match_o[1];
+            }
+        } elseif(preg_match($matchpattern, $defaultsstr, $match_d) > 0) {
+            if($multiplematches) {
+                return $match_d;
+            } else {
+                return $match_d[1];
+            }
+        }
+        return false;
     }
 
     /**
@@ -295,7 +387,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     private function _indexmenu($myns) {
         global $conf;
         $ns          = $myns[0];
-        $js_opts     = $myns[1]; //theme, gen_id, nocookie, navbar, noscroll, maxjs, notoc, jsajax, context, nomenu
+        $js_opts     = $myns[1]; //theme, identifier, nocookie, navbar, noscroll, maxjs, notoc, jsajax, context, nomenu
         $this->sort  = $myns[2];
         $this->msort = $myns[3];
         $this->rsort = $myns[4];

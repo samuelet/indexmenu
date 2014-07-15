@@ -136,7 +136,7 @@ class indexmenu_syntax_indexmenu_test extends DokuWikiTest {
             array(
                 'syntax'=> "{{indexmenu>#1|js#bj_ubuntu.png navbar context nocookie noscroll notoc nomenu dsort msort#date:modified hsort rsort nsort nons nopg max#2#4 maxjs#3 id#54321}}",
                 'data'  => array(
-                    '', 'bj_ubuntu.png', 54321, true, true, true, 3, true, '&max=4&sort=d&msort=date modified&rsort=1&nsort=1&hsort=1&nopg=1', true, true,
+                    '', 'bj_ubuntu.png', 54321, true, true, true, 3, true, '&sort=d&msort=date modified&rsort=1&nsort=1&hsort=1&nopg=1&max=4', true, true,
                     'd', 'date modified', true, true, 1, true, true, array(), 2, true, array(''), array(''), true,
                     ":start:,:same:,:inside:", 1
                 )

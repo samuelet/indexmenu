@@ -378,7 +378,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         if(!empty($js_opts['jsajax'])) $out .= "$js_name.config.jsajax='".utf8_encodeFN($js_opts['jsajax'])."';\n";
         //add root node
         $json = new JSON();
-        $out .= $js_name.".add('".idfilter(cleanID($ns), false)."',0,-1,'".$json->encode($title)."'";
+        $out .= $js_name.".add('".idfilter(cleanID($ns), false)."',0,-1,".$json->encode($title);
         if($hns) $out .= ",'".idfilter(cleanID($hns), false)."'";
         $out .= ");\n";
         //add nodes
@@ -428,6 +428,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             $jscmd = "new Array ";
             $separator   = ",";
         }
+        $json = new JSON();
         foreach($data as $i=> $item) {
             $i++;
             //Remove already processed nodes (greater level = lower level)
@@ -450,8 +451,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 //insert node in last position
                 array_push($q, $i);
             }
-            $json = new JSON();
-            $out .= $jscmd."('".idfilter($item['id'], false)."',$i,".$father.",'".$json->encode($item['title'])."'";
+            $out .= $jscmd."('".idfilter($item['id'], false)."',$i,".$father.",".$json->encode($item['title']);
             //hns
             ($item['hns']) ? $out .= ",'".idfilter($item['hns'], false)."'" : $out .= ",0";
             ($item['type'] == 'd' || $item['type'] == 'l') ? $out .= ",1" : $out .= ",0";

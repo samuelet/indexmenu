@@ -640,7 +640,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     }
 
     /**
-     * Callback that builds the browsable index of pages
+     * Callback that adds an item of namespace/page to the browsable index, if it fits in the specified options
      *
      * $opts['skip_index'] string regexp matching namespaceids to skip
      * $opts['skip_file']  string regexp matching pageids to skip
@@ -679,7 +679,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                     return false;
             }
             //check ACL (for sneaky_index namespaces too).
-            if($this->getConf('sneaky_index') && auth_quickaclcheck($id.':') < AUTH_READ) return false;
+            if($conf['sneaky_index'] && auth_quickaclcheck($id.':') < AUTH_READ) return false;
             //Open requested level
             if($opts['level'] > $lvl || $opts['level'] == -1) $isopen = true;
             //Search optional namespaces
@@ -852,6 +852,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $files     = array();
         $files_tmp = array();
         $dirs_tmp  = array();
+        $count = count($data);
 
         //read in directories and files
         $dh = @opendir($base.'/'.$dir);
@@ -866,33 +867,48 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             $files[] = $dir.'/'.$file;
         }
         closedir($dh);
-        //Sort dirs
+
+        //Collect and sort dirs
         if($this->nsort) {
+            //collect the wanted directories in dirs_tmp
             foreach($dirs as $dir) {
                 call_user_func_array($func, array(&$dirs_tmp, $base, $dir, 'd', $lvl, $opts));
             }
+            //sort directories
             usort($dirs_tmp, array($this, "_cmp"));
+            //add and search each directory
             foreach($dirs_tmp as $dir) {
                 $data[] = $dir;
-                if($dir['return']) $this->_search($data, $base, $func, $opts, $dir['file'], $lvl + 1);
+                if($dir['return']) {
+                    $this->_search($data, $base, $func, $opts, $dir['file'], $lvl + 1);
+                }
             }
         } else {
+            //sort by page name
             sort($dirs);
+            //collect directories
             foreach($dirs as $dir) {
                 if(call_user_func_array($func, array(&$data, $base, $dir, 'd', $lvl, $opts))) {
                     $this->_search($data, $base, $func, $opts, $dir, $lvl + 1);
                 }
             }
         }
-        //Sort files
+
+        //Collect and sort files
         foreach($files as $file) {
             call_user_func_array($func, array(&$files_tmp, $base, $file, 'f', $lvl, $opts));
         }
         usort($files_tmp, array($this, "_cmp"));
-        if(empty($dirs) && empty($files_tmp)) {
+
+        //count added items
+        $added = count($data) - $count;
+
+        if($added === 0 && empty($files_tmp)) {
+            //remove empty directory again, only if it has not a headpage associated
             $v = end($data);
             if(!$v['hns']) array_pop($data);
         } else {
+            //add files to index
             $data = array_merge($data, $files_tmp);
         }
     }

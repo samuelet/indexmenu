@@ -17,4 +17,3 @@ $conf['skip_file']     = '';
 $conf['show_sort']     = 1;
 $conf['themes_url']    = 'http://samuele.netsons.org/dokuwiki';
 $conf['be_repo']       = 0;
-$conf['sneaky_index']  = (isset($GLOBALS['conf']['sneaky_index'])) ? $GLOBALS['conf']['sneaky_index'] : 1;

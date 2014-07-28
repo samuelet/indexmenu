@@ -5,6 +5,7 @@
  * @license:    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author:     Samuele Tognini <samuele@samuele.netsons.org>
  */
+$conf['defaultoptions'] = '';
 $conf['only_admins']   = 0;
 $conf['aclcache']      = 'groups';
 $conf['headpage']      = ':start:,:same:,:inside:';

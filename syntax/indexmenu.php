@@ -869,6 +869,16 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             $files[] = $dir.'/'.$file;
         }
         closedir($dh);
+        
+        //Collect and sort files
+        foreach($files as $file) {
+            call_user_func_array($func, array(&$files_tmp, $base, $file, 'f', $lvl, $opts));
+        }
+        
+        // MI
+        if(!$this->nsort) {
+            usort($files_tmp, array($this, "_cmp"));
+        }
 
         //Collect and sort dirs
         if($this->nsort) {
@@ -876,13 +886,15 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             foreach($dirs as $dir) {
                 call_user_func_array($func, array(&$dirs_tmp, $base, $dir, 'd', $lvl, $opts));
             }
-            //sort directories
-            usort($dirs_tmp, array($this, "_cmp"));
+            // MI: sort directories with pages
+            $dirs_and_files = array_merge($dirs_tmp, $files_tmp);
+            usort($dirs_and_files, array($this, "_cmp"));
             //add and search each directory
-            foreach($dirs_tmp as $dir) {
-                $data[] = $dir;
-                if($dir['return']) {
-                    $this->_search($data, $base, $func, $opts, $dir['file'], $lvl + 1);
+            foreach($dirs_and_files as $dir_or_file) {
+                $data[] = $dir_or_file;
+                // MI: directory
+                if(array_search($dir_or_file, $dirs_tmp, true) !== false && $dir_or_file['return']) {
+                    $this->_search($data, $base, $func, $opts, $dir_or_file['file'], $lvl + 1);
                 }
             }
         } else {
@@ -894,13 +906,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                     $this->_search($data, $base, $func, $opts, $dir, $lvl + 1);
                 }
             }
+            // MI
+            //add files to index
+            $data = array_merge($data, $files_tmp);
         }
-
-        //Collect and sort files
-        foreach($files as $file) {
-            call_user_func_array($func, array(&$files_tmp, $base, $file, 'f', $lvl, $opts));
-        }
-        usort($files_tmp, array($this, "_cmp"));
 
         //count added items
         $added = count($data) - $count;
@@ -909,9 +918,6 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             //remove empty directory again, only if it has not a headpage associated
             $v = end($data);
             if(!$v['hns']) array_pop($data);
-        } else {
-            //add files to index
-            $data = array_merge($data, $files_tmp);
         }
     }
 

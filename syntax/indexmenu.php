@@ -874,8 +874,6 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         foreach($files as $file) {
             call_user_func_array($func, array(&$files_tmp, $base, $file, 'f', $lvl, $opts));
         }
-        
-        // MI
         if(!$this->nsort) {
             usort($files_tmp, array($this, "_cmp"));
         }
@@ -886,13 +884,13 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             foreach($dirs as $dir) {
                 call_user_func_array($func, array(&$dirs_tmp, $base, $dir, 'd', $lvl, $opts));
             }
-            // MI: sort directories with pages
+            // sort directories with pages
             $dirs_and_files = array_merge($dirs_tmp, $files_tmp);
             usort($dirs_and_files, array($this, "_cmp"));
             //add and search each directory
             foreach($dirs_and_files as $dir_or_file) {
                 $data[] = $dir_or_file;
-                // MI: directory
+                // directory
                 if(array_search($dir_or_file, $dirs_tmp, true) !== false && $dir_or_file['return']) {
                     $this->_search($data, $base, $func, $opts, $dir_or_file['file'], $lvl + 1);
                 }
@@ -906,7 +904,6 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                     $this->_search($data, $base, $func, $opts, $dir, $lvl + 1);
                 }
             }
-            // MI
             //add files to index
             $data = array_merge($data, $files_tmp);
         }

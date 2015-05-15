@@ -88,7 +88,7 @@ indexmenu_contextmenu['all']['pg'] = {
 indexmenu_contextmenu['all']['ns'] = {
     'view': [
         ['<span class="indexmenu_titlemenu"><b>'+LANG.plugins.indexmenu.ns+'</b></span>'],
-        [LANG.plugins.indexmenu.search, '"javascript: indexmenu_srchpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.isdir+"\',\'"+node.dokuid+"\');"', LANG.plugins.indexmenu.searchtooltip]
+        [LANG.plugins.indexmenu.search, '"javascript: IndexmenuContextmenu.srchpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.isdir+"\',\'"+node.dokuid+"\');"', LANG.plugins.indexmenu.searchtooltip]
     ]
 };
 

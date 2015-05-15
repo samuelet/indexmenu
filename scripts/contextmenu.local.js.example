@@ -19,7 +19,7 @@ if (!indexmenu_contextmenu['all']['ns']) indexmenu_contextmenu['all']['ns'] = {'
 //indexmenu_contextmenu['all']['pg']['view'][0] = ['Custom Title'];
 
 // add option to page menu
-//indexmenu_contextmenu['all']['pg']['view'].splice(1, 0, ['Input new page', '"javascript: indexmenu_reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"']);
+//indexmenu_contextmenu['all']['pg']['view'].splice(1, 0, ['Input new page', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"']);
 
 
 if (JSINFO && JSINFO.isadmin) {

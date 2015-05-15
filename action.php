@@ -73,6 +73,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         if($cache->mode != "xhtml") return;
         //Check if it is an indexmenu page
         if(!p_get_metadata($ID, 'indexmenu')) return;
+
         $aclcache = $this->getConf('aclcache');
         if($conf['useacl']) {
             $newkey = false;

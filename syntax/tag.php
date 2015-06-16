@@ -42,6 +42,7 @@ class syntax_plugin_indexmenu_tag extends DokuWiki_Syntax_Plugin {
      */
     function handle($match, $state, $pos, Doku_Handler $handler) {
         $match = substr($match, 14, -2);
+        $match = str_replace("\xE2\x80\x8B", "", $match);
         return array($match);
     }
 

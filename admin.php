@@ -34,7 +34,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
      * handle user request
      */
     function handle() {
-        $url = $this->getConf('themes_url');
+        $url = "http://samuele.netsons.org/dokuwiki";
         if(empty($url)) {
             $this->repos['url'][]     = $this->getLang('no_repos');
             $this->repos['status'][]  = "disabled";

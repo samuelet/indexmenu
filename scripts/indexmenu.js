@@ -17,7 +17,7 @@
  | Modified for Dokuwiki by                               |
  | Rene Hadler <rene.hadler@iteas.at>                     |
  | under GPL 2 license                                    |
- | (http://www.gnu.org/licenses/gpl.html)                 | 
+ | (http://www.gnu.org/licenses/gpl.html)                 |
  | Updated: 07.08.2012                                    |
  |--------------------------------------------------------|
  | jQuery update - 27 02 2012                             |
@@ -27,7 +27,7 @@
  |-------------------------------------------------------*/
 
 /**
- * Node object
+ * dTreeNode object
  *
  * @param {string}        dokuid page id of node
  * @param {number}        id     node id
@@ -38,7 +38,7 @@
  * @param {number}        ajax   load subnodes by ajax
  * @constructor
  */
-function Node(dokuid, id, pid, name, hns, isdir, ajax) {
+function dTreeNode(dokuid, id, pid, name, hns, isdir, ajax) {
     this.dokuid = dokuid; // page id of node
     this.id = id;         // id number of node
     this.pid = pid;       // id number of parent node
@@ -51,7 +51,7 @@ function Node(dokuid, id, pid, name, hns, isdir, ajax) {
     this._ls = false;     // is last sibling
     this._hc = ajax;      // has children
     this._ai = 0;         // id number of first child....
-    this._p = false;      // parent Node
+    this._p = false;      // parent dTreeNode
     this._lv = 0;         // level
     this._ok = false;     // all children are loaded
     this._cp = false;     // current page
@@ -101,7 +101,7 @@ function dTree(objName, theme) {
     this.obj = objName; // id of this indexmenu
     this.aNodes = [];   // array of nodes
     this.aIndent = [];  // array stores the indents of the tree (contains values 0 or 1)
-    this.root = new Node(false, -1);
+    this.root = new dTreeNode(false, -1);
     this.selectedNode = null;      // node id
     this.selectedFound = false;    // set to true when found
     this.completed = false;        // succesfull written js tree to the page
@@ -132,7 +132,7 @@ function dTree(objName, theme) {
  * @param {number}        ajax   load subnodes by ajax
  */
 dTree.prototype.add = function (dokuid, id, pid, name, hns, isdir, ajax) {
-    this.aNodes[this.aNodes.length] = new Node(dokuid, id, pid, name, hns, isdir, ajax);
+    this.aNodes[this.aNodes.length] = new dTreeNode(dokuid, id, pid, name, hns, isdir, ajax);
 };
 
 /**
@@ -187,7 +187,7 @@ dTree.prototype.toString = function () {
 /**
  * Creates the tree structure
  *
- * @param {Node} pNode
+ * @param {dTreeNode} pNode
  * @returns {string} html of node (inclusive children)
  */
 dTree.prototype.addNode = function (pNode) {
@@ -227,7 +227,7 @@ dTree.prototype.addNode = function (pNode) {
 /**
  * Create empty node
  *
- * @param {Node} node
+ * @param {dTreeNode} node
  * @param {int} nodeId
  * @returns {string} html of empty node
  */
@@ -240,7 +240,7 @@ dTree.prototype.noderr = function (node, nodeId) {
 /**
  * Creates the node icon, url and text
  *
- * @param {Node} node
+ * @param {dTreeNode} node
  * @param {int} nodeId
  * @returns {string} html of node (inclusive children)
  */
@@ -288,7 +288,7 @@ dTree.prototype.node = function (node, nodeId) {
 /**
  * Adds the empty and line icons which indent the node
  *
- * @param {Node} node
+ * @param {dTreeNode} node
  * @param {int} nodeId
  * @returns {string} html of indent icons
  */
@@ -317,7 +317,7 @@ dTree.prototype.indent = function (node, nodeId) {
 /**
  * Checks if a node has any children and if it is the last sibling
  *
- * @param {Node} node
+ * @param {dTreeNode} node
  */
 dTree.prototype.setCS = function (node) {
     var lastId, n;

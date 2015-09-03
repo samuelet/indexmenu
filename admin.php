@@ -396,7 +396,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _form_close($act) {
-        ptln('      <input type="submit" name="btn" '.$this->repos['status'][$n].' value="'.$this->getLang($act).'" />');
+        ptln('      <input type="submit" name="btn" value="'.$this->getLang($act).'" />');
         ptln('     </form>');
     }
 

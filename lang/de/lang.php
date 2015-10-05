@@ -5,12 +5,13 @@
  * 
  * @author Fabian Pfannes <fpfannes@web.de>
  * @author Dennis Plöger <develop@dieploegers.de>
+ * @author Kilian Maier <kilian.maier1@web.de>
  */
-$lang['menu']                  = 'Indexmenu Werkzeuge';
+$lang['menu']                  = 'Indexmenü Werkzeuge';
 $lang['fetch']                 = 'Anzeigen';
 $lang['install']               = 'Installieren';
-$lang['delete']                = 'L&ouml;schen';
-$lang['check']                 = '&Uuml;berpr&uuml;fen';
+$lang['delete']                = 'Löschen';
+$lang['check']                 = 'Überprüfen';
 $lang['no_repos']              = 'Keine URL f&uuml;r ein Template-Repository vorhanden.';
 $lang['disabled']              = 'Deaktiviert';
 $lang['conn_err']              = 'Verbindung fehlgeschlagen';
@@ -57,3 +58,21 @@ $lang['js']['id']              = 'Benutzerspezifische Cookie-ID f&uuml;r dieses 
 $lang['js']['insert']          = 'Indexmenu einf&uuml;gen';
 $lang['js']['metanum']         = 'Meta-Nummer zur Sortierung';
 $lang['js']['insertmetanum']   = 'Metanummer einf&uuml;gen';
+$lang['js']['page']            = 'Seite';
+$lang['js']['revs']            = 'Revision';
+$lang['js']['tocpreview']      = 'Toc Vorschau';
+$lang['js']['editmode']        = 'Bearbeitungsmodus';
+$lang['js']['insertdwlink']    = 'Einfügen als DWlink';
+$lang['js']['search']          = 'Suchen ...';
+$lang['js']['create']          = 'Erstellen';
+$lang['js']['more']            = 'Mehr';
+$lang['js']['startpage']       = 'Startseite';
+$lang['js']['startpagetooltip'] = 'Erstelle eine neue Startseite unter dieser Seite';
+$lang['js']['custompage']      = 'Benutzerdefinierte Seite';
+$lang['js']['custompagetooltip'] = 'Erstelle eine neue Seite unter dieser Seite';
+$lang['js']['exporthtml']      = 'Exportieren als HTML';
+$lang['js']['exporttext']      = 'Exportieren als Text';
+$lang['js']['newpage']         = 'Neue Seite';
+$lang['js']['newpagehere']     = 'Neue Seite hier';
+$lang['js']['edit']            = 'Bearbeiten';
+$lang['js']['loading']         = 'Lädt ...';

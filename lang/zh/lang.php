@@ -4,6 +4,7 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
  * @author oott123 <ip.192.168.1.1@qq.com>
+ * @author super_ZED <funing@renrentou.com>
  */
 $lang['menu']                  = '索引菜单实用功能';
 $lang['fetch']                 = '显示';

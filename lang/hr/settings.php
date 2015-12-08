@@ -17,3 +17,4 @@ $lang['skip_file']             = 'Oznake stranica koje ne treba prikazati. Koris
 $lang['show_sort']             = 'Prikaži administratorima indexmenu sort broj kao poruku na vrhu stranice';
 $lang['themes_url']            = 'Dohvati js teme s ove http url adrese.';
 $lang['be_repo']               = 'Neka drugi mogu preuzeti teme s vašeg site-a.';
+$lang['defaultoptions']        = 'Lista Indeks-meni opcija odvojena razmacima. Ove opcije biti će primijenjene na svaki indeksni izbornik i mogu biti uklonjene sa reverse komandom u sintaksi dodatka';

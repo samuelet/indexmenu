@@ -4,6 +4,7 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
  * @author Myeongjin <aranet100@gmail.com>
+ * @author Erial <erial2@gmail.com>
  */
 $lang['checkupdate']           = '업데이트를 정기적으로 확인합니다.';
 $lang['only_admins']           = 'Indexmenu 문법을 관리자에게만 허용합니다.<br>관리자가 아닌 사용자가 편집한 문서는 매번 포함된 Indexmenu 트리가 사라짐에 주의하세요.';
@@ -17,3 +18,4 @@ $lang['skip_file']             = '건너뛰는 문서 id. 정규 표현식 형�
 $lang['show_sort']             = '문서 노드의 위로 Indexmenu 정렬 숫자를 관리자에게 보이기';
 $lang['themes_url']            = '이 http url에서 js 테마를 다운로드합니다.';
 $lang['be_repo']               = '다른 사용자가 사이트에서 테마를 다운로드할 수 있습니다.';
+$lang['defaultoptions']        = 'indexmenu의 설정은 공간으로 나뉩니다. 설정된 내용은 플러그인 문법에 따라 명령이 지정된 경우를 제외한 모든 indexmenu에 기본으로 적용됩니다. ';

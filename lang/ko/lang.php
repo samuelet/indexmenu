@@ -4,6 +4,7 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
  * @author Myeongjin <aranet100@gmail.com>
+ * @author Erial <erial2@gmail.com>
  */
 $lang['menu']                  = 'Indexmenu 유틸리티';
 $lang['fetch']                 = '보이기';
@@ -56,3 +57,33 @@ $lang['js']['id']              = 'Indexmenu에 대한 자기 정의된 쿠키';
 $lang['js']['insert']          = 'Indexmenu 넣기';
 $lang['js']['metanum']         = '정렬에 대한 메타 숫자';
 $lang['js']['insertmetanum']   = '메타숫자 넣기';
+$lang['js']['page']            = '문서';
+$lang['js']['revs']            = '이전 판';
+$lang['js']['tocpreview']      = 'TOC 미리보기';
+$lang['js']['editmode']        = '수정 모드';
+$lang['js']['insertdwlink']    = 'DW 링크 넣기';
+$lang['js']['insertdwlinktooltip'] = '커서가 가리키는 링크를 이 문서의 수정 상자에 넣음';
+$lang['js']['ns']              = '이름공간';
+$lang['js']['search']          = '검색 ...';
+$lang['js']['searchtooltip']   = '현 이름공간 속의 문서를 검색';
+$lang['js']['create']          = '만들기';
+$lang['js']['more']            = '더 보기';
+$lang['js']['headpage']        = '머릿 문서';
+$lang['js']['headpagetooltip'] = '이 문서 아래에 새 머릿문서 만들기';
+$lang['js']['startpage']       = '시작 문서';
+$lang['js']['startpagetooltip'] = '이 문서 아래에 새 시작 문서 만들기';
+$lang['js']['custompage']      = '커스텀 문서';
+$lang['js']['custompagetooltip'] = '이 문서 아래에 새 문서 만들기';
+$lang['js']['acls']            = '접근 제어 목록';
+$lang['js']['purgecache']      = '캐시 지우기';
+$lang['js']['exporthtml']      = 'HTML로 내보내기';
+$lang['js']['exporttext']      = 'text로 내보내기';
+$lang['js']['headpagehere']    = '이 페이지를 머릿문서로';
+$lang['js']['headpageheretooltip'] = '이 이름공간 안에 새 머릿문서 만들기';
+$lang['js']['newpage']         = '새 문서';
+$lang['js']['newpagetooltip']  = '이 이름공간 안에 새 문서 만들기';
+$lang['js']['newpagehere']     = '여기에 새 문서';
+$lang['js']['insertkeywords']  = '이 이름공간 안에서 검색할 단어를 넣어주세요';
+$lang['js']['insertpagename']  = '새로 만들 문서 이름을 넣어주세요';
+$lang['js']['edit']            = '수정';
+$lang['js']['loading']         = '읽는 중...';

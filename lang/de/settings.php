@@ -5,6 +5,7 @@
  * 
  * @author Fabian Pfannes <fpfannes@web.de>
  * @author e-dschungel <githib@e-dschungel.de>
+ * @author liz <marliza@web.de>
  */
 $lang['checkupdate']           = 'Regelmäßig auf Updates überprüfen.';
 $lang['only_admins']           = 'Indexmenu Syntax f&uuml;r Nicht-Admins verbieten.<br>Beachten Sie, dass durch das Editieren einer Seite durch einen Nicht-Admin jedes enthaltende Indexmenu verloren geht.';
@@ -18,3 +19,4 @@ $lang['skip_file']             = 'Dateien, die nicht aufgenommen werden sollen. 
 $lang['show_sort']             = 'Zeigt den Admins die Indexmenu Sortierungsnummer als top of page note';
 $lang['themes_url']            = 'JS Designvorlage von folgender http URL herunterladen.';
 $lang['be_repo']               = 'Andere Personen von Ihrer Seite Designvorlagen herunterladen lassen.';
+$lang['defaultoptions']        = 'Liste der Menüverzeichnis-Optionen durch Leerzeichen getrennt. Diese Optionen werden standardmäßig auf jedes Menüverzeichnis angewendet und können durch den reverse-Befehl in der Plugin-Syntax rückgängig gemacht werden.';

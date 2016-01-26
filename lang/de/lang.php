@@ -7,6 +7,7 @@
  * @author Dennis Plöger <develop@dieploegers.de>
  * @author Kilian Maier <kilian.maier1@web.de>
  * @author e-dschungel <githib@e-dschungel.de>
+ * @author liz <marliza@web.de>
  */
 $lang['menu']                  = 'Indexmenü Werkzeuge';
 $lang['fetch']                 = 'Anzeigen';
@@ -23,7 +24,7 @@ $lang['install_ok']            = 'Designvorlage wurde erfolgreich erstellt. Die 
 $lang['install_no']            = 'Verbindungsfehler. Sie können aber versuchen die Designvorlage <a href="http://samuele.netsons.org/dokuwiki/lib/plugins/indexmenu/upload/">hier</a> hochzuladen.';
 $lang['delete_ok']             = 'Designvorlage wurde erfolgreich gelöscht.';
 $lang['delete_no']             = 'Beim Löschen ist ein Fehler aufgetreten';
-$lang['upload']                = 'Hochladen';
+$lang['upload']                = 'Teilen';
 $lang['checkupdates']          = 'Plugin updaten';
 $lang['noupdates']             = 'Indexmenu muss nicht upgedated werden. Sie haben bereits die aktuellste Version:';
 $lang['infos']                 = 'Sie können eine neue Designvorlage erstellen. Beachten Sie die Anleitung im <a href="https://www.dokuwiki.org/plugin:indexmenu#theme_tutorial">Designvorlagen Tutorial</a. <br />Wenn Sie den "Hochladen" Button unter der Designvorlage drücken können Sie viele Leute glücklich machen :-) dadurch, dass Sie sie im öffentlichen Indexmenu Repository bereitstellen.';
@@ -64,11 +65,13 @@ $lang['js']['revs']            = 'Revision';
 $lang['js']['tocpreview']      = 'Toc Vorschau';
 $lang['js']['editmode']        = 'Bearbeitungsmodus';
 $lang['js']['insertdwlink']    = 'Einfügen als DWlink';
+$lang['js']['insertdwlinktooltip'] = 'Link dieser Seite in Eingabefeld an der entsprechenden Cursor-Position eingeben';
 $lang['js']['ns']              = 'Namensraum';
 $lang['js']['search']          = 'Suchen ...';
 $lang['js']['searchtooltip']   = 'Nach Seiten innerhalb dieses Namensraumes suchen';
 $lang['js']['create']          = 'Erstellen';
 $lang['js']['more']            = 'Mehr';
+$lang['js']['headpagetooltip'] = 'Eine neue headpage unter dieser Seite anlegen';
 $lang['js']['startpage']       = 'Startseite';
 $lang['js']['startpagetooltip'] = 'Erstelle eine neue Startseite unter dieser Seite';
 $lang['js']['custompage']      = 'Benutzerdefinierte Seite';
@@ -77,8 +80,12 @@ $lang['js']['acls']            = 'ACLs';
 $lang['js']['purgecache']      = 'Cache löschen';
 $lang['js']['exporthtml']      = 'Exportieren als HTML';
 $lang['js']['exporttext']      = 'Exportieren als Text';
+$lang['js']['headpagehere']    = 'Headpage hier';
+$lang['js']['headpageheretooltip'] = 'Eine neue headpage innerhalb dieses Namensraums anlegen';
 $lang['js']['newpage']         = 'Neue Seite';
 $lang['js']['newpagetooltip']  = 'Eine neue Seite innerhalb dieses Namensraums erzeugen';
 $lang['js']['newpagehere']     = 'Neue Seite hier';
+$lang['js']['insertkeywords']  = 'Suchbegriff(e) für die Suche innerhalb dieses Namensraums eingeben';
+$lang['js']['insertpagename']  = 'Seitenname zum Erstellen eingeben';
 $lang['js']['edit']            = 'Bearbeiten';
 $lang['js']['loading']         = 'Lädt ...';

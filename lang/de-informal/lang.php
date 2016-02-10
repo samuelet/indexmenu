@@ -4,6 +4,7 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
  * @author Thomas Templin <templin@gnuwhv.de>
+ * @author Dana <dannax3@gmx.de>
  */
 $lang['menu']                  = 'Indexmenu Werkzeuge';
 $lang['fetch']                 = 'Anzeigen';
@@ -56,3 +57,25 @@ $lang['js']['id']              = 'Benutzerspezifische Cookie-ID f&uml;r dieses i
 $lang['js']['insert']          = 'Indexmenu einf&uml;gen';
 $lang['js']['metanum']         = 'Meta-Nummer zur Sortierung';
 $lang['js']['insertmetanum']   = 'Metanummer einf&uuml;gen';
+$lang['js']['page']            = 'Seite';
+$lang['js']['revs']            = 'Berechtigungen';
+$lang['js']['editmode']        = 'Editiermodus';
+$lang['js']['insertdwlink']    = 'Einfügen als DWlink';
+$lang['js']['ns']              = 'Namensraum';
+$lang['js']['search']          = 'Suchen ...';
+$lang['js']['searchtooltip']   = 'Suchen von Seiten innerhalb dieses Namensraums';
+$lang['js']['create']          = 'Erstellen';
+$lang['js']['more']            = 'Mehr';
+$lang['js']['startpage']       = 'Startseite';
+$lang['js']['startpagetooltip'] = 'Erstellen einer neuen Startseite unter dieser Seite';
+$lang['js']['custompage']      = 'Benutzerdefinierte Seite';
+$lang['js']['custompagetooltip'] = 'Erstellen einer neuen Seite unter dieser Seite';
+$lang['js']['acls']            = 'ACLs';
+$lang['js']['purgecache']      = 'Cache löschen';
+$lang['js']['exporthtml']      = 'Exportieren als HTML';
+$lang['js']['exporttext']      = 'Exportieren als Text';
+$lang['js']['newpage']         = 'Neue Seite';
+$lang['js']['newpagehere']     = 'Neue Seite hier';
+$lang['js']['insertpagename']  = 'Einfügen des Seitennamens zum Erstellen';
+$lang['js']['edit']            = 'Bearbeiten';
+$lang['js']['loading']         = 'Laden...';

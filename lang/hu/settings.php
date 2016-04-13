@@ -4,6 +4,7 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
  * @author Marina Vladi <deldadam@gmail.com>
+ * @author DelD <deldadam@gmail.com>
  */
 $lang['checkupdate']           = 'Frissítések keresése szabályos időközönként';
 $lang['only_admins']           = 'Az Indexmenü szintaxisa csak adminisztrátorok számára legyen elérhető.<br />Megj.: ha egy indexmenüt tartalmazó oldalt nem adminisztrátor módosít, akkor a menü az oldalról törlődik.';
@@ -17,3 +18,4 @@ $lang['skip_file']             = 'Kihagyni kívánt oldalak ID-je (azonosítója
 $lang['show_sort']             = 'Indexmenü rendező számának megjelenítése adminisztrátoroknak oldal tetején megjegyzésként';
 $lang['themes_url']            = 'JavaScript-témák letöltése erről az URL-címről.';
 $lang['be_repo']               = 'Témák letöltésének engedélyezése másoknak az oldalunkról.';
+$lang['defaultoptions']        = 'Az \'indexmenu\' beállításainak listája, szóközzel elválasztva. Ezek a beállítások alapértelmezés szerint minden indexmenu-elemre végrehajtódnak, és nem visszavonhatók a bővítmény parancsaival.';

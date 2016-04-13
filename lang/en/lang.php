@@ -53,6 +53,7 @@ $lang['js']['rsort']           = 'Reverse the sorting of pages';
 $lang['js']['nons']            = 'Show only pages';
 $lang['js']['nopg']            = 'Show only namespaces';
 $lang['js']['max']             = 'How many levels to render with ajax when a node is opened. Additional are how many sublevels below that level are retrieved with AJAX instead of in one go. ';
+$lang['js']['maxcount']        = 'How many pages to show?';
 $lang['js']['maxjs']           = 'How many levels to render in the client browser when a node is opened';
 $lang['js']['id']              = 'Self defined cookie id for this indexmenu';
 $lang['js']['insert']          = 'Insert indexmenu';

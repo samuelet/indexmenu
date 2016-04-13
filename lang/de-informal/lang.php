@@ -2,7 +2,7 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
  * @author Thomas Templin <templin@gnuwhv.de>
  * @author Dana <dannax3@gmx.de>
  */
@@ -52,6 +52,7 @@ $lang['js']['rsort']           = 'Sortierung der Seiten umdrehen';
 $lang['js']['nons']            = 'Nur Seiten zeigen';
 $lang['js']['nopg']            = 'Nur Namensr&auml;ume zeigen';
 $lang['js']['max']             = 'Wieviele Ebenen sollen mit Ajax geholt werden, wenn ein Knoten ge&ouml;ffnet wird? Au&szlig;erdem: wieviele Unterebenen unterhalb dieser Ebene sollen mit Ajax geholt werden anstatt w&auml;hrend des Seitenaufbaus?';
+$lang['js']['maxcount']        = 'Wieviele Seiten sollen angezeigt werden?';
 $lang['js']['maxjs']           = 'Wieviele Ebenen sollen im Browser statt auf dem Server gerendert werden, wenn ein Knoten ge&ouml;ffnet wird?';
 $lang['js']['id']              = 'Benutzerspezifische Cookie-ID f&uml;r dieses indexmenu';
 $lang['js']['insert']          = 'Indexmenu einf&uml;gen';

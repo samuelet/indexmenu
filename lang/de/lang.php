@@ -2,7 +2,7 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
  * @author Fabian Pfannes <fpfannes@web.de>
  * @author Dennis Plöger <develop@dieploegers.de>
  * @author Kilian Maier <kilian.maier1@web.de>
@@ -55,6 +55,7 @@ $lang['js']['rsort']           = 'Sortierung der Seiten umdrehen';
 $lang['js']['nons']            = 'Nur Seiten zeigen';
 $lang['js']['nopg']            = 'Nur Namensräume zeigen';
 $lang['js']['max']             = 'Wieviele Ebenen sollen mit AJAX geholt werden, wenn ein Knoten geöffnet wird? Außerdem: wieviele Unterebenen unterhalb dieser Ebene sollen mit AJAX geholt werden anstatt während des Seitenaufbaus?';
+$lang['js']['maxcount']        = 'Wieviele Seiten sollen angezeigt werden?';
 $lang['js']['maxjs']           = 'Wieviele Ebenen sollen im Browser statt auf dem Server gerendert werden, wenn ein Knoten geöffnet wird?';
 $lang['js']['id']              = 'Benutzerspezifische Cookie-ID für dieses Indexmenu';
 $lang['js']['insert']          = 'Indexmenu einfügen';

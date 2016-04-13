@@ -430,6 +430,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
 				$output .= html_buildlist($data, 'idx', array($this, "_html_list_index"), "html_li_index");
 				$output .= "</div></div>\n";
 				$output .= $output_tmp;
+				$output .= 'etgtest';
 				return $output;
 		}
 

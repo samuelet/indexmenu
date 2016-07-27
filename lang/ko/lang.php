@@ -2,7 +2,7 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
  * @author Myeongjin <aranet100@gmail.com>
  * @author Erial <erial2@gmail.com>
  */
@@ -39,7 +39,7 @@ $lang['js']['nsdepth']         = '깊이';
 $lang['js']['js']              = '자바스크립트에 의해 렌더되는 트리로, 자신의 테마를 정의할 수 있습니다';
 $lang['js']['theme']           = '테마';
 $lang['js']['navbar']          = '트리는 현재 이름공간에서 엽니다';
-$lang['js']['context']         = '현재 위키 이름공간 문맥의 트리를 보여줍니다';
+$lang['js']['context']         = '현재 위키 이름공간 문맥의 트리를 표시합니다';
 $lang['js']['nocookie']        = '사용자가 둘러보는 동안 열린/닫힌 노드를 기억하지 않습니다';
 $lang['js']['noscroll']        = '트리의 컨테이너 너비에 맞추지 않으면 트리의 스크롤을 막습니다';
 $lang['js']['notoc']           = '목차 미리 보기 기능을 비활성화합니다';

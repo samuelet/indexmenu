@@ -2,7 +2,7 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
  * @author Gerrit Uitslag <klapinklapin@gmail.com>
  * @author Joachim David <joa_david@hotmail.com>
  */
@@ -81,9 +81,9 @@ $lang['js']['exporttext']      = 'Exporteer als tekst';
 $lang['js']['headpagehere']    = 'Hoofdpagina hier';
 $lang['js']['headpageheretooltip'] = 'Maak een nieuwe hoofdpagina binnen deze namespace';
 $lang['js']['newpage']         = 'Nieuwe pagina';
-$lang['js']['newpagetooltip']  = 'Maak een nieuwe pagina binnen deze namespace';
+$lang['js']['newpagetooltip']  = 'Maak een nieuwe pagina (naam invoeren via popup) in deze namespace';
 $lang['js']['newpagehere']     = 'Nieuwe pagina hier';
-$lang['js']['insertkeywords']  = 'Voeg keywords in om naar te zoeken binnen deze namespace';
-$lang['js']['insertpagename']  = 'Voeg de paginanaam om aan te maken in';
+$lang['js']['insertkeywords']  = 'Voer hier uw zoektermen in voor zoeken binnen deze namespace';
+$lang['js']['insertpagename']  = 'Vul de naam in voor de nieuwe pagina';
 $lang['js']['edit']            = 'Bewerken';
 $lang['js']['loading']         = 'Laden...';

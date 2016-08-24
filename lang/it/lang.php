@@ -2,9 +2,10 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
- * @author     Samuele Tognini <samuele@samuele.netsons.org>
+ *
+ * @author Samuele Tognini <samuele@samuele.netsons.org>
  * @author Edmondo Di Tucci <snarchio@gmail.com>
+ * @author lerdt <pro@nicolas-hemard.eu>
  */
 $lang['menu']                  = 'Utility di Indexmenu';
 $lang['fetch']                 = 'Mostra';
@@ -54,3 +55,16 @@ $lang['js']['id']              = 'Cookie ID per questo indexmenu';
 $lang['js']['insert']          = 'Inserisci indexmenu';
 $lang['js']['metanum']         = 'Meta numero per ordinare';
 $lang['js']['insertmetanum']   = 'Inserisci un metanumero';
+$lang['js']['page']            = 'Pagina';
+$lang['js']['revs']            = 'Modifiche';
+$lang['js']['tocpreview']      = 'Indice';
+$lang['js']['ns']              = 'Categoria';
+$lang['js']['search']          = 'Cerca...';
+$lang['js']['searchtooltip']   = 'Cerca in tutte le pagine della categoria';
+$lang['js']['create']          = 'Crea';
+$lang['js']['acls']            = 'Access Control Lists (ACLs)';
+$lang['js']['exporthtml']      = 'Esporta come HTML';
+$lang['js']['exporttext']      = 'Esporta come testo';
+$lang['js']['newpage']         = 'Nuova pagina...';
+$lang['js']['newpagehere']     = 'Crea nuova pagina qui';
+$lang['js']['insertkeywords']  = 'Inserisci una o più parole chiavi per cercare in questa categoria';

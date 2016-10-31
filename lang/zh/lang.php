@@ -5,6 +5,7 @@
  * 
  * @author oott123 <ip.192.168.1.1@qq.com>
  * @author super_ZED <funing@renrentou.com>
+ * @author Steven Sui <clamis@gmail.com>
  */
 $lang['menu']                  = '索引菜单实用功能';
 $lang['fetch']                 = '显示';

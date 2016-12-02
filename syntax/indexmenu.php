@@ -118,6 +118,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $nopg = $this->hasOption($defaults, $opts, 'nopg');
         //disable toc preview
         $notoc = $this->hasOption($defaults, $opts, 'notoc');
+        //disable underscore to space
+        $scorespace = $this->hasOption($defaults, $opts, 'scorespace');
         //disable the right context menu
         $nomenu = $this->hasOption($defaults, $opts, 'nomenu');
         //Main sort method
@@ -237,7 +239,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         }
 
         //js options
-        $js_opts = compact('theme', 'identifier', 'nocookie', 'navbar', 'noscroll', 'maxjs', 'notoc', 'jsajax', 'context', 'nomenu');
+        $js_opts = compact('theme', 'identifier', 'nocookie', 'navbar', 'noscroll', 'maxjs', 'notoc', 'scorespace', 'jsajax', 'context', 'nomenu');
 
         return array(
             $ns,
@@ -387,7 +389,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     private function _indexmenu($myns) {
         global $conf;
         $ns          = $myns[0];
-        $js_opts     = $myns[1]; //theme, identifier, nocookie, navbar, noscroll, maxjs, notoc, jsajax, context, nomenu
+        $js_opts     = $myns[1]; //theme, identifier, nocookie, navbar, noscroll, maxjs, notoc, scorespace, jsajax, context, nomenu
         $this->sort  = $myns[2];
         $this->msort = $myns[3];
         $this->rsort = $myns[4];
@@ -464,6 +466,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $out .= "$js_name.config.urlbase='".substr(wl(":"), 0, -1)."';\n";
         $out .= "$js_name.config.sepchar='".$sepchar."';\n";
         if($js_opts['notoc'])          $out .= "$js_name.config.toc=false;\n";
+        if($js_opts['scorespace'])     $out .= "$js_name.config.scorespace=true;\n";
         if($js_opts['nocookie'])       $out .= "$js_name.config.useCookies=false;\n";
         if($js_opts['noscroll'])       $out .= "$js_name.config.scroll=false;\n";
         if($js_opts['maxjs'] > 0)      $out .= "$js_name.config.maxjs=".$js_opts['maxjs'].";\n";

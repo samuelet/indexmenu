@@ -44,6 +44,7 @@ $lang['js']['context']         = 'Display the tree of the current wiki namespace
 $lang['js']['nocookie']        = 'Don\'t remember open/closed nodes during user navigation';
 $lang['js']['noscroll']        = 'Prevent to scrolling the tree when it does not fit its container width';
 $lang['js']['notoc']           = 'Disable the toc preview feature';
+$lang['js']['scorespace']      = 'Replace underscores with space';
 $lang['js']['tsort']           = 'By title';
 $lang['js']['dsort']           = 'By date';
 $lang['js']['msort']           = 'By meta tag';

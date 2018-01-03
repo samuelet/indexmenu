@@ -2,7 +2,8 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
+ * @author test <Klapinklapin@gmail.com>
  * @author Digna González Otero <digna.gonzalezotero [at] gmail [dot] com>
  * @author Eloy <ej.perezgomez@gmail.com>
  */
@@ -44,3 +45,4 @@ $lang['js']['dsort']           = 'Por fecha';
 $lang['js']['nsort']           = 'Ordenar también espacios de nombres';
 $lang['js']['nons']            = 'Mostrar solo páginas';
 $lang['js']['nopg']            = 'Mostrar solo espacios de nombres';
+$lang['js']['insert']          = 'TESTTEST';

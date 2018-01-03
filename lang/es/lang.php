@@ -2,7 +2,8 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
+ * @author test <Klapinklapin@gmail.com>
  * @author Digna González Otero <digna.gonzalezotero [at] gmail [dot] com>
  * @author Eloy <ej.perezgomez@gmail.com>
  */
@@ -26,6 +27,7 @@ $lang['checkupdates']          = 'Actualizaciones de plugin';
 $lang['noupdates']             = 'No es necesario actualizar Indexmenu. Ya tienes la última versión:';
 $lang['infos']                 = 'Puedes crear tu tema siguiendo las instrucciones de la página <a href="https://www.dokuwiki.org/plugin:indexmenu#theme_tutorial">Theme Tutorial</a>. <br />Después puedes hacer feliz a más gente:-) enviándolo al repositorio público de indexmenu, con el botón de "compartir" bajo ese tema.';
 $lang['showsort']              = 'Número de posición de Indexmenu: ';
+$lang['donation_text']         = 'TESTTEST';
 $lang['js']['index']           = 'Indice';
 $lang['js']['options']         = 'Opciones';
 $lang['js']['navigation']      = 'Navegación';

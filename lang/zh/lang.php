@@ -3,6 +3,7 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author lempel <riverlempel@hotmail.com>
  * @author oott123 <ip.192.168.1.1@qq.com>
  * @author super_ZED <funing@renrentou.com>
  * @author kuma <kuma000@qq.com>
@@ -64,11 +65,15 @@ $lang['js']['search']          = '搜索...';
 $lang['js']['searchtooltip']   = '搜索页面在这个名称空间';
 $lang['js']['create']          = '创建';
 $lang['js']['more']            = '更多';
+$lang['js']['headpage']        = '首页';
 $lang['js']['startpage']       = '起始页';
 $lang['js']['startpagetooltip'] = '在此页面下创建一个新的开始页';
 $lang['js']['custompage']      = '自定义页面…';
+$lang['js']['acls']            = '访问控制列表';
 $lang['js']['purgecache']      = '清除缓存';
 $lang['js']['exporthtml']      = '导出为HTML';
 $lang['js']['exporttext']      = '导出为文本';
 $lang['js']['newpage']         = '新页面…';
 $lang['js']['newpagehere']     = '新页面在这里';
+$lang['js']['edit']            = '编辑';
+$lang['js']['loading']         = '加载';

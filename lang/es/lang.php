@@ -2,7 +2,8 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
+ * @author Zigor Astarbe <astarbe@gmail.com>
  * @author Digna González Otero <digna.gonzalezotero [at] gmail [dot] com>
  * @author Eloy <ej.perezgomez@gmail.com>
  */
@@ -44,3 +45,12 @@ $lang['js']['dsort']           = 'Por fecha';
 $lang['js']['nsort']           = 'Ordenar también espacios de nombres';
 $lang['js']['nons']            = 'Mostrar solo páginas';
 $lang['js']['nopg']            = 'Mostrar solo espacios de nombres';
+$lang['js']['page']            = 'Página';
+$lang['js']['revs']            = 'Revisiones';
+$lang['js']['editmode']        = 'Modo de edición';
+$lang['js']['search']          = 'Buscar ...';
+$lang['js']['create']          = 'Crear';
+$lang['js']['more']            = 'Más';
+$lang['js']['startpage']       = 'Página de Inicio';
+$lang['js']['startpagetooltip'] = 'Crea una nueva página de inicio bajo esta página';
+$lang['js']['custompage']      = 'Página personalizada...';

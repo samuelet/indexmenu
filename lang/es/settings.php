@@ -2,7 +2,7 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
  * @author Digna González Otero <digna.gonzalezotero [at] gmail [dot] com>
  */
 $lang['checkupdate']           = 'Comprobar actualizaciones periódicamente.';

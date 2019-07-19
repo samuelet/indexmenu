@@ -2,7 +2,8 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
+ * @author king <b4688756@urhen.com>
  * @author Hideaki SAWADA <chuno@live.jp>
  */
 $lang['checkupdate']           = '更新を定期的に確認する。';

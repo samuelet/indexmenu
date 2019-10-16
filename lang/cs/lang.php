@@ -3,14 +3,22 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author Jakub Duchek <jakduch@jakduch.cz>
  * @author Vojta Olsan <olsh0@seznam.cz>
  */
+$lang['menu']                  = 'Indexmenu nástroje';
 $lang['fetch']                 = 'Zobrazit';
 $lang['install']               = 'Nainstalovat';
 $lang['delete']                = 'Smazat';
 $lang['check']                 = 'Zkontrolovat';
+$lang['no_repos']              = 'Nebyla nastavena adresa úložiště šablon.';
 $lang['disabled']              = 'Zakázané';
 $lang['conn_err']              = 'Chyba spojení';
+$lang['dir_err']               = 'Nezdařilo se vytvoření dočasné složky pro stažení šablony';
+$lang['down_err']              = 'Nezdařilo se stažení šablony';
+$lang['zip_err']               = 'Nastala chyba při vytváření nebo rozbalování ZIPu';
+$lang['delete_ok']             = 'Šablona byla úspěšně smazána';
+$lang['delete_no']             = 'Při mazání šablony nastala chyba';
 $lang['upload']                = 'Sdílet';
 $lang['checkupdates']          = 'Aktualizace pluginů';
 $lang['js']['options']         = 'Možnosti';

@@ -15,5 +15,5 @@ $conf['empty_msg']     = '';
 $conf['skip_index']    = '';
 $conf['skip_file']     = '';
 $conf['show_sort']     = 1;
-$conf['themes_url']    = 'http://samuele.netsons.org/dokuwiki';
-$conf['be_repo']       = 0;
+//$conf['themes_url']    = 'http://samuele.netsons.org/dokuwiki';
+//$conf['be_repo']       = 0;

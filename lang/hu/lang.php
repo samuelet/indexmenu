@@ -4,6 +4,7 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
  * @author Marina Vladi <deldadam@gmail.com>
+ * @author DelD <deldadam@gmail.com>
  */
 $lang['menu']                  = 'Indexmenü segédprogamok';
 $lang['fetch']                 = 'Megjelenítés';
@@ -56,3 +57,33 @@ $lang['js']['id']              = 'Ennek az indexmenünek a saját süti azonosí
 $lang['js']['insert']          = 'Indexmenü beillesztése';
 $lang['js']['metanum']         = 'Metaszám rendezéshez';
 $lang['js']['insertmetanum']   = 'Metaszám beillesztése';
+$lang['js']['page']            = 'Oldal';
+$lang['js']['revs']            = 'Revíziók';
+$lang['js']['tocpreview']      = 'Tartalomjegyzék előnézete';
+$lang['js']['editmode']        = 'Szerkesztési mód';
+$lang['js']['insertdwlink']    = 'Beillesztés DokuWiki-hivatkozásként';
+$lang['js']['insertdwlinktooltip'] = 'Oldal hivatkozásának beillesztése a szerkesztő ablakba, a kurzor pozíciójánál';
+$lang['js']['ns']              = 'Névtér';
+$lang['js']['search']          = 'Keresés...';
+$lang['js']['searchtooltip']   = 'Oldalak keresése a névtéren belül';
+$lang['js']['create']          = 'Készítés';
+$lang['js']['more']            = 'Több';
+$lang['js']['headpage']        = 'Főoldal';
+$lang['js']['headpagetooltip'] = 'Új főoldal készítése ez alá az oldal alá';
+$lang['js']['startpage']       = 'Kezdőlap';
+$lang['js']['startpagetooltip'] = 'Új kezdőlap készítése ez alá az oldal alá';
+$lang['js']['custompage']      = 'Tetszőleges oldal';
+$lang['js']['custompagetooltip'] = 'Új oldal készítése ez alá az oldal alá';
+$lang['js']['acls']            = 'ACL (jogosultságok)';
+$lang['js']['purgecache']      = 'Átmeneti tár (cache) takarítása';
+$lang['js']['exporthtml']      = 'Exportálás HTML-fájlba';
+$lang['js']['exporttext']      = 'Exportálás szöveges fájlba';
+$lang['js']['headpagehere']    = 'Főoldal ide';
+$lang['js']['headpageheretooltip'] = 'Új főoldal készítése a névtérben';
+$lang['js']['newpage']         = 'Új oldal';
+$lang['js']['newpagetooltip']  = 'Új oldal készítése a névtérben';
+$lang['js']['newpagehere']     = 'Új oldal ide';
+$lang['js']['insertkeywords']  = 'Kulcsszavak ezen a névtéren belüli kereséshez';
+$lang['js']['insertpagename']  = 'Készítendő oldal neve';
+$lang['js']['edit']            = 'Szerkesztés';
+$lang['js']['loading']         = 'Betöltés...';

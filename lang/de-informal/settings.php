@@ -4,6 +4,7 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
  * @author Thomas Templin <templin@gnuwhv.de>
+ * @author Dana <dannax3@gmx.de>
  */
 $lang['checkupdate']           = 'Regelm&auml;&szlig;ig auf Updates &uuml;berpr&uuml;fen.';
 $lang['only_admins']           = 'Indexmenu Syntax f&uuml;r Nicht-Admins verbieten.<br>Beachte, dass durch das Editieren einer Seite durch einen Nicht-Admin jedes enthaltende Indexmenu verloren geht.';
@@ -17,3 +18,5 @@ $lang['skip_file']             = 'Dateien die nicht aufgenommen werden sollen. D
 $lang['show_sort']             = 'Zeigt den Admins die Indexmenu Sortierungsnummer als top of page note';
 $lang['themes_url']            = 'JS Designvorlage von folgender http URL herunterladen.';
 $lang['be_repo']               = 'Andere Personen von Ihrer Seite Designvorlagen herunterladen lassen.';
+$lang['defaultoptions']        = 'Eine durch Leerzeichen getrennte Liste von Indexmenu-Optionen.
+Diese Optionen werden standardmäßig auf alle Indexmenus angewandt und können durch einen umgekehrten Befehl in der Plugin-Syntax rückgängig gemacht werden.';

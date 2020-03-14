@@ -4,6 +4,7 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
  * @author Gerrit Uitslag <klapinklapin@gmail.com>
+ * @author Joachim David <joa_david@hotmail.com>
  */
 $lang['checkupdate']           = 'Controleer regelmatig op updates';
 $lang['only_admins']           = 'Sta indexmenu alleen toe voor beheerders. <br> Merk op dat een pagina bewerkt door een niet-beheerder de indexmenu\'s de indexmenu\'s kwijtraakt.';
@@ -14,6 +15,7 @@ $lang['page_index']            = 'De pagina die de hoofdindex van DokuWiki verva
 $lang['empty_msg']             = 'Bericht dat wordt weergegeven als de indexmenu leeg is. Gebruik de DokuWiki-syntax, geen html code. De <code>{{ns}}</code> variabele geeft de gevraagde namespace naam weer.';
 $lang['skip_index']            = 'Namespace-id\'s om over te slaan. Gebruik het Regular Expression formaat. Voorbeeld <code>/(sidebars|private:myns)/</code>';
 $lang['skip_file']             = 'Pagina-id\'s om over te slaan. Gebruik het Regular Expression formaat. Voorbeeld <code>/(:start$|^public:newstart$)/</code>';
-$lang['show_sort']             = 'Laat beheerders het indexmenu sorteernummer zien als melding bovenaan de pagina';
-$lang['themes_url']            = 'Download de javascript thema\'s van deze http url';
+$lang['show_sort']             = 'Laat beheerders het indexmenu sorteernummer zien als melding bovenaan de pagina.';
+$lang['themes_url']            = 'Download de javascript-thema\'s van deze http url.';
 $lang['be_repo']               = 'Laat anderen thema\'s downloaden van jouw site.';
+$lang['defaultoptions']        = 'Lijst van indexmenu-opties gescheiden door spaties. De opties zullen automatisch worden toegekend aan elk indexmenu en kunnen ongedaan gemaakt worden met een tegengesteld commando in de plugin syntax.';

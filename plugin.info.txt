@@ -1,7 +1,7 @@
 base   indexmenu
 author Samuele Tognini
 email  samuele@samuele.netsons.org
-date   2015-08-26
+date   2020-06-02
 name   Indexmenu Plugin
 desc   Show a customizable and sortable index for a namespace
 url    https://www.dokuwiki.org/plugin:indexmenu

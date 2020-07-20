@@ -18,4 +18,4 @@ $lang['skip_file']             = 'Pages id to skip. Use the Regular Expression f
 $lang['show_sort']             = 'Show to admins the indexmenu sort number as top of page note';
 $lang['themes_url']            = 'Download js themes from this http url.';
 $lang['be_repo']               = 'Let others download themes from you site.';
-$lang['defaultoptions']               = 'List of indexmenu options separated by spaces. These options will be applied by default to every indexmenu and can be undone with a reverse command in the plugin syntax';
+$lang['defaultoptions']        = 'List of indexmenu options separated by spaces. These options will be applied by default to every indexmenu and can be undone with a reverse command in the plugin syntax';

@@ -3,6 +3,8 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * contextmenu.js 
+ *
  * @author Samuele Tognini <samuele@samuele.netsons.org>
  * @author Gerrit Uitslag <klapinklapin@gmail.com>
  */
@@ -34,7 +36,6 @@ $lang['js']['navigation']      = 'Navigation';
 $lang['js']['sort']            = 'Sort';
 $lang['js']['filter']          = 'Filter';
 $lang['js']['performance']     = 'Performance';
-
 $lang['js']['namespace']       = 'Namespace';
 $lang['js']['nsdepth']         = 'Depth';
 $lang['js']['js']              = 'Tree rendered by Javasript, you can define your own theme';
@@ -58,8 +59,6 @@ $lang['js']['id']              = 'Self defined cookie id for this indexmenu';
 $lang['js']['insert']          = 'Insert indexmenu';
 $lang['js']['metanum']         = 'Meta number for sorting';
 $lang['js']['insertmetanum']   = 'Insert metanumber';
-
-/* contextmenu.js */
 $lang['js']['page']            = 'Page';
 $lang['js']['revs']            = 'Revisions';
 $lang['js']['tocpreview']      = 'Toc preview';

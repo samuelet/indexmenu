@@ -26,6 +26,26 @@
  | indexmenu  | https://www.dokuwiki.org/plugin:indexmenu |
  |-------------------------------------------------------*/
 
+/*
+ * ids used in the dTree:
+ *  - div#cdtree_<id indexmenu>  div top level
+ *      - div#dtree_<id indexmenu> div contains all nodes
+ *          - div#toc_<id indexmenu> ??
+ *          - div.dtreeNode
+ *              - img#i<id indexmenu><nodenr?>   icon
+ *              - a#s<id indexmenu><nodenr?>     url to page/namespace with title
+ *              - div#t<id indexmenu><nodenr?>   button for opening ToC, included if hovered
+ *          - div.d<id indexmenu><nodenr?>
+ *  repeats:    - div.dtreeNode (with img#i, a#s and div#t)
+ *  repeats:    - div.d<id indexmenu><nodenr?>
+ *      - z<id indexmenu>  scroll rightward arrows
+ *      - left_<id indexmenu> scroll leftward arrows
+ *
+ * at the end of body:
+ *  - picker_<id indexmenu> popup with ToC
+ *  - r<id indexmenu>  rightmouse button menu
+ */
+
 /**
  * dTreeNode object
  *
@@ -39,35 +59,53 @@
  * @constructor
  */
 function dTreeNode(dokuid, id, pid, name, hns, isdir, ajax) {
+    /** @type {string} */
     this.dokuid = dokuid; // page id of node
+    /** @type {number} */
     this.id = id;         // id number of node
+    /** @type {number} */
     this.pid = pid;       // id number of parent node
+    /** @type {string} */
     this.name = name;     // ns/page title
+    /** @type {number|string} */
     this.hns = hns;       // headpage of namespace or zero
-    this.isdir = isdir;   // is directory
-    this.ajax = ajax;     // load its nodes by ajax
-    this._io = 0;         // is node open
+    /** @type {boolean} */
+    this.isdir = Boolean(isdir); // is directory
+    /** @type {boolean} */
+    this.ajax = Boolean(ajax);   // load its nodes by ajax
+    /** @type {boolean} */
+    this._io = false;     // is node open
+    /** @type {boolean} */
     this._is = false;     // is selected
+    /** @type {boolean} */
     this._ls = false;     // is last sibling
-    this._hc = ajax;      // has children
+    /** @type {boolean} */
+    this._hc = Boolean(ajax); // has children
+    /** @type {number} */
     this._ai = 0;         // id number of first child....
-    this._p = false;      // parent dTreeNode
-    this._lv = 0;         // level
+    /** @type {dTreeNode} */
+    this._p = undefined;  // parent dTreeNode
+    /** @type {number} */
+    this._lvl = 0;        // level
+    /** @type {boolean} */
     this._ok = false;     // all children are loaded
+    /** @type {boolean} */
     this._cp = false;     // current page
+    /** @type {string} */
     this.icon = '';       // icon of closed node
+    /** @type {string} */
     this.iconOpen = '';   // icon of opened node
 }
 
 /**
  * Tree object
  *
- * @param {string} objName id of the indexmenu, has form 'indexmenu_<identifier>'
+ * @param {string} treeName id of the indexmenu, has form 'indexmenu_<identifier>'
  * @param {string} theme   name of theme dir
  * @constructor
  */
-function dTree(objName, theme) {
-    var objExt = IndexmenuUtils.determineExtension(theme);
+function dTree(treeName, theme) {
+    let imgExt = IndexmenuUtils.determineExtension(theme);
     this.config = {
         urlbase: DOKU_BASE + 'doku.php?id=',           // base of dokuwiki (set in page)
         plugbase: DOKU_BASE + 'lib/plugins/indexmenu', // base of plugin folder
@@ -79,34 +117,44 @@ function dTree(objName, theme) {
         sepchar: ':',                                  // value ':', ';' or '/'  (set in page)
         theme: theme                                   // dir name of theme folder
     };
-    var objImg = this.config.plugbase + '/images/' + theme + '/';
+    let imagePath = this.config.plugbase + '/images/' + theme + '/';
     this.icon = {
-        root: objImg + 'base.' + objExt,
-        folder: objImg + 'folder.' + objExt,
-        folderH: objImg + 'folderh.' + objExt,
-        folderOpen: objImg + 'folderopen.' + objExt,
-        folderHOpen: objImg + 'folderhopen.' + objExt,
-        node: objImg + 'page.' + objExt,
-        empty: objImg + 'empty.' + objExt,
-        line: objImg + 'line.' + objExt,
-        join: objImg + 'join.' + objExt,
-        joinBottom: objImg + 'joinbottom.' + objExt,
-        plus: objImg + 'plus.' + objExt,
-        plusBottom: objImg + 'plusbottom.' + objExt,
-        minus: objImg + 'minus.' + objExt,
-        minusBottom: objImg + 'minusbottom.' + objExt,
-        nlPlus: objImg + 'nolines_plus.' + objExt,
-        nlMinus: objImg + 'nolines_minus.' + objExt
+        root: imagePath + 'base.' + imgExt,
+        folder: imagePath + 'folder.' + imgExt,
+        folderH: imagePath + 'folderh.' + imgExt,
+        folderOpen: imagePath + 'folderopen.' + imgExt,
+        folderHOpen: imagePath + 'folderhopen.' + imgExt,
+        node: imagePath + 'page.' + imgExt,
+        empty: imagePath + 'empty.' + imgExt,
+        line: imagePath + 'line.' + imgExt,
+        join: imagePath + 'join.' + imgExt,
+        joinBottom: imagePath + 'joinbottom.' + imgExt,
+        plus: imagePath + 'plus.' + imgExt,
+        plusBottom: imagePath + 'plusbottom.' + imgExt,
+        minus: imagePath + 'minus.' + imgExt,
+        minusBottom: imagePath + 'minusbottom.' + imgExt,
+        nlPlus: imagePath + 'nolines_plus.' + imgExt,
+        nlMinus: imagePath + 'nolines_minus.' + imgExt
     };
-    this.obj = objName; // id of this indexmenu
+    /** @type {string} */
+    this.treeName = treeName; // (unique) name of this indexmenu
+    /** @type {dTreeNode[]} */
     this.aNodes = [];   // array of nodes
+    /** @type {number[]} */
     this.aIndent = [];  // array stores the indents of the tree (contains values 0 or 1)
+    /** @type {dTreeNode} */
     this.root = new dTreeNode(false, -1);
-    this.selectedNode = null;      // node id
+    /** @type {number} */
+    this.selectedNode = undefined;      // node id
+    /** @type {boolean} */
     this.selectedFound = false;    // set to true when found
+    /** @type {boolean} */
     this.completed = false;        // succesfull written js tree to the page
-    this.scrllTmr = 0;             // store timer for horizontal scrolling the page
+    /** @type {number} */
+    this.scrllTmr = 0;             // store timer id for horizontal scrolling the page
+    /** @type {string} */
     this.pageid = JSINFO.id || ''; // current page
+
     this.fajax = false;            // if retrieve next level of opened nodes
 }
 /**
@@ -139,7 +187,7 @@ dTree.prototype.add = function (dokuid, id, pid, name, hns, isdir, ajax) {
  * Open all nodes, if no node status was stored in cookie
  */
 dTree.prototype.openAll = function () {
-    if (!this.getCookie('co' + this.obj)) {
+    if (!this.getCookie('co' + this.treeName)) {
         this.oAll(true);
     }
 };
@@ -150,37 +198,37 @@ dTree.prototype.openAll = function () {
  * @returns {string} html of whole tree
  */
 dTree.prototype.toString = function () {
-    var str = '';
+    let str = '';
     this.pageid = this.pageid.replace(/:/g,this.config.sepchar);
     if (this.config.scroll) {
-        str += '<div id="cdtree_' + this.obj + '" class="dtree" style="position:relative;overflow:hidden;width:100%;">';
+        str += '<div id="cdtree_' + this.treeName + '" class="dtree" style="position:relative;overflow:hidden;width:100%;">';
     }
-    str += '<div id="dtree_' + this.obj + '" class="dtree ' + this.config.theme + '" style="overflow:';
+    str += '<div id="dtree_' + this.treeName + '" class="dtree ' + this.config.theme + '" style="overflow:';
     if (this.config.scroll) {
         str += 'visible;position:relative;width:100%"';
     } else {
         str += 'hidden;"';
     }
     str += '>';
-	if (jQuery('#dtree_' + this.obj)[0]) {
+	if (jQuery('#dtree_' + this.treeName)[0]) {
         str += '<div class="error">Indexmenu id conflict</div>';
     }
     if (this.config.toc) {
-        str += '<div id="t' + this.obj + '" class="indexmenu_tocbullet ' + this.config.theme + '" style="display:none;" title="Table of contents"></div>';
-        str += '<div id="toc_' + this.obj + '" style="display:none;"></div>';
+        str += '<div id="t' + this.treeName + '" class="indexmenu_tocbullet ' + this.config.theme + '" style="display:none;" title="Table of contents"></div>';
+        str += '<div id="toc_' + this.treeName + '" style="display:none;"></div>';
     }
     if (this.config.useCookies) {
         this.selectedNode = this.getSelected();
     }
     str += this.addNode(this.root) + '</div>';
     if (this.config.scroll) {
-        str += '<div id="z' + this.obj + '" class="indexmenu_rarrow"></div>';
-        str += '<div id="left_' + this.obj + '" class="indexmenu_larrow" style="display:none;" title="Click to scroll back" onmousedown="javascript:' + this.obj + '.scroll(\'r\',1);" onmouseup="javascript:' + this.obj + '.stopscroll();"></div>';
+        str += '<div id="z' + this.treeName + '" class="indexmenu_rarrow"></div>';
+        str += '<div id="left_' + this.treeName + '" class="indexmenu_larrow" style="display:none;" title="Click to scroll back" onmousedown="' + this.treeName + '.scroll(\'r\',1)" onmouseup="' + this.treeName + '.stopscroll()"></div>';
         str += '</div>';
     }
     this.completed = true;
     //hide the fallback nojs indexmenu
-    jQuery('#nojs_' + this.obj).css("display", "none"); //using  .hide(); let's  crash opera
+    jQuery('#nojs_' + this.treeName).css("display", "none"); //using  .hide(); let's  crash opera
     return str;
 };
 
@@ -191,20 +239,20 @@ dTree.prototype.toString = function () {
  * @returns {string} html of node (inclusive children)
  */
 dTree.prototype.addNode = function (pNode) {
-    var str = '', cn, n = pNode._ai, l = pNode._lv + 1;
+    let str = '', cn, n = pNode._ai, l = pNode._lvl + 1;
     for (n; n < this.aNodes.length; n++) {
-        if (this.aNodes[n].pid == pNode.id) {
+        if (this.aNodes[n].pid === pNode.id) {
             cn = this.aNodes[n];
             cn._p = pNode;
             cn._ai = n;
-            cn._lv = l;
+            cn._lvl = l;
             this.setCS(cn);
             if (cn._hc && !cn._io && this.config.useCookies) {
                 cn._io = this.isOpen(cn.id);
             }
-            if (this.pageid == (!cn.hns && cn.dokuid || cn.hns)) {
+            if (this.pageid === (!cn.hns && cn.dokuid || cn.hns)) {
                 cn._cp = true;
-            } else if (cn.id == this.selectedNode && !this.selectedFound) {
+            } else if (cn.id === this.selectedNode && !this.selectedFound) {
                 cn._is = true;
                 this.selectedNode = n;
                 this.selectedFound = true;
@@ -232,7 +280,7 @@ dTree.prototype.addNode = function (pNode) {
  * @returns {string} html of empty node
  */
 dTree.prototype.noderr = function (node, nodeId) {
-    var str = '<div class="dTreeNode">' + this.indent(node, nodeId);
+    let str = '<div class="dTreeNode">' + this.indent(node, nodeId);
     str += '<div class="emptynode" title="Empty"></div></div>';
     return str;
 };
@@ -245,37 +293,37 @@ dTree.prototype.noderr = function (node, nodeId) {
  * @returns {string} html of node (inclusive children)
  */
 dTree.prototype.node = function (node, nodeId) {
-    var h = 1, jsfnc, str;
-    jsfnc = 'onmouseover="' + this.obj + '.show_feat(\'' + nodeId + '\');" onmousedown="return IndexmenuContextmenu.checkcontextm(\'' + nodeId + '\',' + this.obj + ',event);" oncontextmenu="return IndexmenuContextmenu.stopevt(event)"';
-    if (node._lv > this.config.maxjs) {
+    let h = 1, jsfnc, str;
+    jsfnc = 'onmouseover="' + this.treeName + '.show_feat(\'' + nodeId + '\');" onmousedown="return IndexmenuContextmenu.checkcontextm(\'' + nodeId + '\',' + this.treeName + ',event);" oncontextmenu="return IndexmenuContextmenu.stopevt(event)"';
+    if (node._lvl > this.config.maxjs) {
         h = 0;
     } else {
         node._ok = true;
     }
     str = '<div class="dTreeNode">' + this.indent(node, nodeId);
-    node.icon = (this.root.id == node.pid) ? this.icon.root : ((node.hns) ? this.icon.folderH : ((node._hc) ? this.icon.folder : this.icon.node));
+    node.icon = (this.root.id === node.pid) ? this.icon.root : ((node.hns) ? this.icon.folderH : ((node._hc) ? this.icon.folder : this.icon.node));
     node.iconOpen = (node._hc) ? ((node.hns) ? this.icon.folderHOpen : this.icon.folderOpen) : this.icon.node;
-    if (this.root.id == node.pid) {
+    if (this.root.id === node.pid) {
         node.icon = this.icon.root;
         node.iconOpen = this.icon.root;
     }
-    str += '<img id="i' + this.obj + nodeId + '" src="' + ((node._io) ? node.iconOpen : node.icon) + '" alt="" />';
+    str += '<img id="i' + this.treeName + nodeId + '" src="' + ((node._io) ? node.iconOpen : node.icon) + '" alt="" />';
     if (!node._hc || node.hns) {
-        str += '<a id="s' + this.obj + nodeId + '" class="' + ((node._cp) ? 'navSel' : ((node._is) ? 'nodeSel' : (node._hc) ? 'nodeFdUrl' : 'nodeUrl'));
+        str += '<a id="s' + this.treeName + nodeId + '" class="' + ((node._cp) ? 'navSel' : ((node._is) ? 'nodeSel' : (node._hc) ? 'nodeFdUrl' : 'nodeUrl'));
         str += '" href="' + this.config.urlbase;
         (node.hns) ? str += node.hns : str += node.dokuid;
         str += '"' + ' title="' + node.name + '"' + jsfnc;
-        str += ' onclick="javascript: ' + this.obj + '.s(' + nodeId + ');"';
+        str += ' onclick="javascript: ' + this.treeName + '.s(' + nodeId + ');"';
         str += '>' + node.name + '</a>';
     }
-    else if (node.pid != this.root.id) {
-        str += '<a id="s' + this.obj + nodeId + '" href="javascript: ' + this.obj + '.o(' + nodeId + '); " class="node"' + jsfnc + '>' + node.name + '</a>';
+    else if (node.pid !== this.root.id) {
+        str += '<a id="s' + this.treeName + nodeId + '" href="javascript: ' + this.treeName + '.o(' + nodeId + '); " class="node"' + jsfnc + '>' + node.name + '</a>';
     } else {
         str += node.name;
     }
     str += '</div>';
     if (node._hc) {
-        str += '<div id="d' + this.obj + nodeId + '" class="clip" style="display:' + ((this.root.id == node.pid || node._io) ? 'block' : 'none') + ';">';
+        str += '<div id="d' + this.treeName + nodeId + '" class="clip" style="display:' + ((this.root.id === node.pid || node._io) ? 'block' : 'none') + ';">';
         if (h) {
             str += this.addNode(node);
         }
@@ -293,10 +341,10 @@ dTree.prototype.node = function (node, nodeId) {
  * @returns {string} html of indent icons
  */
 dTree.prototype.indent = function (node, nodeId) {
-    var n, str = '';
-    if (this.root.id != node.pid) {
+    let n, str = '';
+    if (this.root.id !== node.pid) {
         for (n = 0; n < this.aIndent.length; n++) {
-            str += '<img src="' + ( (this.aIndent[n] == 1) ? this.icon.line : this.icon.empty ) + '" alt="" />';
+            str += '<img src="' + ( (this.aIndent[n] === 1) ? this.icon.line : this.icon.empty ) + '" alt="" />';
         }
         if (node._ls) {
             this.aIndent.push(0);
@@ -304,9 +352,10 @@ dTree.prototype.indent = function (node, nodeId) {
             this.aIndent.push(1);
         }
         if (node._hc) {
-            str += '<a href="javascript: ' + this.obj + '.o(' + nodeId + ');"><img id="j' + this.obj + nodeId + '" src="';
-            str += ( (node._io) ? ((node._ls) ? this.icon.minusBottom : this.icon.minus) : ((node._ls) ? this.icon.plusBottom : this.icon.plus ) );
-            str += '" alt="" /></a>';
+            str += '<a href="javascript: ' + this.treeName + '.o(' + nodeId + ');">' +
+                   '<img id="j' + this.treeName + nodeId + '" src="' +
+                   ( (node._io) ? ((node._ls) ? this.icon.minusBottom : this.icon.minus) : ((node._ls) ? this.icon.plusBottom : this.icon.plus ) ) +
+                   '" alt="" /></a>';
         } else {
             str += '<img src="' + ((node._ls) ? this.icon.joinBottom : this.icon.join) + '" alt="" />';
         }
@@ -320,16 +369,16 @@ dTree.prototype.indent = function (node, nodeId) {
  * @param {dTreeNode} node
  */
 dTree.prototype.setCS = function (node) {
-    var lastId, n;
+    let lastId, n;
     for (n = 0; n < this.aNodes.length; n++) {
-        if (this.aNodes[n].pid == node.id) {
+        if (this.aNodes[n].pid === node.id) {
             node._hc = true;
         }
-        if (this.aNodes[n].pid == node.pid) {
+        if (this.aNodes[n].pid === node.pid) {
             lastId = this.aNodes[n].id;
         }
     }
-    if (lastId == node.id) {
+    if (lastId === node.id) {
         node._ls = true;
     }
 };
@@ -340,7 +389,7 @@ dTree.prototype.setCS = function (node) {
  * @returns {int} node id
  */
 dTree.prototype.getSelected = function () {
-    var sn = this.getCookie('cs' + this.obj);
+    let sn = this.getCookie('cs' + this.treeName);
     return (sn) ? parseInt(sn, 10) : null;
 };
 
@@ -350,20 +399,20 @@ dTree.prototype.getSelected = function () {
  * @param {int} id node id
  */
 dTree.prototype.s = function (id) {
-    var eOld, eNew, cn = this.aNodes[id];
-    if (this.selectedNode != id) {
-        eNew = jQuery("#s" + this.obj + id)[0];
+    let eOld, eNew, cn = this.aNodes[id];
+    if (this.selectedNode !== id) {
+        eNew = jQuery("#s" + this.treeName + id)[0];
         if (!eNew) {
             return;
         }
         if (this.selectedNode || this.selectedNode === 0) {
-            eOld = jQuery("#s" + this.obj + this.selectedNode)[0];
+            eOld = jQuery("#s" + this.treeName + this.selectedNode)[0];
             eOld.className = "node";
         }
         eNew.className = "nodeSel";
         this.selectedNode = id;
         if (this.config.useCookies) {
-            this.setCookie('cs' + this.obj, cn.id);
+            this.setCookie('cs' + this.treeName, cn.id);
         }
     }
 };
@@ -374,14 +423,14 @@ dTree.prototype.s = function (id) {
  * @param {int} id node id
  */
 dTree.prototype.o = function (id) {
-    var cn = this.aNodes[id];
+    let cn = this.aNodes[id];
     this.nodeStatus(!cn._io, id, cn._ls);
     cn._io = !cn._io;
     if (this.config.useCookies) {
         this.updateCookie();
     }
     // scroll
-    this.divdisplay('z', 0);
+    this.divdisplay('z', false);
     this.resizescroll("block");
 };
 
@@ -391,8 +440,8 @@ dTree.prototype.o = function (id) {
  * @param {boolean} status if true open
  */
 dTree.prototype.oAll = function (status) {
-    for (var n = 0; n < this.aNodes.length; n++) {
-        if (this.aNodes[n]._hc && this.aNodes[n].pid != this.root.id) {
+    for (let n = 0; n < this.aNodes.length; n++) {
+        if (this.aNodes[n]._hc && this.aNodes[n].pid !== this.root.id) {
             this.nodeStatus(status, n, this.aNodes[n]._ls);
             this.aNodes[n]._io = status;
         }
@@ -410,10 +459,10 @@ dTree.prototype.oAll = function (status) {
  * @param {boolean} bFirst
  */
 dTree.prototype.openTo = function (nId, bSelect, bFirst) {
-    var n, cn;
+    let n, cn;
     if (!bFirst) {
         for (n = 0; n < this.aNodes.length; n++) {
-            if (this.aNodes[n].id == nId) {
+            if (this.aNodes[n].id === nId) {
                 nId = n;
                 break;
             }
@@ -421,7 +470,7 @@ dTree.prototype.openTo = function (nId, bSelect, bFirst) {
     }
     this.fill(this.aNodes[nId].pid);
     cn = this.aNodes[nId];
-    if (cn.pid == this.root.id || !cn._p) {
+    if (cn.pid === this.root.id || !cn._p) {
         return;
     }
     cn._io = 1;
@@ -442,8 +491,8 @@ dTree.prototype.openTo = function (nId, bSelect, bFirst) {
 dTree.prototype.getOpenTo = function (nodes) {
     if (nodes === '') {
         this.openAll();
-    } else if (!this.config.useCookies || !this.getCookie('co' + this.obj)) {
-        for (var n = 0; n < nodes.length; n++) {
+    } else if (!this.config.useCookies || !this.getCookie('co' + this.treeName)) {
+        for (let n = 0; n < nodes.length; n++) {
             this.openTo(nodes[n], false, true);
         }
     }
@@ -460,23 +509,23 @@ dTree.prototype.nodeStatus = function (status, id, bottom) {
     if (status && !this.fill(id)) {
         return;
     }
-    var eJoin, eIcon;
-	eJoin = jQuery('#j' + this.obj + id)[0];
-	eIcon = jQuery('#i' + this.obj + id)[0];
+    let eJoin, eIcon;
+	eJoin = jQuery('#j' + this.treeName + id)[0];
+	eIcon = jQuery('#i' + this.treeName + id)[0];
     eIcon.src = (status) ? this.aNodes[id].iconOpen : this.aNodes[id].icon;
     eJoin.src = ((status) ? ((bottom) ? this.icon.minusBottom : this.icon.minus) : ((bottom) ? this.icon.plusBottom : this.icon.plus));
-    jQuery('#d' + this.obj + id)[0].style.display = (status) ? 'block' : 'none';
+    jQuery('#d' + this.treeName + id)[0].style.display = (status) ? 'block' : 'none';
 };
 
 /**
  * [Cookie] Clears a cookie
  */
 dTree.prototype.clearCookie = function () {
-    var now, yday;
+    let now, yday;
     now = new Date();
     yday = new Date(now.getTime() - 1000 * 60 * 60 * 24);
-    this.setCookie('co' + this.obj, 'cookieValue', yday);
-    this.setCookie('cs' + this.obj, 'cookieValue', yday);
+    this.setCookie('co' + this.treeName, 'cookieValue', yday);
+    this.setCookie('cs' + this.treeName, 'cookieValue', yday);
 };
 
 /**
@@ -484,17 +533,14 @@ dTree.prototype.clearCookie = function () {
  *
  * @param {string}  cookieName
  * @param {string}  cookieValue
- * @param {Date}    expires
- * @param {string}  path
- * @param {string}  domain
- * @param {boolean} secure
+ * @param {boolean|Date} expires
  */
-dTree.prototype.setCookie = function (cookieName, cookieValue, expires, path, domain, secure) {
+dTree.prototype.setCookie = function (cookieName, cookieValue, expires = false) {
     document.cookie =
         encodeURIComponent(cookieName) + '=' + encodeURIComponent(cookieValue) +
             (expires ? '; expires=' + expires.toUTCString() : '') +
-            ';path=/' + (domain ? '; domain=' + domain : '') +
-            (secure ? '; secure' : '');
+            '; path=' + DOKU_COOKIE_PARAM.path +
+            '; secure=' + DOKU_COOKIE_PARAM.secure;
 };
 
 /**
@@ -504,12 +550,12 @@ dTree.prototype.setCookie = function (cookieName, cookieValue, expires, path, do
  * @returns {string}
  */
 dTree.prototype.getCookie = function (cookieName) {
-    var cookieValue = '', pN, posValue, endPos;
+    let cookieValue = '', pN, posValue, endPos;
     pN = document.cookie.indexOf(encodeURIComponent(cookieName) + '=');
-    if (pN != -1) {
+    if (pN !== -1) {
         posValue = pN + (encodeURIComponent(cookieName) + '=').length;
         endPos = document.cookie.indexOf(';', posValue);
-        if (endPos != -1) {
+        if (endPos !== -1) {
             cookieValue = decodeURIComponent(document.cookie.substring(posValue, endPos));
         }
         else {
@@ -523,16 +569,16 @@ dTree.prototype.getCookie = function (cookieName) {
  * [Cookie] Stores ids of open nodes as a string in cookie
  */
 dTree.prototype.updateCookie = function () {
-    var str = '', n;
+    let str = '', n;
     for (n = 0; n < this.aNodes.length; n++) {
-        if (this.aNodes[n]._io && this.aNodes[n].pid != this.root.id) {
+        if (this.aNodes[n]._io && this.aNodes[n].pid !== this.root.id) {
             if (str) {
                 str += '.';
             }
             str += this.aNodes[n].id;
         }
     }
-    this.setCookie('co' + this.obj, str);
+    this.setCookie('co' + this.treeName, str);
 };
 
 /**
@@ -542,9 +588,9 @@ dTree.prototype.updateCookie = function () {
  * @return {Boolean} if open true
  */
 dTree.prototype.isOpen = function (id) {
-    var n, aOpen = this.getCookie('co' + this.obj).split('.');
+    let n, aOpen = this.getCookie('co' + this.treeName).split('.');
     for (n = 0; n < aOpen.length; n++) {
-        if (aOpen[n] == id) {
+        if (parseInt(aOpen[n],10) === id) {
             return true;
         }
     }
@@ -557,19 +603,19 @@ dTree.prototype.isOpen = function (id) {
  * @param {int} max
  */
 dTree.prototype.openCurNS = function (max) {
-    var r, cn, match, t, i, n, cnsa, cna;
-    var cns = this.pageid;
+    let r, cn, match, t, i, n, cnsa, cna;
+    let cns = this.pageid;
     r = new RegExp("\\b" + this.config.sepchar + "\\b", "g");
     match = cns.match(r) || -1;
     if (max > 0 && match.length >= max) {
         t = cns.split(this.config.sepchar);
-        n = (this.aNodes[0].dokuid == '') ? 0 : this.aNodes[0].dokuid.split(this.config.sepchar).length;
+        n = (this.aNodes[0].dokuid === '') ? 0 : this.aNodes[0].dokuid.split(this.config.sepchar).length;
         t.splice(max + n, t.length);
         cnsa = t.join(this.config.sepchar);
     }
     for (i = 0; i < this.aNodes.length; i++) {
         cn = this.aNodes[i];
-        if (cns == cn.dokuid || cns == cn.hns) {
+        if (cns === cn.dokuid || cns === cn.hns) {
             this.openTo(cn.id, false, true);
             this.fajax = false;
             if (cn.pid >= 0) {
@@ -577,7 +623,7 @@ dTree.prototype.openCurNS = function (max) {
             }
             break;
         }
-        if (cnsa == cn.dokuid || cnsa == cn.hns) {
+        if (cnsa === cn.dokuid || cnsa === cn.hns) {
             cna = cn;
             this.fajax = true;
         }
@@ -594,17 +640,17 @@ dTree.prototype.openCurNS = function (max) {
  * @returns {boolean}
  */
 dTree.prototype.fill = function (id) {
-    if (id == -1 || this.aNodes[id]._ok) {
+    if (id === -1 || this.aNodes[id]._ok) {
         return true;
     }
-    var n = id, $eLoad, a, rd, ln, eDiv;
+    let n = id, $eLoad, a, rd, ln, eDiv;
     if (this.aNodes[n].ajax) {
         //temporary load indicator
-        $eLoad = jQuery('#l' + this.obj);
+        $eLoad = jQuery('#l' + this.treeName);
         if (!$eLoad.length) {
-            $eLoad = IndexmenuUtils.createPicker('l' + this.obj);
+            $eLoad = IndexmenuUtils.createPicker('l' + this.treeName, 'picker');
         }
-        jQuery('#s' + this.obj + n).parent().append($eLoad);
+        jQuery('#s' + this.treeName + n).parent().append($eLoad);
         $eLoad
             .html('Loading ...')
             .css({width: 'auto'})
@@ -622,7 +668,7 @@ dTree.prototype.fill = function (id) {
     for (ln = rd.length - 1; ln >= 0; ln--) {
         id = rd[ln];
         a = this.aNodes[id];
-		eDiv = jQuery('#d' + this.obj + id)[0];
+		eDiv = jQuery('#d' + this.treeName + id)[0];
         if (!eDiv) {
             return false;
         }
@@ -646,7 +692,7 @@ dTree.prototype.fill = function (id) {
  * Open the nodes stored in cookie
  */
 dTree.prototype.openCookies = function () {
-    var n, cn, aOpen = this.getCookie('co' + this.obj).split('.');
+    let n, cn, aOpen = this.getCookie('co' + this.treeName).split('.');
     for (n = 0; n < aOpen.length; n++) {
         if (aOpen[n] === "") {
             break;
@@ -654,7 +700,7 @@ dTree.prototype.openCookies = function () {
         cn = this.aNodes[aOpen[n]];
         if (!cn._ok) {
             this.nodeStatus(true, aOpen[n], cn._ls);
-            cn._io = 1;
+            cn._io = true;
         }
     }
 };
@@ -671,18 +717,18 @@ dTree.prototype.scroll = function (where, s, n, i) {
     if (!this.config.scroll) {
         return false;
     }
-    var w, dtree, dtreel, nodeId;
-	dtree = jQuery('#dtree_' + this.obj)[0];
-    dtreel = parseInt(dtree.offsetLeft, 0);
-    if (where == "r") {
-        jQuery('#left_' + this.obj)[0].style.border = "thin inset";
+    let w, dtree, dtreel, nodeId;
+    dtree = jQuery('#dtree_' + this.treeName)[0];
+    dtreel = parseInt(dtree.offsetLeft);
+    if (where === "r") {
+        jQuery('#left_' + this.treeName)[0].style.border = "thin inset";
         this.scrollRight(dtreel, s);
     } else {
-        nodeId = jQuery('#s' + this.obj + n)[0];
+        nodeId = jQuery('#s' + this.treeName + n)[0];
         if (nodeId == null) {
             return false;
         }
-        w = parseInt(dtree.parentNode.offsetWidth - nodeId.offsetWidth - nodeId.offsetLeft, 0);
+        w = parseInt(dtree.parentNode.offsetWidth - nodeId.offsetWidth - nodeId.offsetLeft);
         if (this.config.toc) {
             w = w - 11;
         }
@@ -705,12 +751,12 @@ dTree.prototype.scroll = function (where, s, n, i) {
  */
 dTree.prototype.scrollLeft = function (lft, s, w, i) {
     if (lft < w - i - 10) {
-        this.divdisplay('z', 0);
+        this.divdisplay('z', false);
         this.scrllTmr = 0;
         return;
     }
     var self = this;
-    jQuery('#dtree_' + self.obj)[0].style.left = lft + "px";
+    jQuery('#dtree_' + self.treeName)[0].style.left = lft + "px";
     this.scrllTmr = setTimeout(function () {
         self.scrollLeft(lft - s, s + i, w, i);
     }, 20);
@@ -724,12 +770,12 @@ dTree.prototype.scrollLeft = function (lft, s, w, i) {
  */
 dTree.prototype.scrollRight = function (lft, s) {
     if (lft >= s) {
-        this.divdisplay('left_', 0);
+        this.divdisplay('left_', false);
         this.stopscroll();
         return;
     }
     var self = this;
-    jQuery('#dtree_' + self.obj)[0].style.left = lft + "px";
+    jQuery('#dtree_' + self.treeName)[0].style.left = lft + "px";
     if (lft > -15) {
         s = 1;
     }
@@ -742,7 +788,7 @@ dTree.prototype.scrollRight = function (lft, s) {
  * Stop scroll movement
  */
 dTree.prototype.stopscroll = function () {
-    jQuery('#left_' + this.obj)[0].style.border = "none";
+    jQuery('#left_' + this.treeName)[0].style.border = "none";
     clearTimeout(this.scrllTmr);
     this.scrllTmr = 0;
 };
@@ -753,21 +799,21 @@ dTree.prototype.stopscroll = function () {
  * @param {int} n node id
  */
 dTree.prototype.show_feat = function (n) {
-	var w, div, id, dtree, dtreel, self, node = jQuery('#s' + this.obj + n)[0];
+	var w, div, id, dtree, dtreel, self, node = jQuery('#s' + this.treeName + n)[0];
     self = this;
-    if (this.config.toc && node.className != "node") {
-		div = jQuery('#t' + this.obj)[0];
+    if (this.config.toc && node.className !== "node") {
+		div = jQuery('#t' + this.treeName)[0];
         id = (this.aNodes[n].hns) ? this.aNodes[n].hns : this.aNodes[n].dokuid;
         div.onmousedown = function () {
-            IndexmenuContextmenu.createTocMenu('call=indexmenu&req=toc&id=' + decodeURIComponent(id), 'picker_' + self.obj, 't' + self.obj);
+            IndexmenuContextmenu.createTocMenu('call=indexmenu&req=toc&id=' + decodeURIComponent(id), 'picker_' + self.treeName, 't' + self.treeName);
         };
         node.parentNode.appendChild(div);
-        if (div.style.display == "none") {
+        if (div.style.display === "none") {
             div.style.display = "inline";
         }
     }
     if (this.config.scroll) {
-		div = jQuery('#z' + this.obj)[0];
+		div = jQuery('#z' + this.treeName)[0];
         div.onmouseover = function () {
             div.style.border = "none";
             self.scroll("l", 1, n, 0);
@@ -781,13 +827,13 @@ dTree.prototype.show_feat = function (n) {
             self.stopscroll();
         };
         div.onmouseup = div.onmouseover;
-		dtree = jQuery('#dtree_' + this.obj)[0];
-        dtreel = parseInt(dtree.offsetLeft, 0);
-        w = parseInt(dtree.parentNode.offsetWidth - node.offsetWidth - node.offsetLeft + 1, 0);
+		dtree = jQuery('#dtree_' + this.treeName)[0];
+        dtreel = parseInt(dtree.offsetLeft);
+        w = parseInt(dtree.parentNode.offsetWidth - node.offsetWidth - node.offsetLeft + 1);
         if (dtreel > w) {
             div.style.display = "none";
             div.style.top = node.offsetTop + "px";
-            div.style.left = parseInt(node.offsetLeft + node.offsetWidth + w - 12, 0) + "px";
+            div.style.left = parseInt(node.offsetLeft + node.offsetWidth + w - 12) + "px";
             div.style.display = "block";
         }
     }
@@ -799,20 +845,20 @@ dTree.prototype.show_feat = function (n) {
  * @param {string} status 'block' or 'none'
  */
 dTree.prototype.resizescroll = function (status) {
-	var dtree, w, h, left = jQuery('#left_' + this.obj)[0];
+	let dtree, w, h, left = jQuery('#left_' + this.treeName)[0];
     if (!left) {
         return;
     }
-    if (left.style.display == status) {
-        dtree = jQuery('#dtree_' + this.obj)[0];
-        w = parseInt(dtree.offsetHeight / 3, 0);
-        h = parseInt(w / 50, 0) * 50;
+    if (left.style.display === status) {
+        dtree = jQuery('#dtree_' + this.treeName)[0];
+        w = Math.trunc(dtree.offsetHeight / 3);
+        h = Math.trunc(w / 50) * 50;
         if (h < 50) {
             h = 50;
         }
         left.style.height = h + "px";
         left.style.top = w + "px";
-        if (status == "none") {
+        if (status === "none") {
             left.style.display = "block";
         }
     }
@@ -824,7 +870,8 @@ dTree.prototype.resizescroll = function (status) {
  * @param {int} n node id
  */
 dTree.prototype.getAjax = function (n) {
-    var node, req, curns, selft = this;
+    var node, selft = this;
+    let req, curns;
     node = selft.aNodes[n];
 
     req = 'call=indexmenu&req=index&idx=' + node.dokuid + decodeURIComponent(this.config.jsajax);
@@ -856,7 +903,7 @@ dTree.prototype.getAjax = function (n) {
         } else {
             selft.openTo(node.id, false, true);
         }
-        jQuery('#l' + selft.obj).hide();
+        jQuery('#l' + selft.treeName).hide();
     };
 
     jQuery.post(
@@ -871,7 +918,7 @@ dTree.prototype.getAjax = function (n) {
  * Load custom css for theme
  */
 dTree.prototype.loadCss = function () {
-    var oLink = document.createElement("link");
+    let oLink = document.createElement("link");
     oLink.href = this.config.plugbase + '/images/' + this.config.theme + '/style.css';
     oLink.rel = "stylesheet";
     oLink.type = "text/css";
@@ -886,14 +933,14 @@ dTree.prototype.loadCss = function () {
  * @returns {boolean}
  */
 dTree.prototype.contextmenu = function (n, e) {
-    var type, node, cdtree, rmenu;
-    cdtree = jQuery("#cdtree_" + this.obj)[0];
-	rmenu = jQuery('#r' + this.obj)[0];
+    let type, node, cdtree, rmenu;
+    cdtree = jQuery("#cdtree_" + this.treeName)[0];
+	rmenu = jQuery('#r' + this.treeName)[0];
     if (!rmenu) {
         return true;
     }
     IndexmenuContextmenu.mouseposition(rmenu, e);
-    var cmenu = window.indexmenu_contextmenu;
+    let cmenu = window.indexmenu_contextmenu;
     node = this.aNodes[n];
     rmenu.innerHTML = '<div class="indexmenu_rmenuhead" title="' + node.name + '">' + node.name + "</div>";
     rmenu.appendChild(document.createElement('ul'));
@@ -912,11 +959,11 @@ dTree.prototype.contextmenu = function (n, e) {
 /**
  * Show/hide object with given id of current indexmenu
  *
- * @param {string}  obj
- * @param {boolean} visible true: visible, false hide.
+ * @param {string}  objName name of object, which is combined with the unique id of the indexmenu
+ * @param {boolean} visible true: visible, false: hide.
  */
-dTree.prototype.divdisplay = function (obj, visible) {
-	var o = jQuery('#' + obj + this.obj)[0];
+dTree.prototype.divdisplay = function (objName, visible) {
+	let o = jQuery('#' + objName + this.treeName)[0];
     if (!o) {
         return;
     }
@@ -950,10 +997,10 @@ dTree.prototype.init = function (hasstyle, nocookies, opennodes, nav, max, nomen
     //create contextmenu
     if (!nomenu) {
         var self = this;
-        IndexmenuUtils.createPicker('r' + this.obj, 'indexmenu_rmenu ' + this.config.theme);
-        jQuery('#r' + this.obj)[0].oncontextmenu = IndexmenuContextmenu.stopevt;
+        IndexmenuUtils.createPicker('r' + this.treeName, 'indexmenu_rmenu ' + this.config.theme);
+        jQuery('#r' + this.treeName)[0].oncontextmenu = IndexmenuContextmenu.stopevt;
 		jQuery(document).click(function() {
-            self.divdisplay('r', 0);
+            self.divdisplay('r', false);
         });
     }
 };

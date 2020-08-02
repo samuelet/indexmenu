@@ -374,7 +374,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
             $out_tmp = html_buildlist($data, 'idx', array($idxm, "_html_list_index"), "html_li_index");
             $out .= preg_replace('/<ul class="idx">(.*)<\/ul>/s', "$1", $out_tmp);
         } else {
-            $nodes = $idxm->_jsnodes($data, '', 0);
+            $nodes = $idxm->_jsnodes($data, '', false);
             $out   = "ajxnodes = [";
             $out .= rtrim($nodes[0], ",");
             $out .= "];";

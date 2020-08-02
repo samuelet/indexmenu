@@ -28,7 +28,7 @@ function addBtnActionIndexmenu($btn, props, edid) {
 
 
 // try to add button to toolbar
-if (window.toolbar != undefined) {
+if (window.toolbar !== undefined) {
     window.toolbar[window.toolbar.length] = {
         "type": "Indexmenu",
         "title": "Insert the Indexmenu tree",
@@ -49,12 +49,12 @@ var IndexmenuUtils = {
      * @returns {string} extension gif, png or jpg
      */
     determineExtension: function (themedir) {
-        var extension = "gif";
-        var posext = themedir.lastIndexOf(".");
+        let extension = "gif";
+        let posext = themedir.lastIndexOf(".");
         if (posext > -1) {
             posext++;
-            var ext = themedir.substring(posext, themedir.length).toLowerCase();
-            if ((ext == "png") || (ext == "jpg")) {
+            let ext = themedir.substring(posext, themedir.length).toLowerCase();
+            if ((ext === "png") || (ext === "jpg")) {
                 extension = ext;
             }
         }

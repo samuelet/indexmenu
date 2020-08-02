@@ -10,14 +10,15 @@
 if(!defined('DOKU_INC')) die();
 if(!defined('INDEXMENU_IMG_ABSDIR')) define('INDEXMENU_IMG_ABSDIR', DOKU_PLUGIN."indexmenu/images");
 
-require_once(DOKU_INC.'inc/search.php');
-
 /**
  * All DokuWiki plugins to extend the parser/rendering mechanism
  * need to inherit from this class
  */
 class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
 
+    /**
+     * @var bool|string sort by t=title, d=date of creation
+     */
     var $sort = false;
     var $msort = false;
     var $rsort = false;
@@ -47,6 +48,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
 
     /**
      * Connect pattern to lexer
+     *
+     * @param string $mode
      */
     public function connectTo($mode) {
         $this->Lexer->addSpecialPattern('{{indexmenu>.+?}}', $mode, 'plugin_indexmenu_indexmenu');
@@ -98,7 +101,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         if(preg_match('/(.*)#(\S*)/u', $nss_temp[0], $ns_opt)) {
             //split level
             $ns = $ns_opt[1];
-            if(is_numeric($ns_opt[2])) $level = $ns_opt[2];
+            if(is_numeric($ns_opt[2])) {
+                $level = $ns_opt[2];
+            }
         } else {
             $ns = $nss_temp[0];
         }
@@ -127,7 +132,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             $sort = 't';
         } elseif($dsort) {
             $sort = 'd';
-        } else $sort = 0;
+        } else {
+            $sort = 0;
+        }
         //sort directories in the same way as files
         $nsort = $this->hasOption($defaults, $opts, 'nsort');
         //sort headpages up
@@ -172,7 +179,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             } else {
                 if(preg_match('/(?:^|\s)js#(\S*)/u', $optsstr, $match_ojs) > 0) {
                     $js = true;
-                    if(isset($match_ojs[1])) $dir = $match_ojs[1];
+                    if(isset($match_ojs[1])) {
+                        $dir = $match_ojs[1];
+                    }
                 }
             }
         }
@@ -338,9 +347,11 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             }
             //Navbar with nojs
             if($data[1]['navbar'] && !$data[6]['js']) {
-                if(!isset($data[0])) $data[0] = '..';
+                if(!isset($data[0])) {
+                    $data[0] = '..';
+                }
                 $data[6]['nss'][]        = array(getNS($INFO['id']));
-                $renderer->info['cache'] = FALSE;
+                $renderer->info['cache'] = false;
             }
 
             if($data[1]['context']) {
@@ -349,7 +360,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 foreach($data[6]['nss'] as $key=> $value) {
                     $data[6]['nss'][$key][0] = $this->_parse_ns($value[0], $INFO['id']);
                 }
-                $renderer->info['cache'] = FALSE;
+                $renderer->info['cache'] = false;
             }
             $n = $this->_indexmenu($data);
             if(!@$n) {
@@ -363,7 +374,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             /** @var Doku_Renderer_metadata $renderer */
             if(!($data[1]['navbar'] && !$data[6]['js']) && !$data[1]['context']) {
                 //this is an indexmenu page that needs the PARSER_CACHE_USE event trigger;
-                $renderer->meta['indexmenu'] = TRUE;
+                $renderer->meta['indexmenu'] = true;
             }
             $renderer->doc .= ((empty($data[0])) ? $conf['title'] : nons($data[0]))." index\n\n";
             unset($renderer->persistent['indexmenu']);
@@ -446,7 +457,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         //Render requested ns as root
         $headpage = $this->getConf('headpage');
         //if rootnamespace and headpage, then add startpage as headpage - TODO seems not logic, when desired use $conf[headpage]=:start: ??
-        if(empty($ns) && !empty($headpage)) $headpage .= ','.$conf['start'];
+        if(empty($ns) && !empty($headpage)) {
+            $headpage .= ','.$conf['start'];
+        }
         $title = $this->_getTitle($ns, $headpage, $hns);
         if(empty($title)) {
             if(empty($ns)){
@@ -468,10 +481,12 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         if($js_opts['noscroll'])       $out .= "$js_name.config.scroll=false;\n";
         if($js_opts['maxjs'] > 0)      $out .= "$js_name.config.maxjs=".$js_opts['maxjs'].";\n";
         if(!empty($js_opts['jsajax'])) $out .= "$js_name.config.jsajax='".utf8_encodeFN($js_opts['jsajax'])."';\n";
+
         //add root node
-        $json = new JSON();
-        $out .= $js_name.".add('".idfilter(cleanID($ns), false)."',0,-1,".$json->encode($title);
-        if($hns) $out .= ",'".idfilter(cleanID($hns), false)."'";
+        $out .= $js_name.".add('".idfilter(cleanID($ns), false)."',0,-1,".json_encode($title);
+        if($hns) {
+            $out .= ",'".idfilter(cleanID($hns), false)."'";
+        }
         $out .= ");\n";
         //add nodes
         $anodes = $this->_jsnodes($data, $js_name);
@@ -485,7 +500,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $out .= '"'.$anodes[1].'",';
         $out .= (int) $js_opts['navbar'].",";
         $out .= (int) $max;
-        if($js_opts['nomenu']) $out .= ",1";
+        if($js_opts['nomenu']) {
+            $out .= ",1";
+        }
         $out .= ");});\n";
 
         $out .= "//--><!]]>\n";
@@ -499,20 +516,20 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @author  Samuele Tognini <samuele@samuele.netsons.org>
      * @param array  $data    array with items of the tree
      * @param string $js_name identifier for this index
-     * @param int    $noajax  return as inline js (=1) or array for ajax response (=0)
+     * @param boolean $noajax  return as inline js (=true) or array for ajax response (=false)
      * @return array|bool returns array with
      *     - a string of the javascript nodes
      *     - and a string of space separated numbers of the opened nodes
      *    or false when no data provided
      */
-    public function _jsnodes($data, $js_name, $noajax = 1) {
+    public function _jsnodes($data, $js_name, $noajax = true) {
         if(empty($data)) return false;
         //Array of nodes to check
         $q = array('0');
         //Current open node
         $node  = 0;
         $out   = '';
-        $extra = '';
+        $opennodes = '';
         if($noajax) {
             $jscmd = $js_name.".add";
             $separator   = ";\n";
@@ -520,7 +537,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             $jscmd = "new Array ";
             $separator   = ",";
         }
-        $json = new JSON();
+
         foreach($data as $i=> $item) {
             $i++;
             //Remove already processed nodes (greater level = lower level)
@@ -539,20 +556,38 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             //add node and its options
             if($item['type'] == 'd') {
                 //Search the lowest open node of a tree branch in order to open it.
-                if($item['open']) ($item['level'] < $data[$node]['level']) ? $node = $i : $extra .= "$i ";
+                if($item['open']) {
+                    if($item['level'] < $data[$node]['level']) {
+                        $node = $i;
+                    } else {
+                        $opennodes .= "$i ";
+                    }
+                }
                 //insert node in last position
                 array_push($q, $i);
             }
-            $out .= $jscmd."('".idfilter($item['id'], false)."',$i,".$father.",".$json->encode($item['title']);
+            $out .= $jscmd."('".idfilter($item['id'], false)."',$i,".$father.",".json_encode($item['title']);
             //hns
-            ($item['hns']) ? $out .= ",'".idfilter($item['hns'], false)."'" : $out .= ",0";
-            ($item['type'] == 'd' || $item['type'] == 'l') ? $out .= ",1" : $out .= ",0";
+            if($item['hns']) {
+                $out .= ",'".idfilter($item['hns'], false)."'";
+            } else {
+                $out .= ",0";
+            }
+            if($item['type'] == 'd' || $item['type'] == 'l') {
+                $out .= ",1";
+            } else {
+                $out .= ",0";
+            }
             //MAX option
-            ($item['type'] == 'l') ? $out .= ",1" : $out .= ",0";
+            if($item['type'] == 'l') {
+                $out .= ",1";
+            }else{
+                $out .= ",0";
+            }
             $out .= ")".$separator;
         }
-        $extra = rtrim($extra, ' ');
-        return array($out, $extra);
+        $opennodes = rtrim($opennodes, ' ');
+        return array($out, $opennodes);
     }
 
     /**
@@ -568,7 +603,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         global $conf;
         $hns   = false;
         $title = noNS($ns);
-        if(empty($headpage)) return $title;
+        if(empty($headpage)) {
+            return $title;
+        }
         $ahp = explode(",", $headpage);
         foreach($ahp as $hp) {
             switch($hp) {
@@ -589,8 +626,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             //check headpage
             if(@file_exists(wikiFN($page)) && auth_quickaclcheck($page) >= AUTH_READ) {
                 if($conf['useheading'] == 1 || $conf['useheading'] === 'navigation') {
-                    $title_tmp = p_get_first_heading($page, FALSE);
-                    if(!is_null($title_tmp)) $title = $title_tmp;
+                    $title_tmp = p_get_first_heading($page, false);
+                    if(!is_null($title_tmp)) {
+                        $title = $title_tmp;
+                    }
                 }
                 $title = htmlspecialchars($title, ENT_QUOTES);
                 $hns   = $page;
@@ -614,8 +653,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             global $ID;
             $id = $ID;
         }
-        //Just for old reelases compatibility
-        if(empty($ns) || $ns == '..') $ns = ":..";
+        //Just for old releases compatibility
+        if(empty($ns) || $ns == '..') {
+            $ns = ":..";
+        }
         return resolve_id(getNS($id), $ns);
     }
 
@@ -677,13 +718,17 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         if($type == 'd') {
             // Skip folders in plugin conf
             foreach($skip_index as $skipi) {
-                if(!empty($skipi) && preg_match($skipi, $id))
+                if(!empty($skipi) && preg_match($skipi, $id)){
                     return false;
+                }
             }
             //check ACL (for sneaky_index namespaces too).
             if($conf['sneaky_index'] && auth_quickaclcheck($id.':') < AUTH_READ) return false;
+
             //Open requested level
-            if($opts['level'] > $lvl || $opts['level'] == -1) $isopen = true;
+            if($opts['level'] > $lvl || $opts['level'] == -1) {
+                $isopen = true;
+            }
             //Search optional namespaces
             if(!empty($opts['nss'])) {
                 $nss = $opts['nss'];
@@ -717,10 +762,13 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             //Set title and headpage
             $title = $this->_getTitle($id, $headpage, $hns);
             //link namespace nodes to start pages when excluding page nodes
-            if(!$hns && $opts['nopg']) $hns = $id.":".$conf['start'];
+            if(!$hns && $opts['nopg']) {
+                $hns = $id.":".$conf['start'];
+            }
         } else {
             //Nopg.Dont show pages
             if($opts['nopg']) return false;
+
             $return = true;
             //Nons.Set all pages at first level
             if($opts['nons']) $lvl = 1;
@@ -737,6 +785,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             if(!$opts['nons'] && !empty($headpage) && $opts['hide_headpage']) {
                 //start page is in root
                 if($id == $conf['start']) return false;
+
                 $ahp = explode(",", $headpage);
                 foreach($ahp as $hp) {
                     switch($hp) {
@@ -758,9 +807,11 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
 
             //Set title
             if($conf['useheading'] == 1 || $conf['useheading'] === 'navigation') {
-                $title = p_get_first_heading($id, FALSE);
+                $title = p_get_first_heading($id, false);
             }
-            if(is_null($title)) $title = noNS($id);
+            if(is_null($title)) {
+                $title = noNS($id);
+            }
             $title = htmlspecialchars($title, ENT_QUOTES);
         }
 
@@ -816,10 +867,14 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             } else {
                 //namespace without headpage
                 $tagid = "indexmenu_idx";
-                if($item['open']) $tagid .= ' open';
+                if($item['open']) {
+                    $tagid .= ' open';
+                }
             }
 
-            if($markCurrentPage) $ret .= '<span class="curid">';
+            if($markCurrentPage) {
+                $ret .= '<span class="curid">';
+            }
             $ret .= '<a href="'.wl($link, $more).'" class="'.$tagid.'">';
             $ret .= $item['title'];
             $ret .= '</a>';
@@ -908,7 +963,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         if($added === 0 && empty($files_tmp)) {
             //remove empty directory again, only if it has not a headpage associated
             $v = end($data);
-            if(!$v['hns']) array_pop($data);
+            if(!$v['hns']) {
+                array_pop($data);
+            }
         } else {
             //add files to index
             $data = array_merge($data, $files_tmp);
@@ -945,12 +1002,22 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $page = false;
         if($item['type'] == 'd' || $item['type'] == 'l') {
             //Fake order info when nsort is not requested
-            ($this->nsort) ? $page = $item['hns'] : $sort = 0;
+            if($this->nsort) {
+                $page = $item['hns'];
+            } else {
+                $sort = 0;
+            }
         }
-        if($item['type'] == 'f') $page = $item['id'];
+        if($item['type'] == 'f') {
+            $page = $item['id'];
+        }
         if($page) {
-            if($this->hsort && noNS($item['id']) == $conf['start']) $sort = 1;
-            if($this->msort) $sort = p_get_metadata($page, $this->msort);
+            if($this->hsort && noNS($item['id']) == $conf['start']) {
+                $sort = 1;
+            }
+            if($this->msort) {
+                $sort = p_get_metadata($page, $this->msort);
+            }
             if(!$sort && $this->sort) {
                 switch($this->sort) {
                     case 't':
@@ -962,7 +1029,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 }
             }
         }
-        if($sort === false) $sort = noNS($item['id']);
+        if($sort === false) {
+            $sort = noNS($item['id']);
+        }
         return $sort;
     }
-} //Indexmenu class end  
+} //Indexmenu class end

@@ -8,6 +8,9 @@
 
 if(!defined('DOKU_INC')) die();
 
+/**
+ * Class action_plugin_indexmenu
+ */
 class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
 
     /**
@@ -15,7 +18,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      *
      * @param Doku_Event_Handler $controller DokuWiki's event controller object.
      */
-    function register(Doku_Event_Handler $controller) {
+    public function register(Doku_Event_Handler $controller) {
         if($this->getConf('only_admins')) $controller->register_hook('IO_WIKIPAGE_WRITE', 'BEFORE', $this, '_checkperm');
         if($this->getConf('page_index') != '') $controller->register_hook('TPL_ACT_RENDER', 'BEFORE', $this, '_loadindex');
         $controller->register_hook('DOKUWIKI_STARTED', 'AFTER', $this, '_extendJSINFO');
@@ -32,7 +35,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @param Doku_Event $event
      * @param mixed      $param not defined
      */
-    function _checkperm(&$event, $param) {
+    public function _checkperm(Doku_Event $event, $param) {
         global $INFO;
         if(!$INFO['isadmin']) {
             $event->data[0][1] = preg_replace("/{{indexmenu(|_n)>.+?}}/", "", $event->data[0][1]);
@@ -48,7 +51,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @param Doku_Event $event
      * @param mixed      $param not defined
      */
-    function _extendJSINFO(&$event, $param) {
+    public function _extendJSINFO(Doku_Event $event, $param) {
         global $INFO, $JSINFO;
         $JSINFO['isadmin'] = (int) $INFO['isadmin'];
         $JSINFO['isauth']  = (int) $INFO['userinfo'];
@@ -62,7 +65,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @param Doku_Event $event
      * @param mixed      $param not defined
      */
-    function _purgecache(&$event, $param) {
+    public function _purgecache(Doku_Event $event, $param) {
         global $ID;
         global $conf;
         /** @var cache_parser $cache */
@@ -106,7 +109,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @param Doku_Event $event
      * @param mixed      $param not defined
      */
-    function _loadindex(&$event, $param) {
+    public function _loadindex(Doku_Event $event, $param) {
         if('index' != $event->data) return;
         if(!file_exists(wikiFN($this->getConf('page_index')))) return;
         global $lang;
@@ -125,7 +128,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @param Doku_Event $event
      * @param mixed      $param not defined
      */
-    function _showsort(&$event, $param) {
+    public function _showsort(Doku_Event $event, $param) {
         global $ID, $ACT, $INFO;
         if($INFO['isadmin'] && $ACT == 'show') {
             if($n = p_get_metadata($ID, 'indexmenu_n')) {
@@ -142,7 +145,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @param Doku_Event $event
      * @param mixed      $param not defined
      */
-    function _ajax_call(&$event, $param) {
+    public function _ajax_call(Doku_Event $event, $param) {
         if($event->data !== 'indexmenu') {
             return;
         }
@@ -155,11 +158,9 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
                 //list themes
                 header('Content-Type: application/json');
 
-                $data = $this->_getlocalThemes();
+                $data = $this->getlocalThemes();
 
-               // require_once DOKU_INC.'inc/JSON.php';
-                $json = new JSON();
-                echo ''.$json->encode($data).'';
+                echo json_encode($data);
                 break;
 
             case 'toc':
@@ -181,7 +182,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      * @author Gerrit Uitslag <klapinklapin@gmail.com>
      */
-    private function _getlocalThemes() {
+    private function getlocalThemes() {
         $themebase = 'lib/plugins/indexmenu/images';
 
         $handle = @opendir(DOKU_INC.$themebase);
@@ -210,10 +211,13 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     /**
      * Print a toc preview
      *
+     * @param string $id
+     * @return string
+     *
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      * @author Andreas Gohr <andi@splitbrain.org>
      */
-    function print_toc($id) {
+    private function print_toc($id) {
         require_once(DOKU_INC.'inc/parser/xhtml.php');
         $id = cleanID($id);
         if(auth_quickaclcheck($id) < AUTH_READ) return '';
@@ -234,10 +238,13 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     /**
      * Return the TOC rendered to XHTML
      *
+     * @param $toc
+     * @return string
+     *
      * @author Andreas Gohr <andi@splitbrain.org>
      * @author Gerrit Uitslag <klapinklapin@gmail.com>
      */
-    function render_toc($toc) {
+    private function render_toc($toc) {
         global $lang;
         $out = '<div class="tocheader">'.DOKU_LF;
         $out .= $lang['toc'];
@@ -250,8 +257,12 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
 
     /**
      * Return the page abstract rendered to XHTML
+     *
+     * @param $id
+     * @param array $meta by reference
+     * @return string
      */
-    function render_abstract($id, &$meta) {
+    private function render_abstract($id, &$meta) {
         $out = '<div class="tocheader">'.DOKU_LF;
         $out .= '<a href="'.wl($id).'">';
         $out .= ($meta['title']) ? htmlspecialchars($meta['title']) : htmlspecialchars(noNS($id));
@@ -267,6 +278,9 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
 
     /**
      * Callback for html_buildlist
+     *
+     * @param $item
+     * @return string
      */
     function _indexmenu_list_toc($item) {
         $id = cleanID($_REQUEST['id']);
@@ -287,13 +301,16 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     /**
      * Print index nodes
      *
+     * @param $ns
+     * @return string
+     *
+     * @author Rene Hadler <rene.hadler@iteas.at>
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      * @author Andreas Gohr <andi@splitbrain.org>
-     * @author Rene Hadler <rene.hadler@iteas.at>
      */
-    function print_index($ns) {
+    private function print_index($ns) {
         require_once(DOKU_PLUGIN.'indexmenu/syntax/indexmenu.php');
-        global $conf;
+        global $conf, $INPUT;
         $idxm     = new syntax_plugin_indexmenu_indexmenu();
         $ns       = $idxm->_parse_ns(rawurldecode($ns));
         $level    = -1;
@@ -302,11 +319,11 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         $skipfile = array();
         $skipns   = array();
 
-        if($_REQUEST['max'] > 0) {
-            $max   = $_REQUEST['max'];
+        if($INPUT->int('max') > 0) {
+            $max   = $INPUT->int('max');
             $level = $max;
         }
-        $nss         = ($_REQUEST['nss']) ? cleanID($_REQUEST['nss']) : '';
+        $nss         = $INPUT->str('nss','', true);
         $idxm->sort  = $_REQUEST['sort'];
         $idxm->msort = $_REQUEST['msort'];
         $idxm->rsort = $_REQUEST['rsort'];

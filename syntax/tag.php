@@ -19,28 +19,36 @@ class syntax_plugin_indexmenu_tag extends DokuWiki_Syntax_Plugin {
     /**
      * What kind of syntax are we?
      */
-    function getType() {
+    public function getType() {
         return 'substition';
     }
 
     /**
      * Where to sort in?
      */
-    function getSort() {
+    public function getSort() {
         return 139;
     }
 
     /**
      * Connect pattern to lexer
+     *
+     * @param string $mode
      */
-    function connectTo($mode) {
+    public function connectTo($mode) {
         $this->Lexer->addSpecialPattern('{{indexmenu_n>.+?}}', $mode, 'plugin_indexmenu_tag');
     }
 
     /**
      * Handle the match
+     *
+     * @param   string       $match The text matched by the patterns
+     * @param   int          $state The lexer state for the match
+     * @param   int          $pos The character position of the matched text
+     * @param   Doku_Handler $handler The Doku_Handler object
+     * @return  array Return an array with all data you want to use in render
      */
-    function handle($match, $state, $pos, Doku_Handler $handler) {
+    public function handle($match, $state, $pos, Doku_Handler $handler) {
         $match = substr($match, 14, -2);
         $match = str_replace("\xE2\x80\x8B", "", $match);
         return array($match);
@@ -48,8 +56,12 @@ class syntax_plugin_indexmenu_tag extends DokuWiki_Syntax_Plugin {
 
     /**
      * Render output
+     *
+     * @param string        $mode output format being rendered
+     * @param Doku_Renderer $renderer the current renderer object
+     * @param array         $data data created by handler()
      */
-    function render($mode, Doku_Renderer $renderer, $data) {
+    public function render($mode, Doku_Renderer $renderer, $data) {
         if($mode == 'metadata') {
             /** @var Doku_Renderer_metadata $renderer */
             if(is_numeric($data[0])) $renderer->meta['indexmenu_n'] = $data[0];

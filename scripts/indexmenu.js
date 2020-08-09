@@ -25,6 +25,8 @@
  |--------------------------------------------------------|
  | indexmenu  | https://www.dokuwiki.org/plugin:indexmenu |
  |-------------------------------------------------------*/
+/* global DOKU_COOKIE_PARAM */
+/* global DOKU_BASE */
 
 /*
  * ids used in the dTree:

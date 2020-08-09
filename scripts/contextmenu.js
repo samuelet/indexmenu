@@ -66,6 +66,11 @@
  *   indexmenu_contextmenu['all']['pg']['view'].splice(1, 0, ['Input new page', '"javascript: IndexmenuContextmenu.reqpage(\'"+index.config.urlbase+"\',\'"+index.config.sepchar+"\',\'"+node.dokuid+"\');"']);
  */
 
+/* global LANG */
+/* global DOKU_BASE */
+/* global JSINFO */
+
+
 // IMPORTANT: DON'T MODIFY THIS FILE, BUT EDIT contextmenu.local.js PLEASE!
 // THIS FILE IS OVERWRITTEN WHEN PLUGIN IS UPDATED
 
@@ -76,12 +81,12 @@ indexmenu_contextmenu['all']['pg'] = {
     'view': [
         ['<span class="indexmenu_titlemenu"><b>'+LANG.plugins.indexmenu.page+'</b></span>'],
         [LANG.plugins.indexmenu.revs, 'IndexmenuContextmenu.getid(index.config.urlbase,id)+"do=revisions"'],
-        [LANG.plugins.indexmenu.tocpreview, '"javascript: IndexmenuContextmenu.createTocMenu(\'call=indexmenu&req=toc&id="+id+"\',\'picker_"+index.obj+"\',\'s"+index.obj+node.id+"\');"']
+        [LANG.plugins.indexmenu.tocpreview, '"javascript: IndexmenuContextmenu.createTocMenu(\'call=indexmenu&req=toc&id="+id+"\',\'picker_"+index.treeName+"\',\'s"+index.treeName+node.id+"\');"']
     ],
     //Menu items in edit mode, when previewing
     'edit': [
         ['<span class="indexmenu_titlemenu"><b>'+LANG.plugins.indexmenu.editmode+'</b></span>'],
-        [LANG.plugins.indexmenu.insertdwlink, '"javascript: IndexmenuContextmenu.insertTags(\'"+id+"\',\'"+index.config.sepchar+"\');"+index.obj+".divdisplay(\'r\',0);"', LANG.plugins.indexmenu.insertdwlinktooltip]
+        [LANG.plugins.indexmenu.insertdwlink, '"javascript: IndexmenuContextmenu.insertTags(\'"+id+"\',\'"+index.config.sepchar+"\');"+index.treeName+".divdisplay(\'r\',0);"', LANG.plugins.indexmenu.insertdwlinktooltip]
     ]
 };
 
@@ -284,11 +289,12 @@ var IndexmenuContextmenu = {
     },
 
     /**
-     * Concatenates contextmenu configuration arrays
+     * Fills the contextmenu by creating entries from the given configuration arrays and concatenating these
+     * to the #r<id> picker
      *
-     * @param amenu
-     * @param index
-     * @param n
+     * @param {any[]} amenu (part of) the configuration array
+     * @param {dTree} index the indexmenu object
+     * @param {int} n node id
      */
     arrconcat: function (amenu, index, n) {
         var html, id, item, a, li;
@@ -311,7 +317,7 @@ var IndexmenuContextmenu = {
                 return true;
             }
             item = document.createElement('li');
-            var $cmenu = jQuery('#r' + index.obj);
+            var $cmenu = jQuery('#r' + index.treeName);
             if (cmenuentry[1]) {
                 if (cmenuentry[1] instanceof Array) {
                     html = document.createElement('ul');
@@ -336,9 +342,9 @@ var IndexmenuContextmenu = {
     },
 
     /**
+     * Absolute positioning of the div at place of mouseclick
      *
-     *
-     * @param obj
+     * @param obj div element
      * @param e
      */
     mouseposition: function (obj, e) {
@@ -358,24 +364,25 @@ var IndexmenuContextmenu = {
     },
 
     /**
+     * Check mouse button onmousedown event, only for middle and right mouse button contextmenu is shown
      *
-     *
-     * @param n
-     * @param obj
-     * @param e
+     * @param {int} n node id
+     * @param {string|dTree} obj the unique name of a dTree object
+     * @param {event} e
      */
     checkcontextm: function (n, obj, e) {
         e = e || event;
-        if ((e.which == 3 || e.button == 2) || (window.opera && e.which == 1 && e.ctrlKey)) {
+        // mouse clicks: which 3 === right, button 2 === right button
+        if ((e.which === 3 || e.button === 2) || (window.opera && e.which === 1 && e.ctrlKey)) {
             obj.contextmenu(n, e);
             IndexmenuContextmenu.stopevt(e);
         }
     },
 
     /**
+     * Prevent default oncontextmenu event
      *
-     *
-     * @param e
+     * @param {event} e
      * @returns {boolean}
      */
     stopevt: function (e) {

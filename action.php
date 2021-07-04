@@ -51,7 +51,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     function _extendJSINFO(&$event, $param) {
         global $INFO, $JSINFO;
         $JSINFO['isadmin'] = (int) $INFO['isadmin'];
-        $JSINFO['isauth']  = (int) $INFO['userinfo'];
+        $JSINFO['isauth']  = isset($INFO['userinfo']) ? (int) $INFO['userinfo'] : 0;
     }
 
     /**
@@ -83,7 +83,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
             } else if($aclcache == 'groups') {
                 //Cache per groups
                 global $INFO;
-                if($INFO['userinfo']['grps']) $newkey = implode('#', $INFO['userinfo']['grps']);
+                if(isset($INFO['userinfo']['grps'])) $newkey = implode('#', $INFO['userinfo']['grps']);
             }
             if($newkey) {
                 $cache->key .= "#".$newkey;

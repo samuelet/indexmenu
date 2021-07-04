@@ -35,7 +35,7 @@ class indexmenu_syntax_indexmenu_test extends DokuWikiTest {
      */
     function createData($values) {
 
-        list($ns, $theme, $identifier, $nocookie, $navbar, $noscroll, $maxjs, $notoc, $jsajax, $context, $nomenu,
+        list($ns, $theme, $identifier, $nocookie, $navbar, $noscroll, $maxjs, $notoc, $scorespace, $jsajax, $context, $nomenu,
             $sort, $msort, $rsort, $nsort, $level, $nons, $nopg, $nss, $max, $js, $skipns, $skipfile, $hsort,
             $headpage, $hide_headpage) = $values;
 
@@ -49,6 +49,7 @@ class indexmenu_syntax_indexmenu_test extends DokuWikiTest {
                 'noscroll'   => $noscroll,
                 'maxjs'      => $maxjs,
                 'notoc'      => $notoc,
+                'scorespace' => $scorespace,
                 'jsajax'     => $jsajax,
                 'context'    => $context,
                 'nomenu'     => $nomenu,
@@ -125,7 +126,7 @@ class indexmenu_syntax_indexmenu_test extends DokuWikiTest {
             ),
             //root ns, #levels=1, all options
             array(
-                'syntax'=> "{{indexmenu>#1|navbar context nocookie noscroll notoc nomenu dsort msort#date:modified hsort rsort nsort nons nopg max#2#4 maxjs#3 id#54321}}",
+                'syntax'=> "{{indexmenu>#1|navbar context nocookie noscroll notoc scorespace nomenu dsort msort#date:modified hsort rsort nsort nons nopg max#2#4 maxjs#3 id#54321}}",
                 'data'  => array(
                     '', 'default', 'random', true, true, true, 0, true, '&sort=d&msort=date modified&rsort=1&nsort=1&hsort=1&nopg=1', true, true,
                     'd', 'date modified', true, true, 1, true, true, array(), 0, false, array(''), array(''), true,
@@ -134,7 +135,7 @@ class indexmenu_syntax_indexmenu_test extends DokuWikiTest {
             ),
             //root ns, #levels=1, js renderer, all options
             array(
-                'syntax'=> "{{indexmenu>#1|js#bj_ubuntu.png navbar context nocookie noscroll notoc nomenu dsort msort#date:modified hsort rsort nsort nons nopg max#2#4 maxjs#3 id#54321}}",
+                'syntax'=> "{{indexmenu>#1|js#bj_ubuntu.png navbar context nocookie noscroll notoc scorespace nomenu dsort msort#date:modified hsort rsort nsort nons nopg max#2#4 maxjs#3 id#54321}}",
                 'data'  => array(
                     '', 'bj_ubuntu.png', 54321, true, true, true, 3, true, '&sort=d&msort=date modified&rsort=1&nsort=1&hsort=1&nopg=1&max=4', true, true,
                     'd', 'date modified', true, true, 1, true, true, array(), 2, true, array(''), array(''), true,

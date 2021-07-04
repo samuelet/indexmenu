@@ -46,6 +46,7 @@ $lang['js']['context']         = 'Den Baum auf Basis des aktuellen Namensraums a
 $lang['js']['nocookie']        = 'Den Geöffnet/Geschlossen-Status einzelner Knoten nicht speichern während der Navigation';
 $lang['js']['noscroll']        = 'Das Scrollen des Baums ausschalten, wenn er nicht auf die Seite passt';
 $lang['js']['notoc']           = 'Vorschau des Inhaltsverzeichnisses deaktivieren';
+$lang['js']['scorespace']      = 'Ersetzung der Unterstriche mit Leerzeichen';
 $lang['js']['tsort']           = 'Nach Titel';
 $lang['js']['dsort']           = 'Nach Datum';
 $lang['js']['msort']           = 'Nach Meta-Tag';

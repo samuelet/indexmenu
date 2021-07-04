@@ -32,7 +32,8 @@ var indexmenu_wiz = {
                 context: {},
                 nocookie: {tlbclass: 'js'},
                 noscroll: {tlbclass: 'js'},
-                notoc: {tlbclass: 'js'}
+                notoc: {tlbclass: 'js'},
+                scorespace: {tlbclass: 'js'}
             }
         },
         div4: {

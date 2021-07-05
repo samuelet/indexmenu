@@ -1,0 +1,8 @@
+//wrap everything by plugin class to ensure its dominates default dokuwiki paddings etc.
+.indexmenu_js2 {
+    @skin-foldername: "skin-win8";
+
+    @import "scripts/fancytree/@{skin-foldername}/ui.fancytree.less";
+    //overwrite default variable: @fancy-image-prefix: "./skin-win8/"; the current less compressor does not update paths
+    @fancy-image-prefix: "/lib/plugins/indexmenu/scripts/fancytree/@{skin-foldername}/";
+}

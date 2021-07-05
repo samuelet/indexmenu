@@ -7,7 +7,6 @@
  *
  */
 
-if(!defined('DOKU_INC')) die();
 if(!defined('INDEXMENU_IMG_ABSDIR')) define('INDEXMENU_IMG_ABSDIR', DOKU_PLUGIN."indexmenu/images");
 
 /**
@@ -68,12 +67,13 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $theme    = 'default';
         $level    = -1;
         $gen_id   = 'random';
-        $maxjs    = 0;
+        $maxjs    = 1;
         $max      = 0;
         $jsajax   = '';
         $nss      = array();
         $skipns   = array();
         $skipfile = array();
+        $jsversion = 0; //0:both, 1:dTree, 2:Fancytree
 
         $defaultsstr = $this->getConf('defaultoptions');
         $defaults = explode(' ', $defaultsstr);
@@ -211,6 +211,11 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             if($maxjsvalue = $this->getOption($defaultsstr, $optsstr, '/maxjs#(\d+)/u')) {
                 $maxjs = $maxjsvalue;
             }
+            // @deprecated july 2021 -- allow (temporary) switching between versions of the js treemenu
+            $treenew = $this->hasOption($defaults, $opts, 'treenew'); //overrides old and both
+            $treeold = $this->hasOption($defaults, $opts, 'treeold'); //overrides both
+            $treeboth = $this->hasOption($defaults, $opts, 'treeboth');
+            $jsversion = $treenew ? 2 : ($treeold ? 1 : ($treeboth ? 0 : $jsversion));
         }
         if(is_numeric($gen_id)) {
             $identifier = $gen_id;
@@ -267,7 +272,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 'headpage'      => $this->getConf('headpage'),
                 'hide_headpage' => $this->getConf('hide_headpage')
             ),
-            $hsort
+            $hsort,
+            $jsversion
         );
     }
 
@@ -324,9 +330,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     /**
      * Handles the actual output creation.
      *
-     * @param   $mode   string          output format being rendered
-     * @param   $renderer Doku_Renderer the current renderer object
-     * @param   $data     array         data created by handler()
+     * @param string $mode output format being rendered
+     * @param Doku_Renderer $renderer the current renderer object
+     * @param array $data data created by handler()
      * @return  boolean                 rendered correctly?
      */
     public function render($mode, Doku_Renderer $renderer, $data) {
@@ -362,7 +368,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 }
                 $renderer->info['cache'] = false;
             }
-            $n = $this->_indexmenu($data);
+            $n = $this->buildHtmlIndexmenu($data);
             if(!@$n) {
                 $n = $this->getConf('empty_msg');
                 $n = str_replace('{{ns}}', cleanID($data[0]), $n);
@@ -370,6 +376,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             }
             $renderer->doc .= $n;
             return true;
+
         } else if($mode == 'metadata') {
             /** @var Doku_Renderer_metadata $renderer */
             if(!($data[1]['navbar'] && !$data[6]['js']) && !$data[1]['context']) {
@@ -379,6 +386,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             $renderer->doc .= ((empty($data[0])) ? $conf['title'] : nons($data[0]))." index\n\n";
             unset($renderer->persistent['indexmenu']);
             return true;
+
         } else {
             return false;
         }
@@ -395,7 +403,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @param array $myns the options for indexmenu
      * @return bool|string return html for a nojs index and when enabled the js rendered index, otherwise false
      */
-    private function _indexmenu($myns) {
+    private function buildHtmlIndexmenu($myns) {
         global $conf;
         $ns          = $myns[0];
         $js_opts     = $myns[1]; //theme, identifier, nocookie, navbar, noscroll, maxjs, notoc, jsajax, context, nomenu
@@ -405,35 +413,88 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $this->nsort = $myns[5];
         $opts        = $myns[6]; //level, nons, nopg, nss, max, js, skip_index, skip_file, headpage, hide_headpage
         $this->hsort = $myns[7];
-        $data        = array();
+        $jsversion   = $myns[8];// @deprecated temporary
         $js_name     = "indexmenu_".$js_opts['identifier'];
-        $fsdir       = "/".utf8_encodeFN(str_replace(':', '/', $ns));
-        if($this->sort || $this->msort || $this->rsort || $this->hsort) {
-            $this->_search($data, $conf['datadir'], array($this, '_search_index'), $opts, $fsdir);
-        } else {
-            search($data, $conf['datadir'], array($this, '_search_index'), $opts, $fsdir);
-        }
+        $data = $this->search($ns, $conf['datadir'], $opts);
         if(!$data) return false;
 
         // javascript index
-        $output_tmp = "";
+        $output_js = "";
         if($opts['js']) {
             $ns         = str_replace('/', ':', $ns);
-            $output_tmp = $this->_jstree($data, $ns, $js_opts, $js_name, $opts['max']);
+            $output_js = '';
+
+            // $jsversion: 0:both, 1:dTree, 2:Fancytree
+            if($jsversion < 2) {
+                $output_js .= $this->builddTree($data, $ns, $js_opts, $js_name, $opts['max']);
+            }
+            if($jsversion !== 1) {
+                $output_js .= $this->buildFancyTree($data, $js_name);
+            }
 
             //remove unwanted nodes from standard index
             $this->_clean_data($data);
         }
-
+        $output = "\n";
+        $output .= $this->buildNoJStree($data, $js_name, $js_opts['jsajax']);
+        $output .=  $output_js;
+        return $output;
+    }
+    private function buildNoJStree($data, $js_name, $jsajax) {
         // Nojs dokuwiki index
         //    extra div needed when index is first element in sidebar of dokuwiki template, template uses this to toggle sidebar
         //    the toggle interacts with hide needed for js option.
-        $output = "\n";
-        $output .= '<div><div id="nojs_'.$js_name.'" data-jsajax="'.utf8_encodeFN($js_opts['jsajax']).'" class="indexmenu_nojs">'."\n";
-        $output .= html_buildlist($data, 'idx', array($this, "_html_list_index"), "html_li_index");
-        $output .= "</div></div>\n";
-        $output .= $output_tmp;
-        return $output;
+        return '<div>'
+            . '<div id="nojs_'.$js_name.'" data-jsajax="'.utf8_encodeFN($jsajax).'" class="indexmenu_nojs">'."\n"
+            . html_buildlist($data, 'idx', array($this, "_html_list_index"), "html_li_index")
+            . '</div>'
+            . '</div>'."\n";
+    }
+
+    private function buildFancyTree($data, $js_name) {
+        $options = [
+            'contextmenu' => false,
+            'url' => ''
+        ];
+        return '<div id="tree2_'.$js_name.'" class="indexmenu_js2" data-type="json">'.json_encode($this->buildJSONdata($data)).'</div>'
+        . '<div id="tree22_'.$js_name.'" class="indexmenu_js2" data-options=\''.json_encode($options).'\'></div>';
+    }
+
+    private function buildJSONdata($data) {
+        if(empty($data)) return false;
+
+        $nodes['children'] = [];
+        $this->makeNodes($data, -1, 0, $nodes['children'] );
+        $nodes['contextmenu'] = false;
+        return $nodes;
+    }
+
+    private function makeNodes(&$data, $indexLatestParsedItem, $previouslevel, &$nodes) {
+        $i = 0;
+        $counter = 0;
+        foreach($data as $i=> $item) {
+            if($i <= $indexLatestParsedItem) {
+                continue;
+            }
+            if($item['level'] < $previouslevel || $counter === 0 && $item['level'] == $previouslevel) {
+                return $i-1;
+            }
+            $node = [
+                'title' => $item['title'],
+                'key' => $item['id'] . ($item['type'] ==='d' ? ':' : ''), //ensure ns is unique
+                'hns' => $item['hns']
+            ];
+
+            if($item['type'] === 'd') { //assumption: if 'd' try always level deeper, maybe not true if d has no items in them by some filter settings?.
+                $node['folder'] = true;
+                $node['children'] = [];
+                $indexLatestParsedItem = $this->makeNodes($data, $i, $item['level'], $node['children'] );
+            }
+            $nodes[] = $node;
+            $previouslevel = $item['level'];
+            $counter++;
+        }
+        return $i;
     }
 
     /**
@@ -449,7 +510,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @param int    $max     the node at $max level will retrieve all its child nodes through the AJAX mechanism
      * @return bool|string returns inline javascript or false
      */
-    private function _jstree($data, $ns, $js_opts, $js_name, $max) {
+    private function builddTree($data, $ns, $js_opts, $js_name, $max) {
         global $conf;
         $hns = false;
         if(empty($data)) return false;
@@ -489,7 +550,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         }
         $out .= ");\n";
         //add nodes
-        $anodes = $this->_jsnodes($data, $js_name);
+        $anodes = $this->buildJSnodes($data, $js_name);
         $out .= $anodes[0];
         //write to document
         $out .= "document.write(".$js_name.");\n";
@@ -522,7 +583,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      *     - and a string of space separated numbers of the opened nodes
      *    or false when no data provided
      */
-    public function _jsnodes($data, $js_name, $noajax = true) {
+    public function buildJSnodes($data, $js_name, $noajax = true) {
         if(empty($data)) return false;
         //Array of nodes to check
         $q = array('0');
@@ -904,7 +965,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @author  Andreas Gohr <andi@splitbrain.org>
      * @author  modified by Samuele Tognini <samuele@samuele.netsons.org>
      */
-    public function _search(&$data, $base, $func, $opts, $dir = '', $lvl = 1) {
+    public function customSearch(&$data, $base, $func, $opts, $dir = '', $lvl = 1) {
         $dirs      = array();
         $files     = array();
         $files_tmp = array();
@@ -937,7 +998,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             foreach($dirs_tmp as $dir) {
                 $data[] = $dir;
                 if($dir['return']) {
-                    $this->_search($data, $base, $func, $opts, $dir['file'], $lvl + 1);
+                    $this->customSearch($data, $base, $func, $opts, $dir['file'], $lvl + 1);
                 }
             }
         } else {
@@ -946,7 +1007,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             //collect directories
             foreach($dirs as $dir) {
                 if(call_user_func_array($func, array(&$data, $base, $dir, 'd', $lvl, $opts))) {
-                    $this->_search($data, $base, $func, $opts, $dir, $lvl + 1);
+                    $this->customSearch($data, $base, $func, $opts, $dir, $lvl + 1);
                 }
             }
         }
@@ -1033,5 +1094,23 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             $sort = noNS($item['id']);
         }
         return $sort;
+    }
+
+    /**
+     * @param $ns
+     * @param $datadir
+     * @param $opts
+     * @return array
+     */
+    private function search($ns, $datadir, $opts): array
+    {
+        $data = array();
+        $fsdir = "/" . utf8_encodeFN(str_replace(':', '/', $ns));
+        if ($this->sort || $this->msort || $this->rsort || $this->hsort) {
+            $this->customSearch($data, $datadir, array($this, '_search_index'), $opts, $fsdir);
+        } else {
+            search($data, $datadir, array($this, '_search_index'), $opts, $fsdir);
+        }
+        return $data;
     }
 } //Indexmenu class end

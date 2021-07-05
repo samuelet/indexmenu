@@ -935,17 +935,17 @@ dTree.prototype.loadCss = function () {
  * @returns {boolean}
  */
 dTree.prototype.contextmenu = function (n, e) {
-    let type, node, cdtree, rmenu;
+    let type, node, cdtree, $rmenu;
     cdtree = jQuery("#cdtree_" + this.treeName)[0];
-	rmenu = jQuery('#r' + this.treeName)[0];
-    if (!rmenu) {
+	$rmenu = jQuery('#r' + this.treeName)[0];
+    if (!$rmenu) {
         return true;
     }
-    IndexmenuContextmenu.mouseposition(rmenu, e);
+    IndexmenuContextmenu.mouseposition($rmenu, e);
     let cmenu = window.indexmenu_contextmenu;
     node = this.aNodes[n];
-    rmenu.innerHTML = '<div class="indexmenu_rmenuhead" title="' + node.name + '">' + node.name + "</div>";
-    rmenu.appendChild(document.createElement('ul'));
+    $rmenu.innerHTML = '<div class="indexmenu_rmenuhead" title="' + node.name + '">' + node.name + "</div>";
+    $rmenu.appendChild(document.createElement('ul'));
     type = (node.isdir || node._hc) ? 'ns' : 'pg';
     IndexmenuContextmenu.arrconcat(cmenu['all'][type], this, n);
     if (node.hns) {
@@ -954,7 +954,7 @@ dTree.prototype.contextmenu = function (n, e) {
         IndexmenuContextmenu.arrconcat(cmenu['all'][type], this, n);
     }
     IndexmenuContextmenu.arrconcat(cmenu[type], this, n);
-    rmenu.style.display = 'inline';
+    $rmenu.style.display = 'inline';
     return false;
 };
 

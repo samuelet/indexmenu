@@ -336,11 +336,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
             $level = $max;
         }
         $nss         = $INPUT->str('nss','', true);
-        $idxm->sort  = $_REQUEST['sort'];
-        $idxm->msort = $_REQUEST['msort'];
-        $idxm->rsort = $_REQUEST['rsort'];
-        $idxm->nsort = $_REQUEST['nsort'];
-        $idxm->hsort = $_REQUEST['hsort'];
+        $search = new \dokuwiki\plugin\indexmenu\Search($_REQUEST['sort'], $_REQUEST['msort'], $_REQUEST['rsort'], $_REQUEST['nsort'], $_REQUEST['hsort']);
         $fsdir       = "/".utf8_encodeFN(str_replace(':', '/', $ns));
 
         $skipf = utf8_decodeFN($_REQUEST['skipfile']);
@@ -374,10 +370,10 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
             'headpage'      => $idxm->getConf('headpage'),
             'hide_headpage' => $idxm->getConf('hide_headpage')
         );
-        if($idxm->sort || $idxm->msort || $idxm->rsort || $idxm->hsort) {
-            $idxm->customSearch($data, $conf['datadir'], array($idxm, '_search_index'), $opts, $fsdir);
+        if($search->sort || $search->msort || $search->rsort || $search->hsort) {
+            $search->customSearch($data, $conf['datadir'], array($search, '_search_index'), $opts, $fsdir);
         } else {
-            search($data, $conf['datadir'], array($idxm, '_search_index'), $opts, $fsdir);
+            search($data, $conf['datadir'], array($search, '_search_index'), $opts, $fsdir);
         }
 
         $out = '';
@@ -385,7 +381,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
             $out_tmp = html_buildlist($data, 'idx', array($idxm, "_html_list_index"), "html_li_index");
             $out .= preg_replace('/<ul class="idx">(.*)<\/ul>/s', "$1", $out_tmp);
         } else {
-            $nodes = $idxm->buildJSnodes($data, '', false);
+            $nodes = $idxm->builddTreeNodes($data, '', false);
             $out   = "ajxnodes = [";
             $out .= rtrim($nodes[0], ",");
             $out .= "];";

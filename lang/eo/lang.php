@@ -2,7 +2,8 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
+ * @author Erik Bjørn Pedersen <erik.pedersen@shaw.ca>
  * @author Robert Bogenschneider <bogi@uea.org>
  */
 $lang['menu']                  = 'Indeksmenu-ilaro';
@@ -56,3 +57,33 @@ $lang['js']['id']              = 'Identigilo de memdifinita kekseto por tiu inde
 $lang['js']['insert']          = 'Enmeti indeksmenuon';
 $lang['js']['metanum']         = 'Meta-numero por ordigado';
 $lang['js']['insertmetanum']   = 'Enmeti meta-numeron';
+$lang['js']['page']            = 'Paĝo';
+$lang['js']['revs']            = 'Revizioj';
+$lang['js']['tocpreview']      = 'Antaŭmontro de enhavotabelo';
+$lang['js']['editmode']        = 'Redakta reĝimo';
+$lang['js']['insertdwlink']    = 'Enmeti kiel DW-ligilon';
+$lang['js']['insertdwlinktooltip'] = 'Enmetu la ligilon de ĉi tiu paĝo en la redaktejon ĉe la kursorejo';
+$lang['js']['ns']              = 'Nomspaco';
+$lang['js']['search']          = 'Serĉi...';
+$lang['js']['searchtooltip']   = 'Serĉi paĝojn en tiu ĉi nomspaco';
+$lang['js']['create']          = 'Krei';
+$lang['js']['more']            = 'Pli';
+$lang['js']['headpage']        = 'Paĝokapo';
+$lang['js']['headpagetooltip'] = 'Krei novan paĝokapon sub tiu ĉi paĝo';
+$lang['js']['startpage']       = 'Komenca paĝo';
+$lang['js']['startpagetooltip'] = 'Krei novan komencopaĝon sub tiu ĉi paĝo';
+$lang['js']['custompage']      = 'Propra paĝo...';
+$lang['js']['custompagetooltip'] = 'Krei novan paĝon (enigi la nomon per ŝprucfenestro) sub tiu ĉi paĝo';
+$lang['js']['acls']            = 'Alirkontrollistoj';
+$lang['js']['purgecache']      = 'Forigi la kaŝmemoron';
+$lang['js']['exporthtml']      = 'Eksporti kiel HTML';
+$lang['js']['exporttext']      = 'Eksporti kiel teksto';
+$lang['js']['headpagehere']    = 'Paĝokapo estos tie ĉi';
+$lang['js']['headpageheretooltip'] = 'Krei novan paĝokapon en tiu ĉi nomspaco';
+$lang['js']['newpage']         = 'Nova paĝo...';
+$lang['js']['newpagetooltip']  = 'Krei novan paĝon (enigi la nomon per ŝprucfenestro) en tiu ĉi nomspaco';
+$lang['js']['newpagehere']     = 'Nova paĝo estos tie ĉi';
+$lang['js']['insertkeywords']  = 'Enmeti la ŝlosilvorto(j)n serĉota(j)n en tiu ĉi nomspaco';
+$lang['js']['insertpagename']  = 'Enmeti la paĝnomon kreotan';
+$lang['js']['edit']            = 'Redakti';
+$lang['js']['loading']         = 'Ŝarganta...';

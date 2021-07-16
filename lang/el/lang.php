@@ -4,6 +4,7 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
  * @author Aikaterini CATAPODI <extragold1234@hotmail.com>
+ * @author Katerina Katapodi <katerinakatapodi@gmail.com>
  */
 $lang['menu']                  = 'Χρησιμότητες του Μενού περιεχομένων';
 $lang['fetch']                 = 'Προβολή';
@@ -23,6 +24,7 @@ $lang['delete_no']             = 'Συνέβη σφάλμα κατά την δι
 $lang['upload']                = 'Αποστολή';
 $lang['checkupdates']          = 'Ενημερώσεις περιεχομένου';
 $lang['noupdates']             = 'Το μενού Index δεν χρειάζεται να ενημερωθεί. Έχεις ήδη την τελευταία εκδοχή.  ';
+$lang['infos']                 = 'Μπορείτε να δημιουργήσετε το θέμα σας ακολουθώντας τις οδηγίες στη σελίδα. <a href="https://www.dokuwiki.org/plugin:indexmenu#theme_tutorial">Theme Tutorial</a>  <br />Τότε θα μπορούσατε να κάνετε πιο πολύ κόσμο χαρούμενο :-) στέλνοντας το στο στοκ, με το κουμπί  "αποστολής" κάτω από αυτό το θέμα..	';
 $lang['showsort']              = 'Αριθμός κατάταξης του μενού Index : 	';
 $lang['donation_text']         = 'To plugin μενού περιεχομένων δεν σπονσοράρεται από κανέναν αλλά το δημιουργώ και το υποστηρίζω δωρεάν στον ελεύθερο χρόνο μου. Αν λάβετε κάτι χάρις σε αυτό ή θελήσετε να συμμετάσχετε στην δημιουργία του, μπορείτε να κάνετε μια δωρεά. 	';
 $lang['js']['indexmenuwizard'] = 'Μάγος του Μενού Περιεχομένων';
@@ -62,3 +64,4 @@ $lang['js']['insertdwlink']    = 'Εισαγωγή ως DWlink';
 $lang['js']['insertdwlinktooltip'] = 'Εισάγετε τον σύνδεσμο αυτής της σελίδας στο κουτί έκδοσης στη θέση του κέρσορα';
 $lang['js']['ns']              = 'Κενό αρχείο για εισαγωγή τίτλου';
 $lang['js']['search']          = 'Αναζήτηση';
+$lang['js']['js']              = 'Προέκταση με Javasript,μπορώντας να βάλετε το δικό σας θέμα';

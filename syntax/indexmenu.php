@@ -336,6 +336,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 //disable cookies
                 $data[1]['nocookie'] = true;
             }
+            if($data[6]['js'] & $conf['defer_js']) {
+                msg('Indexmenu Plugin: If you use the \'js\'-option of the indexmenu plugin, you have to disable the <a href="https://www.dokuwiki.org/config:defer_js">\'defer_js\'</a>-setting. This setting is temporary, in the future the indexmenu plugin will be improved.',-1);
+            }
             //Navbar with nojs
             if($data[1]['navbar'] && !$data[6]['js']) {
                 if(!isset($data[0])) $data[0] = '..';
@@ -965,4 +968,4 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         if($sort === false) $sort = noNS($item['id']);
         return $sort;
     }
-} //Indexmenu class end  
+} //Indexmenu class end

@@ -3,7 +3,7 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
- * @author Katerina Katapodi <extragold1234@hotmail.com>
+ * @author Katerina Katapodi <katerinakatapodi@gmail.com>
  */
 $lang['menu']                  = 'Χρησιμότητες του Μενού περιεχομένων';
 $lang['fetch']                 = 'Προβολή';

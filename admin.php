@@ -8,7 +8,6 @@
 
 if(!defined('DOKU_INC')) die();
 
-require_once (DOKU_INC.'inc/HTTPClient.php');
 require_once(DOKU_PLUGIN."indexmenu/inc/pclzip.lib.php");
 
 if(!defined('INDEXMENU_IMG_ABSDIR')) define('INDEXMENU_IMG_ABSDIR', DOKU_PLUGIN."indexmenu/images");

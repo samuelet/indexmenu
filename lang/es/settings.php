@@ -3,6 +3,7 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author Domingo Redal <docxml@gmail.com>
  * @author Digna González Otero <digna.gonzalezotero [at] gmail [dot] com>
  */
 $lang['checkupdate']           = 'Comprobar actualizaciones periódicamente.';
@@ -17,3 +18,4 @@ $lang['skip_file']             = 'Archivos a ignorar. Usa el formato de las expr
 $lang['show_sort']             = 'Mostrar a los administradores el número de posición de indexmenu junto a la nota al pie';
 $lang['themes_url']            = 'Descargar temas js de esta url http.';
 $lang['be_repo']               = 'Permitir a otros descargar temas de tu sitio.';
+$lang['defaultoptions']        = 'Lista de opciones de indexmenu separadas por espacios. Estas opciones se aplicarán de forma predeterminada a cada indexmenu y se pueden deshacer con un comando inverso en la sintaxis del complemento';

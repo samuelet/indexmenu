@@ -2,7 +2,8 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
+ * @author king <b4688756@urhen.com>
  * @author Nobuyuki Fukuyori <self@spumoni.org>
  * @author Hideaki SAWADA <chuno@live.jp>
  */
@@ -26,6 +27,7 @@ $lang['checkupdates']          = 'プラグインの更新';
 $lang['noupdates']             = 'Indexmenuをアップデートする必要はありません。既に最新の状態です。';
 $lang['infos']                 = '<a href="https://www.dokuwiki.org/plugin:indexmenu#theme_tutorial">テーマ学習</a>ページの指示に従って自分のテーマを作成できます。<br />その後、テーマの下の「共有」ボタンで、公共 indexmenu リポジトリに送ってより多くの人を幸せにできます。';
 $lang['showsort']              = 'Indexmenuソート番号';
+$lang['donation_text']         = 'indexmenuプラグインは誰の後援も受けていませんが、機能を継続するために多くの時間が無料で費やされています。これにより、あなたが何かを得られていたり、純粋に開発を支援したい場合は、開発者に寄付をすることも可能です。';
 $lang['js']['indexmenuwizard'] = 'Indexmenuウィザード';
 $lang['js']['index']           = 'インデックス';
 $lang['js']['options']         = 'オプション';
@@ -38,6 +40,7 @@ $lang['js']['nsdepth']         = '深度';
 $lang['js']['js']              = 'レンダリングツリーは、Javasriptによって独自のテーマを定義することができます';
 $lang['js']['theme']           = 'テーマ';
 $lang['js']['navbar']          = '現在の名前空間でツリーを開きます。';
+$lang['js']['context']         = '名前空間からツリーを開始させます';
 $lang['js']['nocookie']        = 'ユーザー操作結果のノードの開閉を記憶しません。';
 $lang['js']['noscroll']        = 'コンテナの幅に合わない場合、ツリーをスクロールしないようにします。';
 $lang['js']['notoc']           = '目次プレビュー機能を無効化します。';
@@ -63,6 +66,7 @@ $lang['js']['headpage']        = 'ヘッドページ';
 $lang['js']['startpage']       = 'スタートページ';
 $lang['js']['startpagetooltip'] = 'このページの下に新規スタートページを作成する';
 $lang['js']['custompagetooltip'] = 'このページの下に新規ページを作成する';
+$lang['js']['purgecache']      = 'キャッシュをクリア';
 $lang['js']['exporthtml']      = 'HTML で出力する';
 $lang['js']['exporttext']      = 'テキストで出力する';
 $lang['js']['headpageheretooltip'] = 'この名前空間内に新規ヘッドページを作成する';

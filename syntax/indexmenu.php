@@ -571,7 +571,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         global $conf;
         $hns   = false;
         $title = noNS($ns);
+        
         if(empty($headpage)) return $title;
+
         $ahp = explode(",", $headpage);
         foreach($ahp as $hp) {
             switch($hp) {
@@ -589,17 +591,26 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 default:
                     $page = $ns.":".$hp;
             }
+            
             //check headpage
             if(@file_exists(wikiFN($page)) && auth_quickaclcheck($page) >= AUTH_READ) {
                 if($conf['useheading'] == 1 || $conf['useheading'] === 'navigation') {
                     $title_tmp = p_get_first_heading($page, FALSE);
                     if(!is_null($title_tmp)) $title = $title_tmp;
                 }
-                $title = htmlspecialchars($title, ENT_QUOTES);
-                $hns   = $page;
+
+                $customtitle = p_get_metadata( $page ,'indexmenu_title');
+                if($customtitle != null) {
+                    $title = $customtitle;
+                } else {
+                    $title = htmlspecialchars($title, ENT_QUOTES);
+                }
+                $hns = $page;
+                
                 //headpage found, exit for
                 break;
             }
+
         }
         return $title;
     }
@@ -802,7 +813,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     public function _html_list_index($item) {
         global $INFO;
         $ret = '';
-
+        
         //namespace
         if($item['type'] == 'd' || $item['type'] == 'l') {
             $markCurrentPage = false;
@@ -829,7 +840,12 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             if($markCurrentPage) $ret .= '</span>';
         } else {
             //page link
-            $ret .= html_wikilink(':'.$item['id']);
+            $customtitle = p_get_metadata($item['id'],'indexmenu_title');
+            if($customtitle != null) {
+                $ret .= html_wikilink(':'.$item['id'],$customtitle);
+            } else {
+                $ret .= html_wikilink(':'.$item['id']);
+            }
         }
         return $ret;
     }
@@ -857,6 +873,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $files     = array();
         $files_tmp = array();
         $dirs_tmp  = array();
+        $mix_tmp   = array();
         $count = count($data);
 
         //read in directories and files
@@ -873,24 +890,61 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         }
         closedir($dh);
 
+        //Collect files
+        foreach($files as $file) {
+            call_user_func_array($func, array(&$files_tmp, $base, $file, 'f', $lvl, $opts));
+        }
+
         //Collect and sort dirs
         if($this->nsort) {
-            //collect the wanted directories in dirs_tmp
+
+            //collect dirs
             foreach($dirs as $dir) {
                 call_user_func_array($func, array(&$dirs_tmp, $base, $dir, 'd', $lvl, $opts));
             }
-            //sort directories
-            usort($dirs_tmp, array($this, "_cmp"));
-            //add and search each directory
-            foreach($dirs_tmp as $dir) {
-                $data[] = $dir;
-                if($dir['return']) {
-                    $this->_search($data, $base, $func, $opts, $dir['file'], $lvl + 1);
+
+            if ($this->msort) {
+                
+                // mix files and dirs
+                $mix_tmp = array_merge($dirs_tmp, $files_tmp);
+                usort($mix_tmp, array($this, "_cmp"));
+                
+                foreach($mix_tmp as $item) {
+                    $data[] = $item;
+                    $type = $item['type'];
+
+                    if( $type != 'd' && $type != 'l') {
+                        continue ;
+                    }
+
+                    if($item['return']) {
+                        $this->_search($data, $base, $func, $opts, $item['file'], $lvl + 1);
+                    }
+
                 }
+
+                return ;
+
+            } else {
+                
+                //sort directories
+                usort($dirs_tmp, array($this, "_cmp"));
+
+                //add and search each directory
+                foreach($dirs_tmp as $dir) {
+                    $data[] = $dir;
+                    if($dir['return']) {
+                        $this->_search($data, $base, $func, $opts, $dir['file'], $lvl + 1);
+                    }
+                }
+
             }
+
         } else {
+
             //sort by page name
             sort($dirs);
+
             //collect directories
             foreach($dirs as $dir) {
                 if(call_user_func_array($func, array(&$data, $base, $dir, 'd', $lvl, $opts))) {
@@ -899,10 +953,6 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             }
         }
 
-        //Collect and sort files
-        foreach($files as $file) {
-            call_user_func_array($func, array(&$files_tmp, $base, $file, 'f', $lvl, $opts));
-        }
         usort($files_tmp, array($this, "_cmp"));
 
         //count added items

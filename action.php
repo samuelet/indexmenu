@@ -338,7 +338,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         if(auth_quickaclcheck($id) < AUTH_READ) return '';
 
         $meta = p_get_metadata($id);
-        $toc  = $meta['description']['tableofcontents'];
+        $toc  = $meta['description']['tableofcontents'] ?? [];
 
         if(count($toc) > 1) {
             //display ToC of two or more headings

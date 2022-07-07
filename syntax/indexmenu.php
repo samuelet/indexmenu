@@ -381,6 +381,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 $js_dTreeOpts['nocookie'] = true;
             }
 
+            if($opts['js'] & $conf['defer_js']) {
+                msg('Indexmenu Plugin: If you use the \'js\'-option of the indexmenu plugin, you have to disable the <a href="https://www.dokuwiki.org/config:defer_js">\'defer_js\'</a>-setting. This setting is temporary, in the future the indexmenu plugin will be improved.',-1);
+            }
+
             //Navbar with nojs
             if($js_dTreeOpts['navbar'] && !$opts['js']) {
                 if(!isset($ns)) {

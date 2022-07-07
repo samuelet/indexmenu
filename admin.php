@@ -6,13 +6,14 @@
  * @author     Samuele Tognini <samuele@samuele.netsons.org>
  */
 
-if(!defined('DOKU_INC')) die();
-
 require_once(DOKU_PLUGIN."indexmenu/inc/pclzip.lib.php");
 
 if(!defined('INDEXMENU_IMG_ABSDIR')) define('INDEXMENU_IMG_ABSDIR', DOKU_PLUGIN."indexmenu/images");
 define('INDEXMENU_ICOS', 'base,folder,folderopen,folderh,folderhopen,page,plus,minus,nolines_plus,nolines_minus,minusbottom,plusbottom,join,joinbottom,line,empty');
 
+/**
+ * Class admin_plugin_indexmenu
+ */
 class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     var $req = 'fetch';
     var $repos = array(
@@ -32,7 +33,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * handle user request
      */
-    function handle() {
+    public function handle() {
         $url = "http://samuele.netsons.org/dokuwiki";
         if(empty($url)) {
             $this->repos['url'][]     = $this->getLang('no_repos');
@@ -51,7 +52,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * output appropriate html
      */
-    function html() {
+    public function html() {
         global $conf;
         ptln('<div id="config__manager">');
         ptln(' <h1>'.$this->getLang('menu').'</h1>');
@@ -84,7 +85,9 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
             //list requested theme
             if($n == $this->selected) {
                 ptln('    <tr class="default"><td colspan="2">');
-                if($this->req == 'install') $this->install($this->selected, $_REQUEST['name']);
+                if($this->req == 'install') {
+                    $this->install($this->selected, $_REQUEST['name']);
+                }
                 if($this->req == 'upload' && $_REQUEST['name']) {
                     $info = "";
                     if(isset($_REQUEST['author_info'])) {
@@ -95,7 +98,9 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
                     if(isset($_REQUEST['author_info'])) $info .= "description=".$_REQUEST['author_info'];
                     if(!$this->upload($_REQUEST['name'], $info)) msg($this->getLang('install_no'), -1);
                 }
-                if($this->req == 'delete' && $_REQUEST['name']) $this->_delete($_REQUEST['name']);
+                if($this->req == 'delete' && $_REQUEST['name']) {
+                    $this->_delete($_REQUEST['name']);
+                }
                 ptln('    </td></tr><tr><td colspan="2">');
                 $this->dolist($n);
                 ptln('    </td></tr>');
@@ -110,17 +115,18 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * Connect to theme repository and list themes
      *
+     * @param $n
+     *
      * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
      * @author     Samuele Tognini <samuele@samuele.netsons.org>
      */
-    function dolist($n) {
+    private function dolist($n) {
         global $INFO;
         if($n === false) return;
         //info.txt keys to parse
         $keys = array('author', 'url', 'description');
         $icos = explode(',', INDEXMENU_ICOS);
-        $turl = "";
-        $info = "";
+
         //get list
         $data = $this->_remotequery($this->repos['url'][$n]."/lib/plugins/indexmenu/ajax.php?req=local");
         $data = explode(",", $data);
@@ -174,10 +180,14 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * Download and install themes
      *
+     * @param $n
+     * @param $name
+     * @return bool
+     *
      * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
      * @author     Samuele Tognini <samuele@samuele.netsons.org>
      */
-    function install($n, $name) {
+    private function install($n, $name) {
         $repo = $this->repos['url'][$n];
         if(!isset($name)) return false;
         $return = true;
@@ -209,8 +219,10 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * Remove a directory
      *
+     * @param $path
+     * @return bool
      */
-    function _rm_dir($path) {
+    private function _rm_dir($path) {
         if(!is_string($path) || $path == "") return false;
 
         if(is_dir($path)) {
@@ -234,7 +246,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
      * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
      * @author     Samuele Tognini <samuele@samuele.netsons.org>
      */
-    function checktmpsubdir() {
+    private function checktmpsubdir() {
         $tmp = INDEXMENU_IMG_ABSDIR."/tmp";
         if(!io_mkdir_p($tmp)) {
             msg($this->getLang('dir_err').": $tmp", -1);
@@ -246,10 +258,13 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * Upload a theme into my site
      *
+     * @param string $theme
+     * @param string $info
+     * @return bool
      * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
      * @author     Samuele Tognini <samuele@samuele.netsons.org>
      */
-    function upload($theme, $info) {
+    private function upload($theme, $info) {
         $return = true;
         $host   = 'samuele.netsons.org';
         $path   = '/dokuwiki/lib/plugins/indexmenu/upload/index.php';
@@ -328,12 +343,9 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
      *
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
-    function _checkupdates() {
-        require_once (DOKU_INC.'inc/HTTPClient.php');
-        global $conf;
-        global $INFO;
+    private function _checkupdates() {
         $w    = -1;
-        $date = $this->getInfo('date');
+        $date = $this->getInfo();
         $date = $date['date'];
         $data = $this->_remotequery("http://samuele.netsons.org/dokuwiki/lib/plugins/indexmenu/remote.php?check=$date");
         if($data === "") {
@@ -358,11 +370,14 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * Get url response and check it
      *
+     * @param string $url
+     * @param bool $tag
+     * @return bool|false|string
+     *
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
-    function _remotequery($url, $tag = true) {
-        require_once (DOKU_INC.'inc/HTTPClient.php');
-        $http          = new DokuHTTPClient();
+    private function _remotequery($url, $tag = true) {
+        $http          = new dokuwiki\HTTP\DokuHTTPClient();
         $http->timeout = 8;
         $data          = $http->get($url);
         if($tag) {
@@ -378,9 +393,12 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * Open an html form
      *
+     * @param     $act
+     * @param int $n
+     *
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
-    function _form_open($act, $n = -1) {
+    private function _form_open($act, $n = -1) {
         global $ID;
         ptln('     <form action="'.wl($ID).'" method="post">');
         ptln('      <input type="hidden" name="do" value="admin" />');
@@ -392,6 +410,8 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * Close the html form
      *
+     * @param string $act
+     *
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
     function _form_close($act) {
@@ -402,9 +422,11 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
     /**
      * Remove an installed theme
      *
+     * @param $theme
+     *
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
-    function _delete($theme) {
+    private function _delete($theme) {
         if($theme == "default") return;
         if($this->_rm_dir(INDEXMENU_IMG_ABSDIR."/".utf8_encodeFN(basename($theme)))) {
             msg($this->getLang('delete_ok').": $theme.", 1);
@@ -418,7 +440,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
      *
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
-    function _donate() {
+    private function _donate() {
         $out = "<fieldset>\n";
         $out .= '<p>'.$this->getLang('donation_text').'</p>';
         $out .= '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">'."\n";
@@ -426,7 +448,8 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
         $out .= '<input type="hidden" name="hosted_button_id" value="102873" />'."\n";
         $out .= '<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif" name="submit" alt="" />'."\n";
         $out .= '<img alt="" src="https://www.paypal.com/it_IT/i/scr/pixel.gif" width="1" height="1" />'."\n";
-        $out .= "</form></fieldset>\n";
+        $out .= '</form>';
+        $out .= "</fieldset>\n";
         return $out;
     }
 

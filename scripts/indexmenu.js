@@ -876,9 +876,9 @@ dTree.prototype.getAjax = function (n) {
     let req, curns;
     node = selft.aNodes[n];
 
-    req = 'call=indexmenu&req=index&idx=' + node.dokuid + decodeURIComponent(this.config.jsajax);
-    curns = this.pageid.substring(0, this.pageid.lastIndexOf(this.config.sepchar));
+    req = 'req=index&idx=' + node.dokuid + decodeURIComponent(this.config.jsajax);
 
+    curns = this.pageid.substring(0, this.pageid.lastIndexOf(this.config.sepchar));
     if (this.fajax) {
         req += '&nss=' + curns + '&max=1';
     }
@@ -1001,7 +1001,7 @@ dTree.prototype.init = function (hasstyle, nocookies, opennodes, nav, max, nomen
         var self = this;
         IndexmenuUtils.createPicker('r' + this.treeName, 'indexmenu_rmenu ' + this.config.theme);
         jQuery('#r' + this.treeName)[0].oncontextmenu = IndexmenuContextmenu.stopevt;
-		jQuery(document).click(function() {
+		jQuery(document).on("click",function() {
             self.divdisplay('r', false);
         });
     }

@@ -6,6 +6,8 @@
  * @author     Samuele Tognini <samuele@samuele.netsons.org>
  */
 
+use dokuwiki\plugin\indexmenu\Search;
+
 /**
  * Class action_plugin_indexmenu
  */
@@ -158,35 +160,134 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         $event->stopPropagation();
         $event->preventDefault();
 
-        switch($_REQUEST['req']) {
+        global $INPUT;
+        switch($INPUT->str('req')) {
             case 'local':
                 //list themes
-                header('Content-Type: application/json');
-
-                $data = $this->getlocalThemes();
-
-                echo json_encode($data);
+                $this->getlocalThemes();
                 break;
 
             case 'toc':
                 //print toc preview
-                if(isset($_REQUEST['id'])) print $this->print_toc($_REQUEST['id']);
+                if($INPUT->has('id')) print $this->print_toc($INPUT->str('id'));
                 break;
 
             case 'index':
-                //print index
-                if(isset($_REQUEST['idx'])) print $this->print_index($_REQUEST['idx']);
+                //retrieval of data of the extra nodes for the indexmenu (if ajax loading set with max#m(#n)
+                if($INPUT->has('idx')) print $this->print_index($INPUT->str('idx'));
+                break;
+
+            case 'fancytree':
+                //2022-04-27: data for new index build with Fancytree
+                $this->getDataFancyTree($event);
                 break;
         }
     }
 
     public function getDataFancyTree(Doku_Event $event) {
-        if($event->data !== 'indexmenu') {
-            return;
+        global $INPUT, $INFO;
+//        if($event->data !== 'indexmenunew') {
+//            return;
+//        }
+//        if($INPUT->str('req') !== 'fancytree') {
+//            return;
+//        }
+//        //no other ajax call handlers needed
+//        $event->stopPropagation();
+//        $event->preventDefault();
+
+//        $idxm     = new syntax_plugin_indexmenu_indexmenu();
+//        $ns       = $idxm->parseNs(rawurldecode($ns)); // why not assuming a 'key' is offered?
+        $ns = $INPUT->str('ns','', true);
+        $ns = rtrim($ns,':'); //key of directory has extra : on the end
+        $level    = -1; //opened levels. -1=all levels open
+        $max      = 1; //levels to load by lazyloading. Before the default was 0. CHANGED to 1.
+        $skipFile = [];
+        $skipNs   = [];
+
+        if($INPUT->int('max') > 0) {
+            $max   = $INPUT->int('max'); // max#n#m, if init: #n, otherwise #m
+            $level = $max;
         }
-        //no other ajax call handlers needed
-        $event->stopPropagation();
-        $event->preventDefault();
+        if($INPUT->int('level',-10, true) >= -1) {
+            $level = $INPUT->int('level');
+        }
+        $isInit = $INPUT->bool('init', false, true);
+
+        $currentPage = $INPUT->str('currentpage','', true);
+        if($isInit) { //TODO attention, depends on logic that js is only 1 if init
+            $subnss = $INPUT->arr('subnss');
+            $debug1=var_export($subnss,true);
+            // if 'navbar' enabled add current ns to list
+            if($INPUT->bool('navbar', false, true)) {
+                $subnss[] = [getNS($currentPage)];
+            }
+            $debug2=var_export($subnss,true);
+            // alternative, via javascript.. https://wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree.html#loadKeyPath
+        } else {
+            $subnss = $INPUT->str('subnss', '', true);
+            $subnss = [[cleanID($subnss), 1]];
+        }
+
+        $skipf = $INPUT->str('skipfile', '', true); // utf8_decodeFN($_REQUEST['skipfile']);
+        $skipFile[] = $this->getConf('skip_file');
+        if(isset($skipf)) {
+            $index = 0;
+            if($skipf[1] == '+') {
+                $index = 1;
+            }
+            $skipFile[$index] = substr($skipf, 1);
+        }
+        $skipn = $INPUT->str('skipns', '', true); //utf8_decodeFN($_REQUEST['skipns']);
+        $skipNs[] = $this->getConf('skip_index');
+        if(isset($skipn)) {
+            $index = 0;
+            if($skipn[1] == '+') {
+                $index = 1;
+            }
+            $skipNs[$index] = substr($skipn, 1);
+        }
+
+        $opts = array(
+            'level'         => $level, //only set for init, lazy requests equal to max
+            'nons'          => $INPUT->bool('nons', false, true), //only needed for init
+            'nopg'          => $INPUT->bool('nopg', false, true),
+            'subnss'        => $subnss, //init with complex array, only current ns if lazy
+            'max'           => $max,
+            'js'            => false, //DEPRECATED (for dTree: only init true, lazy requests false.) NOW not used, so false.
+            'skipns'    => $skipNs,  //preprocessed to string, only part from syntax
+            'skipfile'     => $skipFile, //preprocessed to string, only part from syntax
+            'headpage'      => $this->getConf('headpage'),
+            'hide_headpage' => $this->getConf('hide_headpage'),
+        );
+
+        $sort = [
+            'sort' => $INPUT->str('sort', false, true),
+            'msort' => $INPUT->str('msort', false, true),
+            'rsort' => $INPUT->bool('rsort', false, true),
+            'nsort' => $INPUT->bool('nsort', false, true),
+            'hsort' => $INPUT->bool('hsort', false, true)
+        ];
+
+        $search = new Search($sort);
+        $data = $search->search($ns, $opts);
+        $fancytreeData = $search->buildFancytreeData($data, $isInit, $currentPage);
+
+        if($isInit) {
+            //for lazy loading are other items than children not supported.
+            $fancytreeData['opts'] = $opts;
+            $fancytreeData['sort'] = $sort;
+            $fancytreeData['navbar'] = $INPUT->bool('navbar', false, true);
+            $fancytreeData['debug1'] = $debug1;
+            $fancytreeData['debug2'] = $debug2;
+
+        } else {
+            $fancytreeData[0]['opts'] = $opts;
+            $fancytreeData[0]['sort'] = $sort;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($fancytreeData);
 
     }
 
@@ -197,6 +298,8 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @author Gerrit Uitslag <klapinklapin@gmail.com>
      */
     private function getlocalThemes() {
+        header('Content-Type: application/json');
+
         $themebase = 'lib/plugins/indexmenu/images';
 
         $handle = @opendir(DOKU_INC.$themebase);
@@ -215,11 +318,10 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         closedir($handle);
         sort($themes);
 
-        return array(
+        echo json_encode([
             'themebase' => $themebase,
             'themes'    => $themes
-        );
-
+        ]);
     }
 
     /**
@@ -324,7 +426,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     private function print_index($ns) {
         global $conf, $INPUT;
         $idxm     = new syntax_plugin_indexmenu_indexmenu();
-        $ns       = $idxm->_parse_ns(rawurldecode($ns));
+        $ns       = $idxm->parseNs(rawurldecode($ns));
         $level    = -1;
         $max      = 0;
         $data     = array();
@@ -335,8 +437,13 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
             $max   = $INPUT->int('max');
             $level = $max;
         }
-        $nss         = $INPUT->str('nss','', true);
-        $search = new \dokuwiki\plugin\indexmenu\Search($_REQUEST['sort'], $_REQUEST['msort'], $_REQUEST['rsort'], $_REQUEST['nsort'], $_REQUEST['hsort']);
+        $nss = $INPUT->str('nss','', true);
+        $sort['sort'] = $INPUT->str('sort', '', true);
+        $sort['msort'] = $INPUT->str('msort', '', true);
+        $sort['rsort'] = $INPUT->bool('rsort', false, true);
+        $sort['nsort'] = $INPUT->bool('nsort', false, true);
+        $sort['hsort'] = $INPUT->bool('hsort', false, true);
+        $search = new Search($sort);
         $fsdir       = "/".utf8_encodeFN(str_replace(':', '/', $ns));
 
         $skipf = utf8_decodeFN($_REQUEST['skipfile']);
@@ -360,25 +467,25 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
 
         $opts = array(
             'level'         => $level,
-            'nons'          => $_REQUEST['nons'],
+            'nons'          => $INPUT->bool('nons', false, true),
             'nss'           => array(array($nss, 1)),
             'max'           => $max,
             'js'            => false,
-            'nopg'          => $_REQUEST['nopg'],
-            'skip_index'    => $skipns,
-            'skip_file'     => $skipfile,
+            'nopg'          => $INPUT->bool('nopg', false, true),
+            'skipns'    => $skipns,
+            'skipfile'     => $skipfile,
             'headpage'      => $idxm->getConf('headpage'),
             'hide_headpage' => $idxm->getConf('hide_headpage')
         );
-        if($search->sort || $search->msort || $search->rsort || $search->hsort) {
-            $search->customSearch($data, $conf['datadir'], array($search, '_search_index'), $opts, $fsdir);
+        if($sort['sort'] || $sort['msort'] || $sort['rsort'] || $sort['hsort']) {
+            $search->customSearch($data, $conf['datadir'], array($search, 'searchIndexmenuItems'), $opts, $fsdir);
         } else {
-            search($data, $conf['datadir'], array($search, '_search_index'), $opts, $fsdir);
+            search($data, $conf['datadir'], array($search, 'searchIndexmenuItems'), $opts, $fsdir);
         }
 
         $out = '';
         if($_REQUEST['nojs']) {
-            $out_tmp = html_buildlist($data, 'idx', array($idxm, "_html_list_index"), "html_li_index");
+            $out_tmp = html_buildlist($data, 'idx', array($idxm, "formatIndexmenuItem"), "html_li_index");
             $out .= preg_replace('/<ul class="idx">(.*)<\/ul>/s', "$1", $out_tmp);
         } else {
             $nodes = $idxm->builddTreeNodes($data, '', false);

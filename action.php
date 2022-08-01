@@ -157,9 +157,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
 
                 $data = $this->_getlocalThemes();
 
-               // require_once DOKU_INC.'inc/JSON.php';
-                $json = new JSON();
-                echo ''.$json->encode($data).'';
+                echo ''.json_encode($data).'';
                 break;
 
             case 'toc':

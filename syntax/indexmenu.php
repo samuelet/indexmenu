@@ -315,16 +315,16 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     /**
      * Handles the actual output creation.
      *
-     * @param   $mode   string          output format being rendered
-     * @param   $renderer Doku_Renderer the current renderer object
-     * @param   $data     array         data created by handler()
+     * @param string $format output format being rendered
+     * @param Doku_Renderer $renderer the current renderer object
+     * @param array $data data created by handler()
      * @return  boolean                 rendered correctly?
      */
-    public function render($mode, Doku_Renderer $renderer, $data) {
+    public function render($format, Doku_Renderer $renderer, $data) {
         global $ACT;
         global $conf;
         global $INFO;
-        if($mode == 'xhtml') {
+        if($format == 'xhtml') {
             /** @var Doku_Renderer_xhtml $renderer */
             if($ACT == 'preview') {
                 //Check user permission to display indexmenu in a preview page
@@ -362,7 +362,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             }
             $renderer->doc .= $n;
             return true;
-        } else if($mode == 'metadata') {
+        } else if($format == 'metadata') {
             /** @var Doku_Renderer_metadata $renderer */
             if(!($data[1]['navbar'] && !$data[6]['js']) && !$data[1]['context']) {
                 //this is an indexmenu page that needs the PARSER_CACHE_USE event trigger;
@@ -472,8 +472,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         if($js_opts['maxjs'] > 0)      $out .= "$js_name.config.maxjs=".$js_opts['maxjs'].";\n";
         if(!empty($js_opts['jsajax'])) $out .= "$js_name.config.jsajax='".utf8_encodeFN($js_opts['jsajax'])."';\n";
         //add root node
-        $json = new JSON();
-        $out .= $js_name.".add('".idfilter(cleanID($ns), false)."',0,-1,".$json->encode($title);
+        $out .= $js_name.".add('".idfilter(cleanID($ns), false)."',0,-1,".json_encode($title);
         if($hns) $out .= ",'".idfilter(cleanID($hns), false)."'";
         $out .= ");\n";
         //add nodes
@@ -523,7 +522,6 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             $jscmd = "new Array ";
             $separator   = ",";
         }
-        $json = new JSON();
         foreach($data as $i=> $item) {
             $i++;
             //Remove already processed nodes (greater level = lower level)
@@ -544,9 +542,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 //Search the lowest open node of a tree branch in order to open it.
                 if($item['open']) ($item['level'] < $data[$node]['level']) ? $node = $i : $extra .= "$i ";
                 //insert node in last position
-                array_push($q, $i);
+                $q[] = $i;
             }
-            $out .= $jscmd."('".idfilter($item['id'], false)."',$i,".$father.",".$json->encode($item['title']);
+            $out .= $jscmd."('".idfilter($item['id'], false)."',$i,".$father.",".json_encode($item['title']);
             //hns
             ($item['hns']) ? $out .= ",'".idfilter($item['hns'], false)."'" : $out .= ",0";
             ($item['type'] == 'd' || $item['type'] == 'l') ? $out .= ",1" : $out .= ",0";

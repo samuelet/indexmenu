@@ -34,7 +34,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
      * handle user request
      */
     public function handle() {
-        $url = "http://samuele.netsons.org/dokuwiki";
+        $url = "https://samuele.netsons.org/dokuwiki";
         if(empty($url)) {
             $this->repos['url'][]     = $this->getLang('no_repos');
             $this->repos['status'][]  = "disabled";
@@ -347,7 +347,7 @@ class admin_plugin_indexmenu extends DokuWiki_Admin_Plugin {
         $w    = -1;
         $date = $this->getInfo();
         $date = $date['date'];
-        $data = $this->_remotequery("http://samuele.netsons.org/dokuwiki/lib/plugins/indexmenu/remote.php?check=$date");
+        $data = $this->_remotequery("https://samuele.netsons.org/dokuwiki/lib/plugins/indexmenu/remote.php?check=$date");
         if($data === "") {
             msg($this->getLang('noupdates'), 1);
             $data .= @preg_replace('/\n\n.*$/s', '', @io_readFile(DOKU_PLUGIN.'indexmenu/changelog'))."\n%\n";

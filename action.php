@@ -198,7 +198,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
 
 //        $idxm     = new syntax_plugin_indexmenu_indexmenu();
 //        $ns       = $idxm->parseNs(rawurldecode($ns)); // why not assuming a 'key' is offered?
-        $ns = $INPUT->str('ns','', true);
+        $ns = $INPUT->str('ns','');
         $ns = rtrim($ns,':'); //key of directory has extra : on the end
         $level    = -1; //opened levels. -1=all levels open
         $max      = 1; //levels to load by lazyloading. Before the default was 0. CHANGED to 1.
@@ -209,39 +209,41 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
             $max   = $INPUT->int('max'); // max#n#m, if init: #n, otherwise #m
             $level = $max;
         }
-        if($INPUT->int('level',-10, true) >= -1) {
+        if($INPUT->int('level',-10) >= -1) {
             $level = $INPUT->int('level');
         }
-        $isInit = $INPUT->bool('init', false, true);
+        $isInit = $INPUT->bool('init');
 
-        $currentPage = $INPUT->str('currentpage','', true);
+        $currentPage = $INPUT->str('currentpage');
         if($isInit) { //TODO attention, depends on logic that js is only 1 if init
             $subnss = $INPUT->arr('subnss');
             $debug1=var_export($subnss,true);
             // if 'navbar' enabled add current ns to list
-            if($INPUT->bool('navbar', false, true)) {
+            if($INPUT->bool('navbar')) {
                 $subnss[] = [getNS($currentPage)];
             }
             $debug2=var_export($subnss,true);
             // alternative, via javascript.. https://wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree.html#loadKeyPath
         } else {
-            $subnss = $INPUT->str('subnss', '', true);
+            $subnss = $INPUT->str('subnss');
             $subnss = [[cleanID($subnss), 1]];
         }
 
-        $skipf = $INPUT->str('skipfile', '', true); // utf8_decodeFN($_REQUEST['skipfile']);
+        $skipf = $INPUT->str('skipfile'); // utf8_decodeFN($_REQUEST['skipfile']);
         $skipFile[] = $this->getConf('skip_file');
-        if(isset($skipf)) {
+        if(!empty($skipf)) {
             $index = 0;
+            //prefix is '=' or '+'
             if($skipf[1] == '+') {
                 $index = 1;
             }
             $skipFile[$index] = substr($skipf, 1);
         }
-        $skipn = $INPUT->str('skipns', '', true); //utf8_decodeFN($_REQUEST['skipns']);
+        $skipn = $INPUT->str('skipns'); //utf8_decodeFN($_REQUEST['skipns']);
         $skipNs[] = $this->getConf('skip_index');
-        if(isset($skipn)) {
+        if(!empty($skipn)) {
             $index = 0;
+            //prefix is '=' or '+'
             if($skipn[1] == '+') {
                 $index = 1;
             }
@@ -250,8 +252,8 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
 
         $opts = array(
             'level'         => $level, //only set for init, lazy requests equal to max
-            'nons'          => $INPUT->bool('nons', false, true), //only needed for init
-            'nopg'          => $INPUT->bool('nopg', false, true),
+            'nons'          => $INPUT->bool('nons'), //only needed for init
+            'nopg'          => $INPUT->bool('nopg'),
             'subnss'        => $subnss, //init with complex array, only current ns if lazy
             'max'           => $max,
             'js'            => false, //DEPRECATED (for dTree: only init true, lazy requests false.) NOW not used, so false.
@@ -262,11 +264,11 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         );
 
         $sort = [
-            'sort' => $INPUT->str('sort', false, true),
-            'msort' => $INPUT->str('msort', false, true),
-            'rsort' => $INPUT->bool('rsort', false, true),
-            'nsort' => $INPUT->bool('nsort', false, true),
-            'hsort' => $INPUT->bool('hsort', false, true)
+            'sort' => $INPUT->str('sort'),
+            'msort' => $INPUT->str('msort'),
+            'rsort' => $INPUT->bool('rsort'),
+            'nsort' => $INPUT->bool('nsort'),
+            'hsort' => $INPUT->bool('hsort')
         ];
 
         $search = new Search($sort);
@@ -277,9 +279,9 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
             //for lazy loading are other items than children not supported.
             $fancytreeData['opts'] = $opts;
             $fancytreeData['sort'] = $sort;
-            $fancytreeData['navbar'] = $INPUT->bool('navbar', false, true);
-            $fancytreeData['debug1'] = $debug1;
-            $fancytreeData['debug2'] = $debug2;
+//            $fancytreeData['navbar'] = $INPUT->bool('navbar');
+//            $fancytreeData['debug1'] = $debug1;
+//            $fancytreeData['debug2'] = $debug2;
 
         } else {
             $fancytreeData[0]['opts'] = $opts;

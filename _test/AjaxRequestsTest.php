@@ -122,6 +122,8 @@ class AjaxRequestsTest extends DokuWikiTest
     public function test_params()
     {
         print_r($this->prepareParams(['level' => 2]));
+
+        $this->assertTrue(true);
     }
 
     public function prepareParams($params = [])

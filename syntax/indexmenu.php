@@ -78,7 +78,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
 
         $match = substr($match, 12, -2);
         //split namespace,level,theme
-        list($nsStr, $optsStr) = explode('|', $match, 2);
+        list($nsStr, $optsStr) = array_pad(explode('|', $match, 2), 2, '');
         //split options
         $opts = explode(' ', $optsStr);
 
@@ -96,7 +96,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             }
             $subNSs[] = [
                 $subns_lvl[0], //subns
-                is_numeric($subns_lvl[1]) ? $subns_lvl[1] : -1 // level
+                isset($subns_lvl[1]) && is_numeric($subns_lvl[1]) ? $subns_lvl[1] : -1 // level
             ];
         }
 
@@ -422,7 +422,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 //this is an indexmenu page that needs the PARSER_CACHE_USE event trigger;
                 $renderer->meta['indexmenu'] = true;
             }
-            $renderer->doc .= ((empty($ns)) ? $conf['title'] : nons($ns))." index\n\n";
+            $renderer->doc .= (empty($ns) ? $conf['title'] : nons($ns))." index\n\n";
             unset($renderer->persistent['indexmenu']);
             return true;
 
@@ -480,7 +480,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         //    the toggle interacts with hide needed for js option.
         return '<div>'
             . '<div id="nojs_'.$js_name.'" data-jsajax="'.utf8_encodeFN($jsAjax).'" class="indexmenu_nojs">'."\n"
-            . html_buildlist($data, 'idx', array($this, "formatIndexmenuItem"), "html_li_index")
+            . html_buildlist($data, 'idx', [$this, "formatIndexmenuItem"], "html_li_index")
             . '</div>'
             . '</div>'."\n";
     }
@@ -515,7 +515,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     private function builddTree($data, $ns, $js_dTreeOpts, $js_name, $max) {
         global $conf;
         $hns = false;
-        if(empty($data)) return false;
+        if(empty($data)) {
+            return false;
+        }
 //error_log(print_r($js_dTreeOpts,true));
 //TODO jsajax is empty?? while max is set to 1
         //Render requested ns as root
@@ -541,11 +543,22 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $sepchar = idfilter(':', false);
         $out .= "$js_name.config.urlbase='".substr(wl(":"), 0, -1)."';\n";
         $out .= "$js_name.config.sepchar='".$sepchar."';\n";
-        if($js_dTreeOpts['notoc'])          $out .= "$js_name.config.toc=false;\n";
-        if($js_dTreeOpts['nocookie'])       $out .= "$js_name.config.useCookies=false;\n";
-        if($js_dTreeOpts['noscroll'])       $out .= "$js_name.config.scroll=false;\n";
-        if($js_dTreeOpts['maxjs'] > 1)      $out .= "$js_name.config.maxjs=".$js_dTreeOpts['maxjs'].";\n"; //1 is default in dTree
-        if(!empty($js_dTreeOpts['jsajax'])) $out .= "$js_name.config.jsajax='".utf8_encodeFN($js_dTreeOpts['jsajax'])."';\n";
+        if($js_dTreeOpts['notoc']) {
+            $out .= "$js_name.config.toc=false;\n";
+        }
+        if($js_dTreeOpts['nocookie']) {
+            $out .= "$js_name.config.useCookies=false;\n";
+        }
+        if($js_dTreeOpts['noscroll']) {
+            $out .= "$js_name.config.scroll=false;\n";
+        }
+        //1 is default in dTree
+        if($js_dTreeOpts['maxjs'] > 1) {
+            $out .= "$js_name.config.maxjs=".$js_dTreeOpts['maxjs'].";\n";
+        }
+        if(!empty($js_dTreeOpts['jsajax'])) {
+            $out .= "$js_name.config.jsajax='".utf8_encodeFN($js_dTreeOpts['jsajax'])."';\n";
+        }
 
         //add root node
         $out .= $js_name.".add('".idfilter(cleanID($ns), false)."',0,-1,".json_encode($title);
@@ -588,9 +601,11 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      *    or false when no data provided
      */
     public function builddTreeNodes($data, $js_name, $noajax = true) {
-        if(empty($data)) return false;
+        if(empty($data)) {
+            return false;
+        }
         //Array of nodes to check
-        $q = array('0');
+        $q = ['0'];
         //Current open node
         $node  = 0;
         $out   = '';
@@ -652,7 +667,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             $out .= ")".$separator;
         }
         $opennodes = rtrim($opennodes, ' ');
-        return array($out, $opennodes);
+        return [$out, $opennodes];
     }
 
     /**

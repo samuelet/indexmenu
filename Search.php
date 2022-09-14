@@ -128,7 +128,7 @@ class Search
      */
     public function search($ns, $opts): array
     {
-        if($opts['tempNew']) {
+        if(!empty($opts['tempNew'])) {
             $functionName = 'searchIndexmenuItemsNew'; //NEW: a bit different logic for lazy loading of opened/closed nodes
         } else {
             $functionName = 'searchIndexmenuItems';

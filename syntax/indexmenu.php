@@ -698,7 +698,12 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @return void
      */
     private function cleanNojsData(&$data) {
+        $a = 0;
         foreach($data as $i=> $item) {
+            //all entries before $a are unset
+            if($i < $a) {
+                continue;
+            }
             //closed node
             if($item['type'] == "d" && !$item['open']) {
                 $a     = $i + 1;

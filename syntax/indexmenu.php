@@ -525,7 +525,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         foreach($data as $i=> $item) {
             $i++;
             //Remove already processed nodes (greater level = lower level)
-            while($item['level'] <= $data[end($q) - 1]['level']) {
+            $prev = end($q) - 1;
+            while(isset($data[$prev]) && $item['level'] <= $data[$prev]['level']) {
                 array_pop($q);
             }
 
@@ -632,9 +633,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             //closed node
             if($item['type'] == "d" && !$item['open']) {
                 $a     = $i + 1;
-                $level = $data[$i]['level'];
+                $level = $item['level'];
                 //search and remove every lower and closed nodes
-                while($data[$a]['level'] > $level && !$data[$a]['open']) {
+                while(isset($data[$a]) && $data[$a]['level'] > $level && !$data[$a]['open']) {
                     unset($data[$a]);
                     $a++;
                 }

@@ -77,7 +77,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
 
         $match = substr($match, 12, -2);
         //split namespace,level,theme
-        list($nsstr, $optsstr) = explode('|', $match, 2);
+        list($nsstr, $optsstr) = sexplode('|', $match, 2);
         //split options
         $opts = explode(' ', $optsstr);
 

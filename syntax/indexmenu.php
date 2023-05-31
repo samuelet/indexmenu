@@ -525,8 +525,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         foreach($data as $i=> $item) {
             $i++;
             //Remove already processed nodes (greater level = lower level)
-            $prev = end($q) - 1;
-            while(isset($data[$prev]) && $item['level'] <= $data[$prev]['level']) {
+            while(isset($data[end($q) - 1]) && $item['level'] <= $data[end($q) - 1]['level']) {
                 array_pop($q);
             }
 

@@ -345,9 +345,11 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             }
             //Navbar with nojs
             if($data[1]['navbar'] && !$data[6]['js']) {
-                if(!isset($data[0])) $data[0] = '..';
-                $data[6]['nss'][]        = array(getNS($INFO['id']));
-                $renderer->info['cache'] = FALSE;
+                if(!isset($data[0])) {
+                    $data[0] = '..';
+                }
+                $data[6]['nss'][] = [getNS($INFO['id']), 1]; //open only 1 level
+                $renderer->info['cache'] = false;
             }
 
             if($data[1]['context']) {
@@ -356,7 +358,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 foreach($data[6]['nss'] as $key=> $value) {
                     $data[6]['nss'][$key][0] = $this->_parse_ns($value[0], $INFO['id']);
                 }
-                $renderer->info['cache'] = FALSE;
+                $renderer->info['cache'] = false;
             }
             $n = $this->_indexmenu($data);
             if(!@$n) {
@@ -698,6 +700,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                         $isopen = true;
                     } elseif(preg_match("/^".$nss[$a][0]."(:.*)/i", $id, $match)) {
                         //It's inside an optional namespace
+                        // -1 is open all, otherwise count number of levels in the remainer of the pageid
+                        // (match[0] is always prefixed with :)
                         if($nss[$a][1] == -1 || substr_count($match[1], ":") < $nss[$a][1]) {
                             $isopen = true;
                         } else {

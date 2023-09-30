@@ -118,7 +118,7 @@ class Search
      *  $opts['skipfile']  string regexp matching pageids to skip
      *  $opts['headpage']   string headpages options or pageids
      *  $opts['level']      int    desired depth of main namespace, -1 = all levels
-     *  $opts['subnss']     array with entries: array(namespaceid,level) specifying namespaces with their own level
+     *  $opts['subnss']     array with entries: array(namespaceid,level) specifying namespaces with their own number of opened levels
      *  $opts['nons']       bool   exclude namespace nodes
      *  $opts['max']        int    If initially closed, the node at max level will retrieve all its child nodes through the AJAX mechanism
      *  $opts['nopg']       bool   exclude page nodes
@@ -148,28 +148,26 @@ class Search
     /**
      * Callback that adds an item of namespace/page to the browsable index, if it fits in the specified options
      *
-
-     *
-     * @author  Andreas Gohr <andi@splitbrain.org>
-     * modified by Samuele Tognini <samuele@samuele.netsons.org>
-     *
-     * @param array  $data Already collected nodes
+     * @param array $data Already collected nodes
      * @param string $base Where to start the search, usually this is $conf['datadir']
      * @param string $file Current file or directory relative to $base
      * @param string $type Type either 'd' for directory or 'f' for file
-     * @param int    $lvl  Current recursion depth
-     * @param array  $opts Option array as given to search()
-     *   $opts['skipns'] string regexp matching namespaceids to skip
-     *   $opts['skipfile']  string regexp matching pageids to skip
-     *   $opts['headpage']   string headpages options or pageids
-     *   $opts['level']      int    desired depth of main namespace, -1 = all levels
-     *   $opts['nss']        array with entries: array(namespaceid,level) specifying namespaces with their own level
-     *   $opts['nons']       bool   exclude namespace nodes
-     *   $opts['max']        int    If initially closed, the node at max level will retrieve all its child nodes through the AJAX mechanism
-     *   $opts['nopg']       bool   exclude page nodes
-     *   $opts['hide_headpage'] int don't hide (0) or hide (1)
-     *   $opts['js']         bool   use js-render
+     * @param int $lvl Current recursion depth
+     * @param array $opts Option array as given to search():
+     *   $opts['skipns'] string regexp matching namespaceids to skip,
+     *   $opts['skipfile'] string regexp matching pageids to skip,
+     *   $opts['headpage'] string headpages options or pageids,
+     *   $opts['level'] int desired depth of main namespace, -1 = all levels,
+     *   $opts['subnss'] array with entries: array(namespaceid,level) specifying namespaces with their own number of opened levels,
+     *   $opts['nons'] bool Exclude namespace nodes,
+     *   $opts['max'] int If initially closed, the node at max level will retrieve all its child nodes through the AJAX mechanism,
+     *   $opts['nopg'] bool Exclude page nodes,
+     *   $opts['hide_headpage'] int don't hide (0) or hide (1),
+     *   $opts['js'] bool use js-render
      * @return bool if this directory should be traversed (true) or not (false)
+     *
+     * @author  Andreas Gohr <andi@splitbrain.org>
+     * modified by Samuele Tognini <samuele@samuele.netsons.org>
      */
     public function searchIndexmenuItems(&$data, $base, $file, $type, $lvl, $opts) {
         global $conf;
@@ -203,6 +201,8 @@ class Search
                         $isOpen = true;
                     } elseif(preg_match("/^".$subnss[$a][0]."(:.*)/i", $id, $match)) {
                         //It's inside a subnamespace, check level
+                        // -1 is open all, otherwise count number of levels in the remainer of the pageid
+                        // (match[0] is always prefixed with :)
                         if($subnss[$a][1] == -1 || substr_count($match[1], ":") < $subnss[$a][1]) {
                             $isOpen = true;
                         } else {
@@ -316,7 +316,7 @@ class Search
      *   $opts['skipfile']  string regexp matching pageids to skip
      *   $opts['headpage']   string headpages options or pageids
      *   $opts['level']      int    desired depth of main namespace, -1 = all levels
-     *   $opts['nss']        array with entries: array(namespaceid,level) specifying namespaces with their own level
+     *   $opts['subnss']        array with entries: array(namespaceid,level) specifying namespaces with their own level
      *   $opts['nons']       bool   exclude namespace nodes
      *   $opts['max']        int    If initially closed, the node at max level will retrieve all its child nodes through the AJAX mechanism
      *   $opts['nopg']       bool   exclude page nodes
@@ -485,7 +485,7 @@ class Search
         if(!$dh) return;
         while(($file = readdir($dh)) !== false) {
             //skip hidden files and upper dirs
-            if(preg_match('/^[\._]/', $file)) continue;
+            if(preg_match('/^[._]/', $file)) continue;
             if(is_dir($base.'/'.$dir.'/'.$file)) {
                 $dirs[] = $dir.'/'.$file;
                 continue;

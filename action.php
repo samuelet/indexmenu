@@ -6,7 +6,10 @@
  * @author     Samuele Tognini <samuele@samuele.netsons.org>
  */
 
+use dokuwiki\Extension\Event;
+use dokuwiki\Extension\EventHandler;
 use dokuwiki\plugin\indexmenu\Search;
+use dokuwiki\Ui\Index;
 
 /**
  * Class action_plugin_indexmenu
@@ -16,22 +19,22 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     /**
      * plugin should use this method to register its handlers with the dokuwiki's event controller
      *
-     * @param Doku_Event_Handler $controller DokuWiki's event controller object.
+     * @param EventHandler $controller DokuWiki's event controller object.
      */
-    public function register(Doku_Event_Handler $controller) {
+    public function register(EventHandler $controller) {
         if($this->getConf('only_admins')) {
-            $controller->register_hook('IO_WIKIPAGE_WRITE', 'BEFORE', $this, '_checkperm');
+            $controller->register_hook('IO_WIKIPAGE_WRITE', 'BEFORE', $this, 'removeSyntaxIfNotAdmin');
         }
         if($this->getConf('page_index') != '') {
-            $controller->register_hook('TPL_ACT_RENDER', 'BEFORE', $this, '_loadindex');
+            $controller->register_hook('TPL_ACT_RENDER', 'BEFORE', $this, 'loadOwnIndexPage');
         }
-        $controller->register_hook('DOKUWIKI_STARTED', 'AFTER', $this, '_extendJSINFO');
-        $controller->register_hook('PARSER_CACHE_USE', 'BEFORE', $this, '_purgecache');
+        $controller->register_hook('DOKUWIKI_STARTED', 'AFTER', $this, 'extendJSINFO');
+        $controller->register_hook('PARSER_CACHE_USE', 'BEFORE', $this, 'purgeCache');
         if($this->getConf('show_sort')) {
-            $controller->register_hook('TPL_CONTENT_DISPLAY', 'BEFORE', $this, '_showsort');
+            $controller->register_hook('TPL_CONTENT_DISPLAY', 'BEFORE', $this, 'showSortNumberAtTopOfPage');
         }
-        $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, '_ajax_call');
-        $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, 'getDataFancyTree');
+        $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, 'ajaxCalls');
+//        $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, 'getDataFancyTree');
     }
 
     /**
@@ -39,10 +42,9 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      *
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      *
-     * @param Doku_Event $event
-     * @param mixed      $param not defined
+     * @param Event $event
      */
-    public function _checkperm(Doku_Event $event, $param) {
+    public function removeSyntaxIfNotAdmin(Event $event) {
         global $INFO;
         if(!$INFO['isadmin']) {
             $event->data[0][1] = preg_replace("/{{indexmenu(|_n)>.+?}}/", "", $event->data[0][1]);
@@ -55,10 +57,9 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      * @author Gerrit Uitslag <klapinklapin@gmail.com>
      *
-     * @param Doku_Event $event
-     * @param mixed      $param not defined
+     * @param Event $event
      */
-    public function _extendJSINFO(Doku_Event $event, $param) {
+    public function extendJSINFO(Event $event) {
         global $INFO, $JSINFO;
         $JSINFO['isadmin'] = (int) $INFO['isadmin'];
         $JSINFO['isauth']  = (int) $INFO['userinfo'];
@@ -69,12 +70,14 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      *
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      *
-     * @param Doku_Event $event
-     * @param mixed      $param not defined
+     * @param Event $event
      */
-    public function _purgecache(Doku_Event $event, $param) {
+    public function purgeCache(Event $event) {
         global $ID;
         global $conf;
+        global $INPUT;
+        global $INFO;
+
         /** @var cache_parser $cache */
         $cache = &$event->data;
 
@@ -82,18 +85,21 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         //purge only xhtml cache
         if($cache->mode != "xhtml") return;
         //Check if it is an indexmenu page
-        if(!p_get_metadata($ID, 'indexmenu')) return;
+        if(!p_get_metadata($ID, 'indexmenu hasindexmenu')) return;
 
         $aclcache = $this->getConf('aclcache');
         if($conf['useacl']) {
             $newkey = false;
             if($aclcache == 'user') {
                 //Cache per user
-                if($_SERVER['REMOTE_USER']) $newkey = $_SERVER['REMOTE_USER'];
+                if($INPUT->server->str('REMOTE_USER')) {
+                    $newkey = $INPUT->server->str('REMOTE_USER');
+                }
             } else if($aclcache == 'groups') {
                 //Cache per groups
-                global $INFO;
-                if($INFO['userinfo']['grps']) $newkey = implode('#', $INFO['userinfo']['grps']);
+                if(isset($INFO['userinfo']['grps'])) {
+                    $newkey = implode('#', $INFO['userinfo']['grps']);
+                }
             }
             if($newkey) {
                 $cache->key .= "#".$newkey;
@@ -113,14 +119,15 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      *
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      *
-     * @param Doku_Event $event
-     * @param mixed      $param not defined
+     * @param Event $event
      */
-    public function _loadindex(Doku_Event $event, $param) {
+    public function loadOwnIndexPage(Event $event) {
         if('index' != $event->data) return;
         if(!file_exists(wikiFN($this->getConf('page_index')))) return;
+
         global $lang;
-        print '<h1><a id="index" name="index">'.$lang['btn_index']."</a></h1>\n";
+
+        print '<h1><a id="index">'.$lang['btn_index']."</a></h1>\n";
         print p_wiki_xhtml($this->getConf('page_index'));
         $event->preventDefault();
         $event->stopPropagation();
@@ -132,16 +139,15 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      *
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      *
-     * @param Doku_Event $event
-     * @param mixed      $param not defined
+     * @param Event $event
      */
-    public function _showsort(Doku_Event $event, $param) {
+    public function showSortNumberAtTopOfPage(Event $event) {
         global $ID, $ACT, $INFO;
         if($INFO['isadmin'] && $ACT == 'show') {
             if($n = p_get_metadata($ID, 'indexmenu_n')) {
-                ptln('<div class="info">');
-                ptln($this->getLang('showsort').$n);
-                ptln('</div>');
+                echo '<div class="info">';
+                echo $this->getLang('showsort') . $n;
+                echo '</div>';
             }
         }
     }
@@ -149,10 +155,9 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
     /**
      * Handles ajax requests for indexmenu
      *
-     * @param Doku_Event $event
-     * @param mixed      $param not defined
+     * @param Event $event
      */
-    public function _ajax_call(Doku_Event $event, $param) {
+    public function ajaxCalls(Event $event) {
         if($event->data !== 'indexmenu') {
             return;
         }
@@ -169,32 +174,33 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
 
             case 'toc':
                 //print toc preview
-                if($INPUT->has('id')) print $this->print_toc($INPUT->str('id'));
+                if($INPUT->has('id')) {
+                    print $this->printToc($INPUT->str('id'));
+                }
                 break;
 
             case 'index':
                 //retrieval of data of the extra nodes for the indexmenu (if ajax loading set with max#m(#n)
-                if($INPUT->has('idx')) print $this->print_index($INPUT->str('idx'));
+                if($INPUT->has('idx')) {
+                    print $this->printIndex($INPUT->str('idx'));
+                }
                 break;
 
             case 'fancytree':
-                //2022-04-27: data for new index build with Fancytree
-                $this->getDataFancyTree($event);
+                //data for new index build with Fancytree
+                $this->getDataFancyTree();
                 break;
         }
     }
 
-    public function getDataFancyTree(Doku_Event $event) {
-        global $INPUT, $INFO;
-//        if($event->data !== 'indexmenunew') {
-//            return;
-//        }
-//        if($INPUT->str('req') !== 'fancytree') {
-//            return;
-//        }
-//        //no other ajax call handlers needed
-//        $event->stopPropagation();
-//        $event->preventDefault();
+    /**
+     * Handles ajax requests for FancyTree
+     *
+     * @return void
+     */
+    private function getDataFancyTree() {
+        global $INPUT;
+
 
 //        $idxm     = new syntax_plugin_indexmenu_indexmenu();
 //        $ns       = $idxm->parseNs(rawurldecode($ns)); // why not assuming a 'key' is offered?
@@ -335,7 +341,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      * @author Andreas Gohr <andi@splitbrain.org>
      */
-    private function print_toc($id) {
+    private function printToc($id) {
         $id = cleanID($id);
         if(auth_quickaclcheck($id) < AUTH_READ) return '';
 
@@ -344,10 +350,10 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
 
         if(count($toc) > 1) {
             //display ToC of two or more headings
-            $out = $this->render_toc($toc);
+            $out = $this->renderToc($toc);
         } else {
             //display page abstract
-            $out = $this->render_abstract($id, $meta);
+            $out = $this->renderAbstract($id, $meta);
         }
         return $out;
     }
@@ -361,14 +367,14 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @author Andreas Gohr <andi@splitbrain.org>
      * @author Gerrit Uitslag <klapinklapin@gmail.com>
      */
-    private function render_toc($toc) {
+    private function renderToc($toc) {
         global $lang;
-        $out = '<div class="tocheader">'.DOKU_LF;
+        $out = '<div class="tocheader">';
         $out .= $lang['toc'];
-        $out .= '</div>'.DOKU_LF;
-        $out .= '<div class="indexmenu_toc_inside">'.DOKU_LF;
-        $out .= html_buildlist($toc, 'toc', array($this, '_indexmenu_list_toc'), 'html_li_default', true);
-        $out .= '</div>'.DOKU_LF;
+        $out .= '</div>';
+        $out .= '<div class="indexmenu_toc_inside">';
+        $out .= html_buildlist($toc, 'toc', [$this, 'formatIndexmenuListTocItem'], null, true);
+        $out .= '</div>';
         return $out;
     }
 
@@ -379,16 +385,16 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @param array $meta by reference
      * @return string
      */
-    private function render_abstract($id, &$meta) {
-        $out = '<div class="tocheader">'.DOKU_LF;
+    private function renderAbstract($id, $meta) {
+        $out = '<div class="tocheader">';
         $out .= '<a href="'.wl($id).'">';
         $out .= ($meta['title']) ? htmlspecialchars($meta['title']) : htmlspecialchars(noNS($id));
-        $out .= '</a>'.DOKU_LF;
-        $out .= '</div>'.DOKU_LF;
+        $out .= '</a>';
+        $out .= '</div>';
         if($meta['description']['abstract']) {
-            $out .= '<div class="indexmenu_toc_inside">'.DOKU_LF;
+            $out .= '<div class="indexmenu_toc_inside">';
             $out .= p_render('xhtml', p_get_instructions($meta['description']['abstract']), $info);
-            $out .= '</div>'.DOKU_LF.'</div>'.DOKU_LF;
+            $out .= '</div></div>';
         }
         return $out;
     }
@@ -399,7 +405,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @param $item
      * @return string
      */
-    function _indexmenu_list_toc($item) {
+    public function formatIndexmenuListTocItem($item) {
         $id = cleanID($_REQUEST['id']);
 
         if(isset($item['hid'])) {
@@ -425,7 +431,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      * @author Andreas Gohr <andi@splitbrain.org>
      */
-    private function print_index($ns) {
+    private function printIndex($ns) {
         global $conf, $INPUT;
         $idxm     = new syntax_plugin_indexmenu_indexmenu();
         $ns       = $idxm->parseNs(rawurldecode($ns));
@@ -448,18 +454,18 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         $search = new Search($sort);
         $fsdir       = "/".utf8_encodeFN(str_replace(':', '/', $ns));
 
-        $skipf = utf8_decodeFN($_REQUEST['skipfile']);
+        $skipf = utf8_decodeFN($INPUT->str('skipfile'));
         $skipfile[] = $this->getConf('skip_file');
-        if(isset($skipf)) {
+        if(!empty($skipf)) {
             $index = 0;
             if($skipf[1] == '+') {
                 $index = 1;
             }
             $skipfile[$index] = substr($skipf, 1);
         }
-        $skipn = utf8_decodeFN($_REQUEST['skipns']);
+        $skipn = utf8_decodeFN($INPUT->str('skipns'));
         $skipns[] = $this->getConf('skip_index');
-        if(isset($skipn)) {
+        if(!empty($skipn)) {
             $index = 0;
             if($skipn[1] == '+') {
                 $index = 1;
@@ -486,8 +492,9 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         }
 
         $out = '';
-        if($_REQUEST['nojs']) {
-            $out_tmp = html_buildlist($data, 'idx', array($idxm, "formatIndexmenuItem"), "html_li_index");
+        if($INPUT->int('nojs') === 1) {
+            $idx = new Index();
+            $out_tmp = html_buildlist($data, 'idx', [$idxm, 'formatIndexmenuItem'], [$idx, 'tagListItem']);
             $out .= preg_replace('/<ul class="idx">(.*)<\/ul>/s', "$1", $out_tmp);
         } else {
             $nodes = $idxm->builddTreeNodes($data, '', false);

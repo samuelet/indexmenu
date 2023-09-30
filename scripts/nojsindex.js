@@ -7,8 +7,8 @@
 jQuery(function () {
 
     jQuery('.indexmenu_nojs').each(function () {
-        var $tree = jQuery(this);
-        var jsajax = $tree.data('jsajax');
+        let $tree = jQuery(this);
+        let jsajax = $tree.data('jsajax');
 
         $tree.dw_tree({
             toggle_selector: 'a.indexmenu_idx',
@@ -16,7 +16,7 @@ jQuery(function () {
 
                 jQuery.post(
                     DOKU_BASE + 'lib/exe/ajax.php',
-                    'call=indexmenu&req=index&nojs=1&' + $clicky[0].search.substr(1) + '&max=1' + decodeURIComponent(jsajax),
+                    'call=indexmenu&req=index&nojs=1&' + $clicky[0].search.substring(1) + '&max=1' + decodeURIComponent(jsajax),
                     show_sublist,
                     'html'
                 );

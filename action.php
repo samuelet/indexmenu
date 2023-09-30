@@ -35,6 +35,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         }
         $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, 'ajaxCalls');
 //        $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, 'getDataFancyTree');
+        $controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, 'addStylesForUsedThemes');
     }
 
     /**
@@ -503,5 +504,31 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
             $out .= "];";
         }
         return $out;
+    }
+
+    /**
+     * Add Js & Css after template is displayed
+     *
+     * @param Event $event
+     */
+    public function addStylesForUsedThemes(Event $event)
+    {
+        global $ID;
+
+        p_get_metadata($ID, 'indexmenu hasindexmenu');
+
+        if (($themes = p_get_metadata($ID, 'indexmenu usedthemes')) !== null) { //METADATA_RENDER_UNLIMITED
+            $themes = array_keys($themes);
+        } else {
+            $themes = [];
+        }
+
+        foreach ($themes as $theme) {
+            $event->data["link"][] = [
+                "type" => "text/css",
+                "rel" => "stylesheet",
+                "href" => DOKU_BASE . "lib/plugins/indexmenu/scripts/fancytree/skin-$theme/ui.fancytree.min.css"
+            ];
+        }
     }
 }

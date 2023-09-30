@@ -237,6 +237,14 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
 //            $jsVersion = $treeNew ? 2 : ($treeOld ? 1 : ($treeBoth ? 0 : $jsVersion));
             $jsVersion = $treeOld ? 1 : ($treeNew ? 2 : ($treeBoth ? 0 : $jsVersion));
 //            error_log('$treeOld:'.$treeOld.'$treeNew:'.$treeNew.'$treeBoth:'.$treeBoth);
+
+            if ($jsVersion !== 1) {
+                //check for theme of fancytree (overrides old dTree theme eventually?)
+                if (!empty($dir) && is_dir(DOKU_PLUGIN . 'indexmenu/scripts/fancytree/skin-' . $dir)) {
+                    $theme = $dir;
+                }
+                // $theme='default' is later overwritten by 'win7'
+            }
         }
         if(is_numeric($gen_id)) {
             $identifier = $gen_id;
@@ -426,6 +434,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 //this is an indexmenu page that needs the PARSER_CACHE_USE event trigger;
                 $renderer->meta['indexmenu']['hasindexmenu'] = true;
             }
+            if($opts['js'] && $opts['theme'] !== 'default') { //add also for dtree, while only used for fancytree
+                //add once
+                $renderer->meta['indexmenu']['usedthemes'][$opts['theme']] = 1;
+            }
 
             //summary
             $renderer->doc .= (empty($ns) ? $conf['title'] : nons($ns))." index\n\n";
@@ -497,6 +509,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         unset($opts['headpage']);
         unset($opts['hide_headpage']);
 
+        /* @deprecated 2023-08-14 remove later */
+        if($opts['theme'] == 'default') {
+            $opts['theme'] = 'win7';
+        }
         $options = [
             'ns' => $ns,
             'opts' => $opts,

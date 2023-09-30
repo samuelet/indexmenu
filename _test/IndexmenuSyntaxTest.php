@@ -11,6 +11,7 @@ class IndexmenuSyntaxTest extends DokuWikiTest {
 
 //    private $exampleIndex;
 
+
     public function setup(): void
     {
 //        global $conf;
@@ -38,7 +39,7 @@ class IndexmenuSyntaxTest extends DokuWikiTest {
      * @param array $values
      * @return array aligned similar to output of handle()
      */
-    function createData($values) {
+    private function createData($values) {
 
         [$ns, $theme, $identifier, $nocookie, $navbar, $noscroll, $maxjs, $notoc, $jsajax, $context, $nomenu,
             $sort, $msort, $rsort, $nsort, $level, $nons, $nopg, $subnss, $max, $maxAjax, $js, $skipns, $skipfile, $hsort,
@@ -175,15 +176,7 @@ class IndexmenuSyntaxTest extends DokuWikiTest {
      * @dataProvider someSyntaxes
      */
     public function testHandle($syntax, $changedData) {
-//        global $conf;
-
         $plugin = new syntax_plugin_indexmenu_indexmenu();
-
-//        $null   = new Doku_Handler();
-//        $result = $plugin->handle($this->exampleIndex, 0, 40, $null);
-
-//        $idcalculatedfromns = sprintf("%u", crc32(''));
-
 
         $null   = new Doku_Handler();
         $result = $plugin->handle($syntax, 0, 40, $null);
@@ -198,6 +191,121 @@ class IndexmenuSyntaxTest extends DokuWikiTest {
         $this->assertEquals($data, $result, 'Data array corrupted');
     }
 
+
+    /**
+     * Data provider
+     *
+     * @return array[]
+     */
+    public static function differentNSs()
+    {
+        $pageInRoot = 'page';
+        $pageInLvl1 = 'ns:page';
+        $pageInLvl2 = 'ns1:ns2:page';
+        return [
+            //indexmenu on page at root level
+            ['{{indexmenu>|}}', '', [], $pageInRoot],
+            ['{{indexmenu>#1}}', '', [], $pageInRoot],
+            ['{{indexmenu>:}}', '', [], $pageInRoot],
+            ['{{indexmenu>.}}', '', [], $pageInRoot],
+            ['{{indexmenu>.:}}', '', [], $pageInRoot],
+            ['{{indexmenu>..}}', '', [], $pageInRoot],
+            ['{{indexmenu>..:}}', '', [], $pageInRoot],
+            ['{{indexmenu>myns}}', 'myns', [], $pageInRoot],
+            ['{{indexmenu>:myns}}', 'myns', [], $pageInRoot],
+            ['{{indexmenu>.myns}}', 'myns', [], $pageInRoot],
+            ['{{indexmenu>.:myns}}', 'myns', [], $pageInRoot],
+            ['{{indexmenu>..myns}}', 'myns', [], $pageInRoot],
+            ['{{indexmenu>..:myns}}', 'myns', [], $pageInRoot],
+
+            //indexmenu on page in a namespace
+            ['{{indexmenu>|}}', '', [], $pageInLvl1],
+            ['{{indexmenu>#1}}', '', [], $pageInLvl1],
+            ['{{indexmenu>:}}', '', [], $pageInLvl1],
+            ['{{indexmenu>.}}', 'ns', [], $pageInLvl1],
+            ['{{indexmenu>.:}}', 'ns', [], $pageInLvl1],
+            ['{{indexmenu>..}}', '', [], $pageInLvl1],
+            ['{{indexmenu>..:}}', '', [], $pageInLvl1],
+            ['{{indexmenu>myns}}', 'myns', [], $pageInLvl1], //was ns:myns
+            ['{{indexmenu>:myns}}', 'myns', [], $pageInLvl1],
+            ['{{indexmenu>.myns}}', 'ns:myns', [], $pageInLvl1],
+            ['{{indexmenu>.:myns}}', 'ns:myns', [], $pageInLvl1],
+            ['{{indexmenu>..myns}}', 'myns', [], $pageInLvl1],
+            ['{{indexmenu>..:myns}}', 'myns', [], $pageInLvl1],
+            ['{{indexmenu>myns:myns}}', 'myns:myns', [], $pageInLvl2],
+
+            //indexmenu on page in a namespace
+            ['{{indexmenu>|}}', '', [], $pageInLvl2],
+            ['{{indexmenu>#1}}', '', [], $pageInLvl2],
+            ['{{indexmenu>:}}', '', [], $pageInLvl2],
+            ['{{indexmenu>.}}', 'ns1:ns2', [], $pageInLvl2],
+            ['{{indexmenu>.:}}', 'ns1:ns2', [], $pageInLvl2],
+            ['{{indexmenu>..}}', '', [], $pageInLvl2], //strange indexmenu specific exception! TODO remove?
+            ['{{indexmenu>..:}}', 'ns1', [], $pageInLvl2],
+            ['{{indexmenu>myns}}', 'myns', [], $pageInLvl2], //was ns1:ns2:myns
+            ['{{indexmenu>:myns}}', 'myns', [], $pageInLvl2],
+            ['{{indexmenu>.myns}}', 'ns1:ns2:myns', [], $pageInLvl2],
+            ['{{indexmenu>.:myns}}', 'ns1:ns2:myns', [], $pageInLvl2],
+            ['{{indexmenu>..myns}}', 'ns1:myns', [], $pageInLvl2],
+            ['{{indexmenu>..:myns}}', 'ns1:myns', [], $pageInLvl2],
+            ['{{indexmenu>myns:myns}}', 'myns:myns', [], $pageInLvl2],
+
+            ['{{indexmenu>..:..:myns}}', 'ns1:myns', [], 'ns1:ns2:ns3:page'],
+            ['{{indexmenu>0}}', '0', [], 'ns1:page'], //was ns1:0
+
+            //indexmenu on page at root level and subns
+            ['{{indexmenu> #1|}}', '', [], $pageInLvl2], //no subns, spaces before are removed
+            ['{{indexmenu>#1 #1}}', '', [['', 1]], $pageInLvl2],
+            ['{{indexmenu>: :}}', '', [['', -1]], $pageInLvl2],
+            ['{{indexmenu>. .}}', 'ns1:ns2', [['ns1:ns2', -1]], $pageInLvl2],
+            ['{{indexmenu>.: .:}}', 'ns1:ns2', [['ns1:ns2', -1]], $pageInLvl2],
+            ['{{indexmenu>.. ..}}', '', [['', -1]], $pageInLvl2],
+            ['{{indexmenu>..: ..:}}', 'ns1', [['ns1', -1]], $pageInLvl2],
+            ['{{indexmenu>myns myns}}', 'myns', [['myns', -1]], $pageInLvl2], //was ns1:ns2:myns
+            ['{{indexmenu>:myns :myns}}', 'myns', [['myns', -1]], $pageInLvl2],
+            ['{{indexmenu>.myns .myns}}', 'ns1:ns2:myns', [['ns1:ns2:myns', -1]], $pageInLvl2],
+            ['{{indexmenu>.:myns .:myns}}', 'ns1:ns2:myns', [['ns1:ns2:myns', -1]], $pageInLvl2],
+            ['{{indexmenu>..myns ..myns}}', 'ns1:myns', [['ns1:myns', -1]], $pageInLvl2],
+            ['{{indexmenu>..:myns ..myns}}', 'ns1:myns', [['ns1:myns', -1]], $pageInLvl2],
+            ['{{indexmenu>myns:myns myns:myns}}', 'myns:myns', [['myns:myns', -1]], $pageInLvl2],
+
+            //indexmenu on page in a namespace
+            ['{{indexmenu>|}}', '', [], $pageInLvl2],
+            ['{{indexmenu>#1}}', '', [], $pageInLvl2],
+            ['{{indexmenu>:}}', '', [], $pageInLvl2],
+            ['{{indexmenu>.}}', 'ns1:ns2', [], $pageInLvl2],
+            ['{{indexmenu>.:}}', 'ns1:ns2', [], $pageInLvl2],
+            ['{{indexmenu>..}}', '', [], $pageInLvl2], //strange indexmenu specific exception! TODO remove?
+            ['{{indexmenu>..:}}', 'ns1', [], $pageInLvl2],
+            ['{{indexmenu>myns:}}', 'myns', [], $pageInLvl2], //was ns1:ns2:myns
+            ['{{indexmenu>:myns:}}', 'myns', [], $pageInLvl2],
+            ['{{indexmenu>.myns:}}', 'ns1:ns2:myns', [], $pageInLvl2],
+            ['{{indexmenu>.:myns:}}', 'ns1:ns2:myns', [], $pageInLvl2],
+            ['{{indexmenu>..myns:}}', 'ns1:myns', [], $pageInLvl2],
+            ['{{indexmenu>..:myns:}}', 'ns1:myns', [], $pageInLvl2],
+            ['{{indexmenu>myns:myns:}}', 'myns:myns', [], $pageInLvl2],
+        ];
+    }
+
+    /**
+     * Parse the syntax to options
+     * expect: different combinations with or without js option, covers recognizing all syntax options
+     *
+     * @dataProvider differentNSs
+     */
+    public function testResolving($syntax, $expectedNs, $expectedSubNss, $pageWithIndexmenu) {
+        global $ID;
+        $ID = $pageWithIndexmenu;
+
+        $plugin = new syntax_plugin_indexmenu_indexmenu();
+
+        $null   = new Doku_Handler();
+        $result = $plugin->handle($syntax, 0, 40, $null);
+
+        $this->assertEquals($expectedNs, $result[0], 'check resolved ns');
+        $this->assertEquals($expectedSubNss, $result[3]['subnss'], 'check resolved subNSs');
+    }
+
     /**
      * Rendering for nonexisting namespace
      * expect: no paragraph due to no message set
@@ -205,7 +313,7 @@ class IndexmenuSyntaxTest extends DokuWikiTest {
      * expect: contains namespace which replaced {{ns}}
      * expect: message contained rendered italic syntax
      */
-    function testRenderEmptymsg() {
+    public function testRenderEmptymsg() {
         global $conf;
 
         $noexistns        = 'nonexisting:namespace';

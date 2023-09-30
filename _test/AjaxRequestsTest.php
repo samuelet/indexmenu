@@ -53,38 +53,38 @@ class AjaxRequestsTest extends DokuWikiTest
      *
      * @return array
      */
-    public function indexmenuCalls()
+    public static function indexmenuCalls()
     {
         return [
             // Call, POST parameters, result function
             [
                 'indexmenu',
-                $this->prepareParams(['level' => 1]),
+                AjaxRequestsTest::prepareParams(['level' => 1]),
                 'expectedResultWiki'
             ],
             [
                 'indexmenu',
-                $this->prepareParams(['ns' => 'ns2', 'level' => 1]),
+                AjaxRequestsTest::prepareParams(['ns' => 'ns2', 'level' => 1]),
                 'expectedResultNs2PageSort'
             ],
             [
                 'indexmenu',
-                $this->prepareParams(['ns' => 'ns2', 'level' => 1, 'sort' => 't']),
+                AjaxRequestsTest::prepareParams(['ns' => 'ns2', 'level' => 1, 'sort' => 't']),
                 'expectedResultNs2TitleSort'
             ],
             [
                 'indexmenu',
-                $this->prepareParams(['ns' => 'ns2', 'level' => 1, 'sort' => 'd']),
+                AjaxRequestsTest::prepareParams(['ns' => 'ns2', 'level' => 1, 'sort' => 'd']),
                 'expectedResultNs2CreationDateSort'
             ],
             [
                 'indexmenu',
-                $this->prepareParams(['ns' => 'ns1', 'level' => 1, 'sort' => 't']),
+                AjaxRequestsTest::prepareParams(['ns' => 'ns1', 'level' => 1, 'sort' => 't']),
                 'expectedResultNs1TitleSort'
             ],
             [
                 'indexmenu',
-                $this->prepareParams(['ns' => 'ns1', 'level' => 1, 'sort' => 't', 'nsort' => 1]),
+                AjaxRequestsTest::prepareParams(['ns' => 'ns1', 'level' => 1, 'sort' => 't', 'nsort' => 1]),
                 'expectedResultNs1TitleSortNamespaceSort'
             ]
         ];
@@ -92,9 +92,10 @@ class AjaxRequestsTest extends DokuWikiTest
 
     /**
      * @dataProvider indexmenuCalls
+     *
      * @param string $call
      * @param array $post
-     * @param string $regexp
+     * @param $expectedResult
      */
     public function testBasicSorting($call, $post, $expectedResult)
     {
@@ -121,12 +122,12 @@ class AjaxRequestsTest extends DokuWikiTest
 
     public function test_params()
     {
-        print_r($this->prepareParams(['level' => 2]));
+        print_r(AjaxRequestsTest::prepareParams(['level' => 2]));
 
         $this->assertTrue(true);
     }
 
-    public function prepareParams($params = [])
+    public static function prepareParams($params = [])
     {
         $defaults = [
             'ns' => 'wiki',

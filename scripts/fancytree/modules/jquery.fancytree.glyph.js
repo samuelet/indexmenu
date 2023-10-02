@@ -4,16 +4,16 @@
  * Use glyph-fonts, ligature-fonts, or SVG icons instead of icon sprites.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.0
- * @date 2021-02-09T20:03:49Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define(["jquery", "./jquery.fancytree"], factory);
@@ -25,7 +25,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	"use strict";
 
 	/******************************************************************************
@@ -174,7 +174,7 @@
 			setClass = baseClass + " " + (map._addClass || "");
 
 		// #871 Allow a callback
-		if ($.isFunction(icon)) {
+		if (typeof icon === "function") {
 			icon = icon.call(this, node, span, type);
 		}
 		// node.debug( "setIcon(" + baseClass + ", " + type + "): " + "oldIcon" + " -> " + icon );
@@ -212,14 +212,14 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "glyph",
-		version: "2.38.0",
+		version: "2.38.3",
 		// Default options for this extension.
 		options: {
 			preset: null, // 'awesome3', 'awesome4', 'bootstrap3', 'material'
 			map: {},
 		},
 
-		treeInit: function(ctx) {
+		treeInit: function (ctx) {
 			var tree = ctx.tree,
 				opts = ctx.options.glyph;
 
@@ -235,7 +235,7 @@
 			this._superApply(arguments);
 			tree.$container.addClass("fancytree-ext-glyph");
 		},
-		nodeRenderStatus: function(ctx) {
+		nodeRenderStatus: function (ctx) {
 			var checkbox,
 				icon,
 				res,
@@ -267,9 +267,7 @@
 			}
 
 			if (node.tr) {
-				span = $("td", node.tr)
-					.find(".fancytree-checkbox")
-					.get(0);
+				span = $("td", node.tr).find(".fancytree-checkbox").get(0);
 			} else {
 				span = $span.children(".fancytree-checkbox").get(0);
 			}
@@ -317,7 +315,7 @@
 			}
 			return res;
 		},
-		nodeSetStatus: function(ctx, status, message, details) {
+		nodeSetStatus: function (ctx, status, message, details) {
 			var res,
 				span,
 				opts = ctx.options.glyph,

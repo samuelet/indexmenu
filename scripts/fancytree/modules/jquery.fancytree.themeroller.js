@@ -6,16 +6,16 @@
  *
  * @see http://jqueryui.com/themeroller/
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.0
- * @date 2021-02-09T20:03:49Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define(["jquery", "./jquery.fancytree"], factory);
@@ -27,7 +27,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	"use strict";
 
 	/*******************************************************************************
@@ -35,7 +35,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "themeroller",
-		version: "2.38.0",
+		version: "2.38.3",
 		// Default options for this extension.
 		options: {
 			activeClass: "ui-state-active", // Class added to active node
@@ -47,7 +47,7 @@
 			// selectedClass: "ui-state-active"
 		},
 
-		treeInit: function(ctx) {
+		treeInit: function (ctx) {
 			var $el = ctx.widget.element,
 				opts = ctx.options.themeroller;
 
@@ -61,23 +61,27 @@
 				$el.addClass("ui-widget ui-widget-content ui-corner-all");
 			}
 
-			$el.on("mouseenter mouseleave", ".fancytree-node", function(event) {
-				var node = $.ui.fancytree.getNode(event.target),
-					flag = event.type === "mouseenter";
+			$el.on(
+				"mouseenter mouseleave",
+				".fancytree-node",
+				function (event) {
+					var node = $.ui.fancytree.getNode(event.target),
+						flag = event.type === "mouseenter";
 
-				$(node.tr ? node.tr : node.span).toggleClass(
-					opts.hoverClass + " " + opts.addClass,
-					flag
-				);
-			});
+					$(node.tr ? node.tr : node.span).toggleClass(
+						opts.hoverClass + " " + opts.addClass,
+						flag
+					);
+				}
+			);
 		},
-		treeDestroy: function(ctx) {
+		treeDestroy: function (ctx) {
 			this._superApply(arguments);
 			ctx.widget.element.removeClass(
 				"ui-widget ui-widget-content ui-corner-all"
 			);
 		},
-		nodeRenderStatus: function(ctx) {
+		nodeRenderStatus: function (ctx) {
 			var classes = {},
 				node = ctx.node,
 				$el = $(node.tr ? node.tr : node.span),

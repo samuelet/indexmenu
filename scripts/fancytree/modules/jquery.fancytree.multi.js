@@ -4,16 +4,16 @@
  * Allow multiple selection of nodes  by mouse or keyboard.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.0
- * @date 2021-02-09T20:03:49Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define(["jquery", "./jquery.fancytree"], factory);
@@ -25,7 +25,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	"use strict";
 
 	/*******************************************************************************
@@ -39,7 +39,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "multi",
-		version: "2.38.0",
+		version: "2.38.3",
 		// Default options for this extension.
 		options: {
 			allowNoSelect: false, //
@@ -48,7 +48,7 @@
 			// beforeSelect: $.noop  // Return false to prevent cancel/save (data.input is available)
 		},
 
-		treeInit: function(ctx) {
+		treeInit: function (ctx) {
 			this._superApply(arguments);
 			this.$container.addClass("fancytree-ext-multi");
 			if (ctx.options.selectMode === 1) {
@@ -57,7 +57,7 @@
 				);
 			}
 		},
-		nodeClick: function(ctx) {
+		nodeClick: function (ctx) {
 			var //pluginOpts = ctx.options.multi,
 				tree = ctx.tree,
 				node = ctx.node,
@@ -81,7 +81,7 @@
 				case "shift+click":
 					// node.debug("click")
 					tree.visitRows(
-						function(n) {
+						function (n) {
 							// n.debug("click2", n===node, node)
 							n.setSelected();
 							if (n === node) {
@@ -101,7 +101,7 @@
 			}
 			return this._superApply(arguments);
 		},
-		nodeKeydown: function(ctx) {
+		nodeKeydown: function (ctx) {
 			var tree = ctx.tree,
 				node = ctx.node,
 				event = ctx.originalEvent,

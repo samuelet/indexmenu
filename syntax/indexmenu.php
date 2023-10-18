@@ -832,6 +832,14 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             $ret .= '<a href="'.wl($link, $more).'" class="'.$tagid.'">';
             $ret .= $item['title'];
             $ret .= '</a>';
+            if($item['hns']) {
+                $more = 'idx='.$item['id'];
+                $tagid = "indexmenu_idx";
+                if($item['open']) $tagid .= ' open';
+                $ret .= '<a href="'.wl($link, $more).'" class="'.$tagid.'">';
+            $ret .= "+";
+            $ret .= '</a>';
+            }
             if($markCurrentPage) $ret .= '</span>';
         } else {
             //page link

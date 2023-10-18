@@ -45,6 +45,7 @@ $lang['js']['context']         = 'Affiche l\'arborescence du contexte de la cat�
 $lang['js']['nocookie']        = 'Ne pas se souvenir des noeuds ouverts/fermés pendant la navigation de l\'utilisateur';
 $lang['js']['noscroll']        = 'Empêche de faire défiler l\'arbre quand il ne tient pas dans la largeur de son conteneur';
 $lang['js']['notoc']           = 'Désactive la fonction de prévisualisation de la table des matières';
+$lang['js']['scorespace']      = 'Remplacement de soulignement avec des espaces';
 $lang['js']['tsort']           = 'Par titre';
 $lang['js']['dsort']           = 'Par date';
 $lang['js']['msort']           = 'Par meta-tag';

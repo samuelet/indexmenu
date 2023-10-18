@@ -74,6 +74,7 @@ function dTree(objName, theme) {
         useCookies: true,                              // use cookies (set in page) e.g. disabled for context option
         scroll: true,                                  // enable scrolling of tree in too small columns (set in page)
         toc: true,                                     // enable ToC popups in tree (set in page)
+        scorespace: false,                             // replace underscores with space
         maxjs: 1,                                      // number set by maxjs option (set in page)
         jsajax: '',                                    //  &max=#&sort=(t|d)&msort=(indexmenu_n|<metakey>)&rsort=1&nsort=1&hsort=1&nopg=1&skipns=+=/.../&skipfile=+=/.../(set in page)
         sepchar: ':',                                  // value ':', ';' or '/'  (set in page)
@@ -266,12 +267,21 @@ dTree.prototype.node = function (node, nodeId) {
         (node.hns) ? str += node.hns : str += node.dokuid;
         str += '"' + ' title="' + node.name + '"' + jsfnc;
         str += ' onclick="javascript: ' + this.obj + '.s(' + nodeId + ');"';
-        str += '>' + node.name + '</a>';
+        if(this.config.scorespace)
+            str += '>' + node.name.replace(/_/g, " ") + '</a>';
+        else
+            str += '>' + node.name + '</a>';
     }
     else if (node.pid != this.root.id) {
-        str += '<a id="s' + this.obj + nodeId + '" href="javascript: ' + this.obj + '.o(' + nodeId + '); " class="node"' + jsfnc + '>' + node.name + '</a>';
+        if(this.config.scorespace)
+            str += '<a id="s' + this.obj + nodeId + '" href="javascript: ' + this.obj + '.o(' + nodeId + '); " class="node"' + jsfnc + '>' + node.name.replace(/_/g, " ") + '</a>';
+        else
+            str += '<a id="s' + this.obj + nodeId + '" href="javascript: ' + this.obj + '.o(' + nodeId + '); " class="node"' + jsfnc + '>' + node.name + '</a>';
     } else {
-        str += node.name;
+        if(this.config.scorespace)
+            str += node.name.replace(/_/g, " ");
+        else
+            str += node.name;
     }
     str += '</div>';
     if (node._hc) {
@@ -895,7 +905,10 @@ dTree.prototype.contextmenu = function (n, e) {
     IndexmenuContextmenu.mouseposition(rmenu, e);
     var cmenu = window.indexmenu_contextmenu;
     node = this.aNodes[n];
-    rmenu.innerHTML = '<div class="indexmenu_rmenuhead" title="' + node.name + '">' + node.name + "</div>";
+    if(this.config.scorespace)
+        rmenu.innerHTML = '<div class="indexmenu_rmenuhead" title="' + node.name + '">' + node.name.replace(/_/g, " ") + "</div>";
+    else
+        rmenu.innerHTML = '<div class="indexmenu_rmenuhead" title="' + node.name + '">' + node.name + "</div>";
     rmenu.appendChild(document.createElement('ul'));
     type = (node.isdir || node._hc) ? 'ns' : 'pg';
     IndexmenuContextmenu.arrconcat(cmenu['all'][type], this, n);

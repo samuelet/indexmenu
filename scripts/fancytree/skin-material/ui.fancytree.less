@@ -6,7 +6,7 @@
  */
 
 // Import common styles
-@import "../skin-common.less";
+@import "skin-common.less";
 
 // We need to define this variable here (not in skin-common.less) to make it
 // work with grunt and webpack:
@@ -21,7 +21,7 @@
 https://material.io/guidelines/components/data-tables.html#data-tables-structure
 */
 // local vars
-@fancy-cst-size: 24px;
+@fancy-cst-size: 18px;
 @fancy-cst-primary-color: #3f51b5;  // primary app color (of indigo-pink)
 @fancy-cst-secondary-color: #ff4081;  // secondary app color (of indigo-pink): checkbox
 @fancy-cst-black-87: #212121;  // 87% black: table content
@@ -52,7 +52,8 @@ https://material.io/guidelines/components/data-tables.html#data-tables-structure
 // Set to `true` to use `data-uri(...)` instead of a `url(...)` link:
 @fancy-inline-sprites: false;
 
-@fancy-font-size: @fancy-cst-size;
+//default 10pt, which is used in a relative manner resulting in 13.3 in dokuwiki-template.
+@fancy-font-size: 93%; //@fancy-cst-size;
 @fancy-font-family: "Roboto Regular", tahoma, arial, helvetica;
 @fancy-font-color: @fancy-cst-black-87;
 @fancy-font-color-dimm: silver;
@@ -61,18 +62,26 @@ https://material.io/guidelines/components/data-tables.html#data-tables-structure
 
 ul.fancytree-container ul
 {
-	padding: 0.3em 0 0 1em;
+	padding: 0 0 0 1em; //0.3em 0 0 1em;
 	margin: 0;
-	font-size: @fancy-cst-size;
-	color: @fancy-cst-black-87;
+	//font-size: @fancy-cst-size;
+	//color: @fancy-cst-black-87;
 }
 
 ul.fancytree-container span.fancytree-icon.material-icons
 {
-	// font-size: @fancy-cst-size;
-	// color: @fancy-cst-black-87;
+	font-size: @fancy-cst-size;
+	color: @fancy-cst-black-87;
 }
 
+
+// set icon color to font color as well
+span.fancytree-node {
+	color: @fancy-font-color;
+}
+span.fancytree-expander {
+    font-size: @fancy-cst-size;
+}
 
 /*******************************************************************************
  * Node titles
@@ -92,31 +101,31 @@ ul.fancytree-container span.fancytree-icon.material-icons
 	color: @fancy-cst-secondary-color;
 }
 
-/*******************************************************************************
- * 'table' extension
- */
-table.fancytree-ext-table {
-	border-collapse: collapse;
-	tbody {
-		tr.fancytree-focused, tr.fancytree-selected {
-			background-color: @fancy-cst-select-bg;
-		}
-		tr.fancytree-active, tr:hover {
-			background-color: @fancy-cst-hover-bg;
-		}
-	}
-}
-
-/*******************************************************************************
- * 'columnview' extension
- */
-
-table.fancytree-ext-columnview tbody tr td {
-	border: 1px solid gray;
-}
-table.fancytree-ext-columnview span.fancytree-node.fancytree-expanded {
-	background-color: #ccc;
-}
-table.fancytree-ext-columnview span.fancytree-node.fancytree-active {
-	background-color: royalblue;
-}
+///*******************************************************************************
+// * 'table' extension
+// */
+//table.fancytree-ext-table {
+//	border-collapse: collapse;
+//	tbody {
+//		tr.fancytree-focused, tr.fancytree-selected {
+//			background-color: @fancy-cst-select-bg;
+//		}
+//		tr.fancytree-active, tr:hover {
+//			background-color: @fancy-cst-hover-bg;
+//		}
+//	}
+//}
+//
+///*******************************************************************************
+// * 'columnview' extension
+// */
+//
+//table.fancytree-ext-columnview tbody tr td {
+//	border: 1px solid gray;
+//}
+//table.fancytree-ext-columnview span.fancytree-node.fancytree-expanded {
+//	background-color: #ccc;
+//}
+//table.fancytree-ext-columnview span.fancytree-node.fancytree-active {
+//	background-color: royalblue;
+//}

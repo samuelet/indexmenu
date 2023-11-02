@@ -12,7 +12,7 @@
 
 */
 // Import common styles
-@import "../skin-common.less";
+@import "skin-common.less";
 
 
 /*******************************************************************************
@@ -41,6 +41,8 @@
 // instead of linking to that file:
 // @fancy-inline-sprites: true;
 
+//default 10pt, which is used in a relative manner resulting in 13.3 in dokuwiki-template.
+@fancy-font-size: 93%;
 
 /*******************************************************************************
  * Node titles
@@ -65,34 +67,34 @@ span.fancytree-selected span.fancytree-title {
 	background-color: #3875D7; // blue
 }
 
-/*******************************************************************************
- * 'table' extension
- */
-table.fancytree-ext-table {
-	border-collapse: collapse;
-	tbody {
-	    tr.fancytree-focused {
-			background-color: #99DEFD;
-		}
-	    tr.fancytree-active {
-			background-color: royalblue;
-		}
-	    tr.fancytree-selected {
-			background-color: #99DEFD;
-		}
-	}
-}
-
-/*******************************************************************************
- * 'columnview' extension
- */
-
-table.fancytree-ext-columnview tbody tr td {
-	border: 1px solid gray;
-}
-table.fancytree-ext-columnview span.fancytree-node.fancytree-expanded {
-	background-color: #ccc;
-}
-table.fancytree-ext-columnview span.fancytree-node.fancytree-active {
-	background-color: royalblue;
-}
+///*******************************************************************************
+// * 'table' extension
+// */
+//table.fancytree-ext-table {
+//	border-collapse: collapse;
+//	tbody {
+//	    tr.fancytree-focused {
+//			background-color: #99DEFD;
+//		}
+//	    tr.fancytree-active {
+//			background-color: royalblue;
+//		}
+//	    tr.fancytree-selected {
+//			background-color: #99DEFD;
+//		}
+//	}
+//}
+//
+///*******************************************************************************
+// * 'columnview' extension
+// */
+//
+//table.fancytree-ext-columnview tbody tr td {
+//	border: 1px solid gray;
+//}
+//table.fancytree-ext-columnview span.fancytree-node.fancytree-expanded {
+//	background-color: #ccc;
+//}
+//table.fancytree-ext-columnview span.fancytree-node.fancytree-active {
+//	background-color: royalblue;
+//}

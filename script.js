@@ -17,13 +17,95 @@ var indexmenu_contextmenu = {'all': []};
 // }
 jQuery(function(){  // on page load
     // Create the tree inside the <div id="tree"> element.
+    const predefinedPresets = {
+        'bootstrap': { //works with template bootstrap3 or by manually adding resources to icon plugin assets
+            'preset': 'bootstrap3',
+            'map': {}
+        },
+        'bootstrap-n': { //works with template bootstrap3 or ..etc
+            'preset': 'bootstrap3',
+            'map': {}
+        },
+        'awesome': { //works with icons-plugin, settings: enable plugin»icons»loadFontAwesome
+            'preset': 'awesome4', //plugin icons does include only awesome4, not awesome5.
+            'map': {}
+        },
+        'material': { // add Material Icons font stylesheet to header with TPL_METAHEADER_OUTPUT in action component
+            'preset': 'material',
+            'map': {}
+        },
+        'mdi': { //works with icons-plugin, settings: enable plugin»icons»loadMaterialDesignIcons
+
+            'preset': '',
+            'map': {
+                _addClass: "mdi",
+                checkbox: "mdi-checkbox-blank-outline",
+                checkboxSelected: "mdi-check-box-outline",
+                checkboxUnknown: "mdi-checkbox-intermediate fancytree-helper-indeterminate-cb",
+                dragHelper: "mdi-play",
+                dropMarker: "mdi-skip-forward",
+                error: "mdi-warning",
+                expanderClosed: "mdi-chevron-right",
+                expanderLazy: "mdi-chevron-right",
+                expanderOpen: "mdi-chevron-down",
+                // We may prevent wobbling rotations on FF by creating a separate sub element:
+                loading: "mdi-refresh",
+                nodata: "mdi-information-outline",
+                noExpander: "",
+                radio: "mdi-radiobox-blank", // "fa-circle-o"
+                radioSelected: "mdi-radiobox-marked",
+                // Default node icons.
+                // (Use tree.options.icon callback to define custom icons based on node data)
+                doc: "mdi-file-outline",
+                docOpen: "mdi-file-outline",
+                folder: "mdi-folder",
+                folderOpen: "mdi-folder-open",
+            }
+        },
+        'typicons': { //works with icons-plugin, settings: enable plugin»icons»loadTypicons
+            'preset': '',
+            'map': {
+                _addClass: "typcn",
+                checkbox: "typcn-media-stop-outline",
+                checkboxSelected: "typcn-input-checked",
+                checkboxUnknown: "typcn-media-stop-outline fancytree-helper-indeterminate-cb",
+                dragHelper: "typcn-media-play-outline",
+                dropMarker: "typcn-media-fast-forward-outline",
+                error: "typcn-warning",
+                expanderClosed: "typcn-media-play",
+                expanderLazy: "typcn-media-play",
+                expanderOpen: "typcn-arrow-sorted-down",
+                // We may prevent wobbling rotations on FF by creating a separate sub element:
+                loading: "typcn-arrow-sync",
+                nodata: "typcn-info-large",
+                noExpander: "",
+                radio: "typcn-media-record-outline", // "fa-circle-o"
+                radioSelected: "typcn-media-record",
+                // Default node icons.
+                // (Use tree.options.icon callback to define custom icons based on node data)
+                doc: "typcn-document",
+                docOpen: "typcn-document",
+                folder: "typcn-folder",
+                folderOpen: "typcn-folder-open",
+            }
+        }
+
+    };
+    // userDefinedPresets can be defined in conf/userscript.js
+    const presets = {...predefinedPresets, ...(typeof userDefinedPresets === 'undefined' ? [] : userDefinedPresets)};
+
     jQuery(".indexmenu_js2").each(function(){
         let $tree = jQuery(this),
             id = $tree.attr('id');
         var options = $tree.data('options');
 console.log(options);
+
         $tree.fancytree({
-            extensions: [],
+            extensions: presets[options.opts.theme] ? ["glyph"] : [],
+            glyph: {
+                preset: presets[options.opts.theme] ? presets[options.opts.theme].preset : '',
+                map: presets[options.opts.theme] ? presets[options.opts.theme].map : {}
+            },
             //minExpandLevel: 2, // number of levels already expanded, and not unexpandable.
             clickFolderMode: 3, // expand with single click instead of dblclick
             //autoCollapse: true, //closes other opened nodes, so only one node is opened
@@ -35,6 +117,7 @@ console.log(options);
             // },
             escapeTitles: false,
             tooltip: true,
+            rtl: jQuery('html[dir=rtl]').length,
             focus: function(event, data) {
                 var node = data.node;
                 // Auto-activate focused node after 1 second (practical for use with keyboard)

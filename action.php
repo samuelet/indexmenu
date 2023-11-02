@@ -523,12 +523,25 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
             $themes = [];
         }
 
-        foreach ($themes as $theme) {
-            $event->data["link"][] = [
-                "type" => "text/css",
-                "rel" => "stylesheet",
-                "href" => DOKU_BASE . "lib/plugins/indexmenu/scripts/fancytree/skin-$theme/ui.fancytree.min.css"
-            ];
-        }
+        //TODO works only on the main pages (where we can get its $ID) sidebars and other included pages we miss here
+//        foreach ($themes as $theme) {
+//            $event->data["link"][] = [
+//                "type" => "text/css",
+//                "rel" => "stylesheet",
+//                "href" => DOKU_BASE . "lib/plugins/indexmenu/scripts/fancytree/skin-$theme/ui.fancytree.min.css"
+//            ];
+//        }
+
+//        $event->data["link"][] = [
+//            "type" => "text/css",
+//            "rel" => "stylesheet",
+//            "href" => "//fonts.googleapis.com/icon?family=Material+Icons"
+//        ];
+
+//        $event->data["link"][] = [
+//            "type" => "text/css",
+//            "rel" => "stylesheet",
+//            "href" => "//code.getmdl.io/1.3.0/material.indigo-pink.min.css"
+//        ];
     }
 }

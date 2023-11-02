@@ -6,7 +6,7 @@
  */
 
 // Import common styles
-@import "../skin-common.less";
+@import "skin-common.less";
 
 
 /*******************************************************************************
@@ -39,6 +39,9 @@
 // We need to define this variable here (not in skin-common.less) to make it
 // work with grunt and webpack:
 @fancy-image-prefix: "./skin-bootstrap-n/";
+
+//default 10pt, which is used in a relative manner resulting in 13.3 in dokuwiki-template.
+@fancy-font-size: 93%; //@fancy-cst-size;
 
 ul.fancytree-container ul {
 	padding: 0 0 0 1.5em;
@@ -77,6 +80,7 @@ span.fancytree-node {
 	border: @fancy-node-border-width solid transparent;  // avoid jumping, when a border is added on hover
 	border-radius: @border-radius-small;
 	padding-left: 8px;
+    color: @fancy-font-color; //set icon color to font color as well
 }
 span.fancytree-title {
 	border-radius: @border-radius-small;
@@ -112,70 +116,70 @@ span.fancytree-node.fancytree-active { // active nodes inside inactive tree
 	}
 }
 
-/*******************************************************************************
- * 'table' extension
- */
-table.fancytree-ext-table tbody {
-	tr td {
-	  border: 1px solid @gray-lighter;
-	}
-	// span.fancytree-node,
-	// span.fancytree-node:hover { // undo standard tree css
-	// 	border: none;
-	// 	background: none;
-	// }
-	// // Title get's a white background, when hovered. Undo standard node formatting
-	// span.fancytree-title:hover {
-	//   border: none;
-	//   background: inherit;
-	//   background: transparent;
-	//   background: none;
-	//   filter: none;
-	// }
-	// dimmed, if inside inactive tree
-	tr.fancytree-selected {
-		background-color: lighten(@brand-success, 10%);
-		span.fancytree-node {
-			background-color: lighten(@brand-success, 10%);
-		}
-		span.fancytree-title {
-			background-color: lighten(@brand-success, 10%); // green title, even when active
-		}
-	}
-	tr.fancytree-active {  // dimmed, if inside inactive tree
-		background-color: lighten(@brand-primary, 10%);
-		span.fancytree-node {
-			background-color: lighten(@brand-primary, 10%);
-		}
-	}
-}
-
-table.fancytree-ext-table.fancytree-treefocus tbody {
-	tr:hover  {
-		background-color: lighten(@brand-primary, 42%);
-	    // outline: 1px solid @brand-primary;
-	}
-	tr.fancytree-focused span.fancytree-title {
-		outline: 1px dotted @brand-primary;
-	}
-	tr.fancytree-active:hover,
-	tr.fancytree-selected:hover {
-		// background-color: #CBE8F6;
-	 //    outline: 1px solid #26A0DA;
-	}
-	tr.fancytree-selected {
-		background-color: @brand-success;
-		span.fancytree-node {
-			background-color: @brand-success;
-		}
-		span.fancytree-title {
-			background-color: @brand-success; // green title, even when active
-		}
-	}
-	tr.fancytree-active {
-		background-color: @brand-primary;
-		span.fancytree-node {
-			background-color: @brand-primary;
-		}
-	}
-}
+///*******************************************************************************
+// * 'table' extension
+// */
+//table.fancytree-ext-table tbody {
+//	tr td {
+//	  border: 1px solid @gray-lighter;
+//	}
+//	// span.fancytree-node,
+//	// span.fancytree-node:hover { // undo standard tree css
+//	// 	border: none;
+//	// 	background: none;
+//	// }
+//	// // Title get's a white background, when hovered. Undo standard node formatting
+//	// span.fancytree-title:hover {
+//	//   border: none;
+//	//   background: inherit;
+//	//   background: transparent;
+//	//   background: none;
+//	//   filter: none;
+//	// }
+//	// dimmed, if inside inactive tree
+//	tr.fancytree-selected {
+//		background-color: lighten(@brand-success, 10%);
+//		span.fancytree-node {
+//			background-color: lighten(@brand-success, 10%);
+//		}
+//		span.fancytree-title {
+//			background-color: lighten(@brand-success, 10%); // green title, even when active
+//		}
+//	}
+//	tr.fancytree-active {  // dimmed, if inside inactive tree
+//		background-color: lighten(@brand-primary, 10%);
+//		span.fancytree-node {
+//			background-color: lighten(@brand-primary, 10%);
+//		}
+//	}
+//}
+//
+//table.fancytree-ext-table.fancytree-treefocus tbody {
+//	tr:hover  {
+//		background-color: lighten(@brand-primary, 42%);
+//	    // outline: 1px solid @brand-primary;
+//	}
+//	tr.fancytree-focused span.fancytree-title {
+//		outline: 1px dotted @brand-primary;
+//	}
+//	tr.fancytree-active:hover,
+//	tr.fancytree-selected:hover {
+//		// background-color: #CBE8F6;
+//	 //    outline: 1px solid #26A0DA;
+//	}
+//	tr.fancytree-selected {
+//		background-color: @brand-success;
+//		span.fancytree-node {
+//			background-color: @brand-success;
+//		}
+//		span.fancytree-title {
+//			background-color: @brand-success; // green title, even when active
+//		}
+//	}
+//	tr.fancytree-active {
+//		background-color: @brand-primary;
+//		span.fancytree-node {
+//			background-color: @brand-primary;
+//		}
+//	}
+//}

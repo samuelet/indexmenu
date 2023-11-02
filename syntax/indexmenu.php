@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Info Indexmenu: Show a customizable and sortable index for a namespace.
  *
@@ -7,36 +8,40 @@
  *
  */
 
+use dokuwiki\Extension\SyntaxPlugin;
 use dokuwiki\File\PageResolver;
 use dokuwiki\plugin\indexmenu\Search;
 use dokuwiki\Ui\Index;
 
-if(!defined('INDEXMENU_IMG_ABSDIR')) define('INDEXMENU_IMG_ABSDIR', DOKU_PLUGIN."indexmenu/images");
+if (!defined('INDEXMENU_IMG_ABSDIR')) define('INDEXMENU_IMG_ABSDIR', DOKU_PLUGIN . "indexmenu/images");
 
 /**
  * All DokuWiki plugins to extend the parser/rendering mechanism
  * need to inherit from this class
  */
-class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
-
+class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
+{
     /**
      * What kind of syntax are we?
      */
-    public function getType() {
+    public function getType()
+    {
         return 'substition';
     }
 
     /**
      * Behavior regarding the paragraph
      */
-    public function getPType() {
+    public function getPType()
+    {
         return 'block';
     }
 
     /**
      * Where to sort in?
      */
-    public function getSort() {
+    public function getSort()
+    {
         return 138;
     }
 
@@ -45,7 +50,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      *
      * @param string $mode
      */
-    public function connectTo($mode) {
+    public function connectTo($mode)
+    {
         $this->Lexer->addSpecialPattern('{{indexmenu>.+?}}', $mode, 'plugin_indexmenu_indexmenu');
     }
 
@@ -58,7 +64,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @param   Doku_Handler $handler The Doku_Handler object
      * @return  array Return an array with all data you want to use in render
      */
-    public function handle($match, $state, $pos, Doku_Handler $handler) {
+    public function handle($match, $state, $pos, Doku_Handler $handler)
+    {
         $theme    = 'default'; // name of theme for images and additional css
         $level    = -1; // requested depth of initial opened nodes, -1:all
         $max      = 0; // number of levels loaded initially, rest should be loaded with ajax. (TODO actual default is 1)
@@ -80,7 +87,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
 
         $match = substr($match, 12, -2);
         //split namespace,level,theme
-        list($nsStr, $optsStr) = array_pad(explode('|', $match, 2), 2, '');
+        [$nsStr, $optsStr] = array_pad(explode('|', $match, 2), 2, '');
         //split options
         $opts = explode(' ', $optsStr);
 
@@ -91,10 +98,12 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         // PREG_SPLIT_NO_EMPTY flag filters empty pieces e.g. due to multiple spaces
         $nsStrs = preg_split("/ /u", $nsStr, -1, PREG_SPLIT_NO_EMPTY);
         //skips i=0 because that becomes main $ns
-        for($i = 1; $i < count($nsStrs); $i++) {
+        $counter = count($nsStrs);
+        //skips i=0 because that becomes main $ns
+        for ($i = 1; $i < $counter; $i++) {
             $subns_lvl = explode("#", $nsStrs[$i]);
             //context should parse this later in correct context
-            if(!$context) {
+            if (!$context) {
                 $subns_lvl[0] = $this->parseNs($subns_lvl[0]);
             }
             $subNSs[] = [
@@ -103,21 +112,21 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             ];
         }
         //empty pieces were filtered
-        if($nsStrs === []) {
+        if ($nsStrs === []) {
             $nsStrs[0] = '';
         }
         //split main requested namespace
-        if(preg_match('/(.*)#(\S*)/u', $nsStrs[0], $matched_ns_lvl)) {
+        if (preg_match('/(.*)#(\S*)/u', $nsStrs[0], $matched_ns_lvl)) {
             //split level
             $ns = $matched_ns_lvl[1];
-            if(is_numeric($matched_ns_lvl[2])) {
+            if (is_numeric($matched_ns_lvl[2])) {
                 $level = (int) $matched_ns_lvl[2];
             }
         } else {
             $ns = $nsStrs[0];
         }
         //context needs to be resolved later
-        if(!$context) {
+        if (!$context) {
             $ns = $this->parseNs($ns);
         }
 
@@ -138,9 +147,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         //Main sort method
         $tsort = $this->hasOption($defaults, $opts, 'tsort');
         $dsort = $this->hasOption($defaults, $opts, 'dsort');
-        if($tsort) {
+        if ($tsort) {
             $sort = 't';
-        } elseif($dsort) {
+        } elseif ($dsort) {
             $sort = 'd';
         } else {
             $sort = 0;
@@ -150,61 +159,55 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         //sort headpages up
         $hsort = $this->hasOption($defaults, $opts, 'hsort');
         //Metadata sort method
-        if($msort = $this->hasOption($defaults, $opts, 'msort')) {
+        if ($msort = $this->hasOption($defaults, $opts, 'msort')) {
             $msort = 'indexmenu_n';
-        } elseif($value = $this->getOption($defaultsStr, $optsStr, '/msort#(\S+)/u')) {
+        } elseif ($value = $this->getOption($defaultsStr, $optsStr, '/msort#(\S+)/u')) {
             $msort = str_replace(':', ' ', $value);
         }
         //reverse sort
         $rsort = $this->hasOption($defaults, $opts, 'rsort');
 
-        if($sort) $jsAjax .= "&sort=" . $sort;
-        if($msort) $jsAjax .= "&msort=" . $msort;
-        if($rsort) $jsAjax .= "&rsort=1";
-        if($nsort) $jsAjax .= "&nsort=1";
-        if($hsort) $jsAjax .= "&hsort=1";
-        if($nopg) $jsAjax .= "&nopg=1";
+        if ($sort) $jsAjax .= "&sort=" . $sort;
+        if ($msort) $jsAjax .= "&msort=" . $msort;
+        if ($rsort) $jsAjax .= "&rsort=1";
+        if ($nsort) $jsAjax .= "&nsort=1";
+        if ($hsort) $jsAjax .= "&hsort=1";
+        if ($nopg) $jsAjax .= "&nopg=1";
 
         //javascript option
         $dir = '';
         //check defaults for js,js#theme, #theme
-        if(!$js = in_array('js', $defaults)) {
-            if(preg_match('/(?:^|\s)(js)?#(\S*)/u', $defaultsStr, $matched_js_theme) > 0) {
-                if(!empty($matched_js_theme[1])) {
+        if (!$js = in_array('js', $defaults)) {
+            if (preg_match('/(?:^|\s)(js)?#(\S*)/u', $defaultsStr, $matched_js_theme) > 0) {
+                if (!empty($matched_js_theme[1])) {
                     $js = true;
                 }
-                if(isset($matched_js_theme[2])) {
+                if (isset($matched_js_theme[2])) {
                     $dir = $matched_js_theme[2];
                 }
             }
         }
         //check opts for nojs,#theme or js,js#theme
-        if($js) {
-            if(in_array('nojs', $opts)) {
+        if ($js) {
+            if (in_array('nojs', $opts)) {
                 $js = false;
-            } else {
-                if(preg_match('/(?:^|\s)(?:js)?#(\S*)/u', $optsStr, $matched_theme) > 0) {
-                    if(isset($matched_theme[1])) {
-                        $dir = $matched_theme[1];
-                    }
+            } elseif (preg_match('/(?:^|\s)(?:js)?#(\S*)/u', $optsStr, $matched_theme) > 0) {
+                if (isset($matched_theme[1])) {
+                    $dir = $matched_theme[1];
                 }
             }
-        } else {
-            if($js = in_array('js', $opts)) {
-                //use theme from the defaults
-            } else {
-                if(preg_match('/(?:^|\s)js#(\S*)/u', $optsStr, $matched_theme) > 0) {
-                    $js = true;
-                    if(isset($matched_theme[1])) {
-                        $dir = $matched_theme[1];
-                    }
-                }
+        } elseif ($js = in_array('js', $opts)) {
+            //use theme from the defaults
+        } elseif (preg_match('/(?:^|\s)js#(\S*)/u', $optsStr, $matched_theme) > 0) {
+            $js = true;
+            if (isset($matched_theme[1])) {
+                $dir = $matched_theme[1];
             }
         }
 
-        if($js) {
+        if ($js) {
             //exist theme?
-            if(!empty($dir) && is_dir(INDEXMENU_IMG_ABSDIR . "/" . $dir)) {
+            if (!empty($dir) && is_dir(INDEXMENU_IMG_ABSDIR . "/" . $dir)) {
                 $theme = $dir;
             }
 
@@ -212,9 +215,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             $gen_id = $this->getOption($defaultsStr, $optsStr, '/id#(\S+)/u');
 
             //max option: #n is no of lvls during initialization , #m levels retrieved per ajax request
-            if($matched_lvl_sublvl = $this->getOption($defaultsStr, $optsStr, '/max#(\d+)(?:$|\s+|#(\d+))/u', true)) {
+            if ($matched_lvl_sublvl = $this->getOption($defaultsStr, $optsStr, '/max#(\d+)(?:$|\s+|#(\d+))/u', true)) {
                 $max = $matched_lvl_sublvl[1];
-                if(!empty($matched_lvl_sublvl[2])) {
+                if (!empty($matched_lvl_sublvl[2])) {
                     $jsAjax .= "&max=" . $matched_lvl_sublvl[2];
                     $maxAjax = (int) $matched_lvl_sublvl[2];
                 }
@@ -225,7 +228,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             }
 
             //max js option
-            if($maxjs_lvl = $this->getOption($defaultsStr, $optsStr, '/maxjs#(\d+)/u')) {
+            if ($maxjs_lvl = $this->getOption($defaultsStr, $optsStr, '/maxjs#(\d+)/u')) {
                 $maxJs = $maxjs_lvl;
             }
             /* @deprecated 2021-07-01 -- allow (temporary) switching between versions of the js treemenu */
@@ -246,21 +249,21 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 // $theme='default' is later overwritten by 'win7'
             }
         }
-        if(is_numeric($gen_id)) {
+        if (is_numeric($gen_id)) {
             $identifier = $gen_id;
-        } elseif($gen_id == 'ns') {
+        } elseif ($gen_id == 'ns') {
             $identifier = sprintf("%u", crc32($ns));
         } else {
-            $identifier = uniqid(rand());
+            $identifier = uniqid(random_int(0, mt_getrandmax()));
         }
 
         //skip namespaces in index
         $skipNs[] = $this->getConf('skip_index');
-        if(preg_match('/skipns[+=](\S+)/u', $optsStr, $matched_skipns) > 0) {
+        if (preg_match('/skipns[+=](\S+)/u', $optsStr, $matched_skipns) > 0) {
             //first sign is: '+' (parallel to conf) or '=' (replace conf)
             $action = $matched_skipns[0][6];
             $index = 0;
-            if($action == '+') {
+            if ($action == '+') {
                 $index = 1;
             }
             $skipNs[$index] = $matched_skipns[1];
@@ -268,11 +271,11 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         }
         //skip file
         $skipFile[] = $this->getConf('skip_file');
-        if(preg_match('/skipfile[+=](\S+)/u', $optsStr, $matched_skipfile) > 0) {
+        if (preg_match('/skipfile[+=](\S+)/u', $optsStr, $matched_skipfile) > 0) {
             //first sign is: '+' (parallel to conf) or '=' (replace conf)
             $action = $matched_skipfile[0][8];
             $index = 0;
-            if($action == '+') {
+            if ($action == '+') {
                 $index = 1;
             }
             $skipFile[$index] = $matched_skipfile[1];
@@ -280,7 +283,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         }
 
         //js options
-        $js_dTreeOpts = compact('theme', 'identifier', 'nocookie', 'navbar', 'noscroll', 'maxJs', 'notoc', 'jsAjax', 'context', 'nomenu');
+        $js_dTreeOpts = ['theme' => $theme, 'identifier' => $identifier, 'nocookie' => $nocookie, 'navbar' => $navbar, 'noscroll' => $noscroll, 'maxJs' => $maxJs, 'notoc' => $notoc, 'jsAjax' => $jsAjax, 'context' => $context, 'nomenu' => $nomenu];
 
         return [
             $ns, //0
@@ -319,15 +322,16 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @param string $optionName   name of requested option
      * @return bool has $optionName?
      */
-    private function hasOption($defaultsOpts, $opts, $optionName) {
+    private function hasOption($defaultsOpts, $opts, $optionName)
+    {
         $name = $optionName;
-        if(substr($optionName, 0, 2) == 'no') {
+        if (substr($optionName, 0, 2) == 'no') {
             $inverseName = substr($optionName, 2);
         } else {
             $inverseName = 'no' . $optionName;
         }
 
-        if(in_array($name, $defaultsOpts)) {
+        if (in_array($name, $defaultsOpts)) {
             return !in_array($inverseName, $opts);
         } else {
             return in_array($name, $opts);
@@ -343,15 +347,16 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @param bool   $multipleMatches if multiple returns array, otherwise the first match
      * @return string|array
      */
-    private function getOption($defaultsString, $optsString, $matchPattern, $multipleMatches = false) {
-        if(preg_match($matchPattern, $optsString, $match_o) > 0) {
-            if($multipleMatches) {
+    private function getOption($defaultsString, $optsString, $matchPattern, $multipleMatches = false)
+    {
+        if (preg_match($matchPattern, $optsString, $match_o) > 0) {
+            if ($multipleMatches) {
                 return $match_o;
             } else {
                 return $match_o[1];
             }
-        } elseif(preg_match($matchPattern, $defaultsString, $match_d) > 0) {
-            if($multipleMatches) {
+        } elseif (preg_match($matchPattern, $defaultsString, $match_d) > 0) {
+            if ($multipleMatches) {
                 return $match_d;
             } else {
                 return $match_d[1];
@@ -368,7 +373,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @param array $data data created by handler()
      * @return boolean rendered correctly?
      */
-    public function render($format, Doku_Renderer $renderer, $data) {
+    public function render($format, Doku_Renderer $renderer, $data)
+    {
         global $ACT;
         global $conf;
         global $INFO;
@@ -379,11 +385,11 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $opts        = $data[3]; //opts for search(): level, nons, nopg, subnss, max, maxajax, js, skipns, skipfile, headpage, hide_headpage
         $jsVersion   = $data[4]; /* @deprecated 2021-07-01 temporary */
 
-        if($format == 'xhtml') {
-             /** @var Doku_Renderer_xhtml $renderer */
-            if($ACT == 'preview') {
+        if ($format == 'xhtml') {
+            if ($ACT == 'preview') {
                 //Check user permission to display indexmenu in a preview page
-                if($this->getConf('only_admins') &&
+                if (
+                    $this->getConf('only_admins') &&
                     $conf['useacl'] &&
                     $INFO['perm'] < AUTH_ADMIN
                 ) {
@@ -392,59 +398,50 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 //disable cookies
                 $js_dTreeOpts['nocookie'] = true;
             }
-
-            if($opts['js'] & $conf['defer_js']) {
-                msg('Indexmenu Plugin: If you use the \'js\'-option of the indexmenu plugin, you have to disable the <a href="https://www.dokuwiki.org/config:defer_js">\'defer_js\'</a>-setting. This setting is temporary, in the future the indexmenu plugin will be improved.',-1);
+            if ($opts['js'] & $conf['defer_js']) {
+                msg('Indexmenu Plugin: If you use the \'js\'-option of the indexmenu plugin, you have to disable the <a href="https://www.dokuwiki.org/config:defer_js">\'defer_js\'</a>-setting. This setting is temporary, in the future the indexmenu plugin will be improved.', -1);
             }
-
             //Navbar with nojs
-            if($js_dTreeOpts['navbar'] && !$opts['js']) {
-                if(!isset($ns)) {
+            if ($js_dTreeOpts['navbar'] && !$opts['js']) {
+                if (!isset($ns)) {
                     $ns = '..';
                 }
                 //add ns of current page to let open these nodes (within the $ns), open only 1 level.
                 $opts['subnss'][] = [getNS($INFO['id']), 1];
                 $renderer->info['cache'] = false;
             }
-
-            if($js_dTreeOpts['context']) {
+            if ($js_dTreeOpts['context']) {
                 //resolve ns and subns's relative to current wiki page (instead of sidebar)
                 $ns = $this->parseNs($ns, $INFO['id']);
-                foreach($opts['subnss'] as $key=> $value) {
+                foreach ($opts['subnss'] as $key => $value) {
                     $opts['subnss'][$key][0] = $this->parseNs($value[0], $INFO['id']);
                 }
                 $renderer->info['cache'] = false;
             }
-
             //build index
             $n = $this->buildHtmlIndexmenu($ns, $js_dTreeOpts, $sort, $opts, $jsVersion);
-
             //alternative if empty
-            if(!@$n) {
+            if (!@$n) {
                 $n = $this->getConf('empty_msg');
                 $n = str_replace('{{ns}}', cleanID($ns), $n);
                 $n = p_render('xhtml', p_get_instructions($n), $info);
             }
             $renderer->doc .= $n;
             return true;
-
-        } else if($format == 'metadata') {
+        } elseif ($format == 'metadata') {
             /** @var Doku_Renderer_metadata $renderer */
-            if(!($js_dTreeOpts['navbar'] && !$opts['js']) && !$js_dTreeOpts['context']) {
+            if (!($js_dTreeOpts['navbar'] && !$opts['js']) && !$js_dTreeOpts['context']) {
                 //this is an indexmenu page that needs the PARSER_CACHE_USE event trigger;
                 $renderer->meta['indexmenu']['hasindexmenu'] = true;
             }
-            if($opts['js'] && $opts['theme'] !== 'default') { //add also for dtree, while only used for fancytree
+            if ($opts['js'] && $opts['theme'] !== 'default') { //add also for dtree, while only used for fancytree
                 //add once
                 $renderer->meta['indexmenu']['usedthemes'][$opts['theme']] = 1;
             }
-
             //summary
-            $renderer->doc .= (empty($ns) ? $conf['title'] : nons($ns))." index\n\n";
-
+            $renderer->doc .= (empty($ns) ? $conf['title'] : nons($ns)) . " index\n\n";
             unset($renderer->persistent['indexmenu']);
             return true;
-
         } else {
             return false;
         }
@@ -462,24 +459,25 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      *
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
-    private function buildHtmlIndexmenu($ns, $js_dTreeOpts, $sort, $opts, $jsVersion) {
-        $js_name = "indexmenu_".$js_dTreeOpts['identifier'];
+    private function buildHtmlIndexmenu($ns, $js_dTreeOpts, $sort, $opts, $jsVersion)
+    {
+        $js_name = "indexmenu_" . $js_dTreeOpts['identifier'];
         $opts['tempNew'] = false; //TODO temporary hack, to switch in Search between searchIndexmenuItemsNew() and searchIndexmenuItems()
         $search = new Search($sort);
         $data = $search->search($ns, $opts);
 
-        if(!$data) return false;
+        if (!$data) return false;
 
         // javascript index
         $output_js = '';
-        if($opts['js']) {
+        if ($opts['js']) {
             $ns = str_replace('/', ':', $ns);
 
             // $jsversion: 0:both, 1:dTree, 2:Fancytree
-            if($jsVersion < 2) {
+            if ($jsVersion < 2) {
                 $output_js .= $this->builddTree($data, $ns, $js_dTreeOpts, $js_name, $opts['max']);
             }
-            if($jsVersion !== 1) {
+            if ($jsVersion !== 1) {
                 $output_js .= $this->buildFancyTree($js_name, $ns, $opts, $sort);
             }
 
@@ -492,25 +490,27 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         return $output;
     }
 
-    private function buildNoJSTree($data, $js_name, $jsAjax) {
+    private function buildNoJSTree($data, $js_name, $jsAjax)
+    {
         // Nojs dokuwiki index
         //    extra div needed when index is first element in sidebar of dokuwiki template, template uses this to toggle sidebar
         //    the toggle interacts with hide needed for js option.
         $idx = new Index();
         return '<div>'
-            . '<div id="nojs_'.$js_name.'" data-jsajax="'.utf8_encodeFN($jsAjax).'" class="indexmenu_nojs">'."\n"
+            . '<div id="nojs_' . $js_name . '" data-jsajax="' . utf8_encodeFN($jsAjax) . '" class="indexmenu_nojs">' . "\n"
             . html_buildlist($data, 'idx', [$this, 'formatIndexmenuItem'], [$idx, 'tagListItem'])
             . '</div>'
-            . '</div>'."\n";
+            . '</div>' . "\n";
     }
 
-    private function buildFancyTree($js_name, $ns, $opts, $sort) {
+    private function buildFancyTree($js_name, $ns, $opts, $sort)
+    {
         //not needed, because directly retrieved from config
         unset($opts['headpage']);
         unset($opts['hide_headpage']);
 
         /* @deprecated 2023-08-14 remove later */
-        if($opts['theme'] == 'default') {
+        if ($opts['theme'] == 'default') {
             $opts['theme'] = 'win7';
         }
         $options = [
@@ -519,7 +519,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             'sort' => $sort,
             'contextmenu' => false
         ];
-        return '<div id="tree2_'.$js_name.'" class="indexmenu_js2 skin-'.$opts['theme'].'" data-options=\''.json_encode($options).'\'></div>';
+        return '<div id="tree2_' . $js_name . '" class="indexmenu_js2 skin-' . $opts['theme'] . '" data-options=\'' . json_encode($options) . '\'></div>';
     }
 
     /**
@@ -535,10 +535,11 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @author  Samuele Tognini <samuele@samuele.netsons.org>
      * @author  Rene Hadler
      */
-    private function builddTree($data, $ns, $js_dTreeOpts, $js_name, $max) {
+    private function builddTree($data, $ns, $js_dTreeOpts, $js_name, $max)
+    {
         global $conf;
         $hns = false;
-        if(empty($data)) {
+        if (empty($data)) {
             return false;
         }
 
@@ -546,62 +547,62 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         //Render requested ns as root
         $headpage = $this->getConf('headpage');
         //if rootnamespace and headpage, then add startpage as headpage - TODO seems not logic, when desired use $conf[headpage]=:start: ??
-        if(empty($ns) && !empty($headpage)) {
-            $headpage .= ','.$conf['start'];
+        if (empty($ns) && !empty($headpage)) {
+            $headpage .= ',' . $conf['start'];
         }
-        $search = new Search(['sort'=>false, 'msort'=>false, 'rsort'=>false, 'nsort'=>false, 'hsort'=>false]);
+        $search = new Search(['sort' => false, 'msort' => false, 'rsort' => false, 'nsort' => false, 'hsort' => false]);
         $title = $search->getNamespaceTitle($ns, $headpage, $hns); //TODO static function?
-        if(empty($title)) {
-            if(empty($ns)){
+        if (empty($title)) {
+            if (empty($ns)) {
                 $title = htmlspecialchars($conf['title'], ENT_QUOTES);
-            } else{
+            } else {
                 $title = $ns;
             }
         }
         // inline javascript
         $out = "<script type='text/javascript' charset='utf-8'>\n";
         $out .= "<!--//--><![CDATA[//><!--\n";
-        $out .= "var $js_name = new dTree('".$js_name."','".$js_dTreeOpts['theme']."');\n";
+        $out .= "var $js_name = new dTree('" . $js_name . "','" . $js_dTreeOpts['theme'] . "');\n";
         //javascript config options
         $sepchar = idfilter(':', false);
-        $out .= "$js_name.config.urlbase='".substr(wl(":"), 0, -1)."';\n";
-        $out .= "$js_name.config.sepchar='".$sepchar."';\n";
-        if($js_dTreeOpts['notoc']) {
+        $out .= "$js_name.config.urlbase='" . substr(wl(":"), 0, -1) . "';\n";
+        $out .= "$js_name.config.sepchar='" . $sepchar . "';\n";
+        if ($js_dTreeOpts['notoc']) {
             $out .= "$js_name.config.toc=false;\n";
         }
-        if($js_dTreeOpts['nocookie']) {
+        if ($js_dTreeOpts['nocookie']) {
             $out .= "$js_name.config.useCookies=false;\n";
         }
-        if($js_dTreeOpts['noscroll']) {
+        if ($js_dTreeOpts['noscroll']) {
             $out .= "$js_name.config.scroll=false;\n";
         }
         //1 is default in dTree
-        if($js_dTreeOpts['maxJs'] > 1) {
-            $out .= "$js_name.config.maxjs=".$js_dTreeOpts['maxJs'].";\n";
+        if ($js_dTreeOpts['maxJs'] > 1) {
+            $out .= "$js_name.config.maxjs=" . $js_dTreeOpts['maxJs'] . ";\n";
         }
-        if(!empty($js_dTreeOpts['jsAjax'])) {
-            $out .= "$js_name.config.jsajax='".utf8_encodeFN($js_dTreeOpts['jsAjax'])."';\n";
+        if (!empty($js_dTreeOpts['jsAjax'])) {
+            $out .= "$js_name.config.jsajax='" . utf8_encodeFN($js_dTreeOpts['jsAjax']) . "';\n";
         }
 
         //add root node
-        $out .= $js_name.".add('".idfilter(cleanID($ns), false)."',0,-1,".json_encode($title);
-        if($hns) {
-            $out .= ",'".idfilter(cleanID($hns), false)."'";
+        $out .= $js_name . ".add('" . idfilter(cleanID($ns), false) . "',0,-1," . json_encode($title);
+        if ($hns) {
+            $out .= ",'" . idfilter(cleanID($hns), false) . "'";
         }
         $out .= ");\n";
         //add nodes
         $anodes = $this->builddTreeNodes($data, $js_name);
         $out .= $anodes[0];
         //write to document
-        $out .= "document.write(".$js_name.");\n";
+        $out .= "document.write(" . $js_name . ");\n";
         //initialize index
-        $out .= "jQuery(function(){".$js_name.".init(";
-        $out .= (int) is_file(INDEXMENU_IMG_ABSDIR.'/'.$js_dTreeOpts['theme'].'/style.css').",";
-        $out .= (int) $js_dTreeOpts['nocookie'].",";
-        $out .= '"'.$anodes[1].'",';
-        $out .= (int) $js_dTreeOpts['navbar'].",";
+        $out .= "jQuery(function(){" . $js_name . ".init(";
+        $out .= (int) is_file(INDEXMENU_IMG_ABSDIR . '/' . $js_dTreeOpts['theme'] . '/style.css') . ",";
+        $out .= (int) $js_dTreeOpts['nocookie'] . ",";
+        $out .= '"' . $anodes[1] . '",';
+        $out .= (int) $js_dTreeOpts['navbar'] . ",";
         $out .= (int) $max;
-        if($js_dTreeOpts['nomenu']) {
+        if ($js_dTreeOpts['nomenu']) {
             $out .= ",1";
         }
         $out .= ");});\n";
@@ -623,8 +624,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      *     - and a string of space separated numbers of the opened nodes
      *    or false when no data provided
      */
-    public function builddTreeNodes($data, $js_name, $noajax = true) {
-        if(empty($data)) {
+    public function builddTreeNodes($data, $js_name, $noajax = true)
+    {
+        if (empty($data)) {
             return false;
         }
         //Array of nodes to check
@@ -633,23 +635,23 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $node  = 0;
         $out   = '';
         $opennodes = '';
-        if($noajax) {
-            $jscmd = $js_name.".add";
+        if ($noajax) {
+            $jscmd = $js_name . ".add";
             $separator   = ";\n";
         } else {
             $jscmd = "new Array ";
             $separator   = ",";
         }
 
-        foreach($data as $i=> $item) {
+        foreach ($data as $i => $item) {
             $i++;
             //Remove already processed nodes (greater level = lower level)
-            while(isset($data[end($q) - 1]) && $item['level'] <= $data[end($q) - 1]['level']) {
+            while (isset($data[end($q) - 1]) && $item['level'] <= $data[end($q) - 1]['level']) {
                 array_pop($q);
             }
 
             //till i found its father node
-            if($item['level'] == 1) {
+            if ($item['level'] == 1) {
                 //root node
                 $father = '0';
             } else {
@@ -657,10 +659,10 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 $father = end($q);
             }
             //add node and its options
-            if($item['type'] == 'd') {
+            if ($item['type'] == 'd') {
                 //Search the lowest open node of a tree branch in order to open it.
-                if($item['open']) {
-                    if($item['level'] < $data[$node]['level']) {
+                if ($item['open']) {
+                    if ($item['level'] < $data[$node]['level']) {
                         $node = $i;
                     } else {
                         $opennodes .= "$i ";
@@ -669,25 +671,25 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 //insert node in last position
                 $q[] = $i;
             }
-            $out .= $jscmd."('".idfilter($item['id'], false)."',$i,".$father.",".json_encode($item['title']);
+            $out .= $jscmd . "('" . idfilter($item['id'], false) . "',$i," . $father . "," . json_encode($item['title']);
             //hns
-            if($item['hns']) {
-                $out .= ",'".idfilter($item['hns'], false)."'";
+            if ($item['hns']) {
+                $out .= ",'" . idfilter($item['hns'], false) . "'";
             } else {
                 $out .= ",0";
             }
-            if($item['type'] == 'd' || $item['type'] == 'l') {
+            if ($item['type'] == 'd' || $item['type'] == 'l') {
                 $out .= ",1";
             } else {
                 $out .= ",0";
             }
             //MAX option
-            if($item['type'] == 'l') {
+            if ($item['type'] == 'l') {
                 $out .= ",1";
-            }else{
+            } else {
                 $out .= ",0";
             }
-            $out .= ")".$separator;
+            $out .= ")" . $separator;
         }
         $opennodes = rtrim($opennodes, ' ');
         return [$out, $opennodes];
@@ -701,8 +703,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @param bool   $id page id to resolve $ns relative to.
      * @return string id of namespace
      */
-    public function parseNs($ns, $id = false) {
-        if($id === false) {
+    public function parseNs($ns, $id = false)
+    {
+        if ($id === false) {
             global $ID;
             $id = $ID;
         }
@@ -723,19 +726,20 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @param array $data nodes of the tree
      * @return void
      */
-    private function cleanNojsData(&$data) {
+    private function cleanNojsData(&$data)
+    {
         $a = 0;
-        foreach($data as $i=> $item) {
+        foreach ($data as $i => $item) {
             //all entries before $a are unset
-            if($i < $a) {
+            if ($i < $a) {
                 continue;
             }
             //closed node
-            if($item['type'] == "d" && !$item['open']) {
+            if ($item['type'] == "d" && !$item['open']) {
                 $a     = $i + 1;
                 $level = $item['level'];
                 //search and remove every lower and closed nodes
-                while(isset($data[$a]) && $data[$a]['level'] > $level && !$data[$a]['open']) {
+                while (isset($data[$a]) && $data[$a]['level'] > $level && !$data[$a]['open']) {
                     unset($data[$a]);
                     $a++;
                 }
@@ -761,18 +765,19 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      *          - hns   page id of headpage of the namespace or false
      * @return string html of the content of a list item
      */
-    public function formatIndexmenuItem($item) {
+    public function formatIndexmenuItem($item)
+    {
         global $INFO;
         $ret = '';
 
         //namespace
-        if($item['type'] == 'd' || $item['type'] == 'l') {
+        if ($item['type'] == 'd' || $item['type'] == 'l') {
             $markCurrentPage = false;
 
             $link = $item['id'];
-            $more = 'idx='.$item['id'];
+            $more = 'idx=' . $item['id'];
             //namespace link
-            if($item['hns']) {
+            if ($item['hns']) {
                 $link  = $item['hns'];
                 $tagid = "indexmenu_idx_head";
                 $more  = '';
@@ -781,25 +786,24 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             } else {
                 //namespace without headpage
                 $tagid = "indexmenu_idx";
-                if($item['open']) {
+                if ($item['open']) {
                     $tagid .= ' open';
                 }
             }
 
-            if($markCurrentPage) {
+            if ($markCurrentPage) {
                 $ret .= '<span class="curid">';
             }
-            $ret .= '<a href="'.wl($link, $more).'" class="'.$tagid.'">'
+            $ret .= '<a href="' . wl($link, $more) . '" class="' . $tagid . '">'
                 . $item['title']
                 . '</a>';
-            if($markCurrentPage) {
+            if ($markCurrentPage) {
                 $ret .= '</span>';
             }
             return $ret;
         } else {
             //page link
-            return html_wikilink(':'.$item['id']);
+            return html_wikilink(':' . $item['id']);
         }
     }
-
 }

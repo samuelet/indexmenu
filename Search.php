@@ -49,52 +49,52 @@ class Search
      * @param bool $isInit true if first level of nodes from tree, next levels false
      * @return array|false
      */
-    public function buildFancytreeData($data, $isInit, $currentPage) {
-        if(empty($data)) return false;
+    public function buildFancytreeData($data, $isInit, $currentPage)
+    {
+        if (empty($data)) return false;
 
         $children = [];
         $this->makeNodes($data, -1, 0, $children, $currentPage);
 
-        if($isInit) {
+        if ($isInit) {
             $nodes['children'] = $children;
             $nodes['debug'] = $data;
             return $nodes;
         } else {
             return $children;
         }
-
-
     }
 
-    private function makeNodes(&$data, $indexLatestParsedItem, $previousLevel, &$nodes, $currentPage) {
+    private function makeNodes(&$data, $indexLatestParsedItem, $previousLevel, &$nodes, $currentPage)
+    {
         $i = 0;
         $counter = 0;
-        foreach($data as $i=> $item) {
-            if($i <= $indexLatestParsedItem) {
+        foreach ($data as $i => $item) {
+            if ($i <= $indexLatestParsedItem) {
                 continue;
             }
-            if($item['level'] < $previousLevel || $counter === 0 && $item['level'] == $previousLevel) {
-                return $i-1;
+            if ($item['level'] < $previousLevel || $counter === 0 && $item['level'] == $previousLevel) {
+                return $i - 1;
             }
             $node = [
                 'title' => $item['title'],
-                'key' => $item['id'] . ($item['type'] ==='f' ? '' : ':'), //ensure ns is unique
+                'key' => $item['id'] . ($item['type'] === 'f' ? '' : ':'), //ensure ns is unique
                 'hns' => $item['hns']
             ];
 
             // f=file, d=directory, l=directory which is lazy loaded later
-            if($item['type'] == 'f') {
+            if ($item['type'] == 'f') {
                 //set current page to active
-                if($currentPage == $item['id']) {
+                if ($currentPage == $item['id']) {
                     $node['active'] = true;
                 }
             }
-            if($item['type'] !== 'f') { //f/d/l, assumption: if 'd' try always level deeper, maybe not true if d has no items in them by some filter settings?.
+            if ($item['type'] !== 'f') { //f/d/l, assumption: if 'd' try always level deeper, maybe not true if d has no items in them by some filter settings?.
                 $node['folder'] = true;
-                if($item['open'] === true){
+                if ($item['open'] === true) {
                     $node['expanded'] = true;
                 }
-                if($item['type'] === 'd') {
+                if ($item['type'] === 'd') {
                     $node['children'] = [];
                     $indexLatestParsedItem = $this->makeNodes($data, $i, $item['level'], $node['children'], $currentPage);
                 } else { // 'l'
@@ -128,19 +128,19 @@ class Search
      */
     public function search($ns, $opts): array
     {
-        if(!empty($opts['tempNew'])) {
+        if (!empty($opts['tempNew'])) {
             $functionName = 'searchIndexmenuItemsNew'; //NEW: a bit different logic for lazy loading of opened/closed nodes
         } else {
             $functionName = 'searchIndexmenuItems';
         }
         global $conf;
         $dataDir = $conf['datadir'];
-        $data = array();
+        $data = [];
         $fsDir = "/" . utf8_encodeFN(str_replace(':', '/', $ns));
         if ($this->sort || $this->msort || $this->rsort || $this->hsort) {
-            $this->customSearch($data, $dataDir, array($this, $functionName), $opts, $fsDir);
+            $this->customSearch($data, $dataDir, [$this, $functionName], $opts, $fsDir);
         } else {
-            search($data, $dataDir, array($this, $functionName), $opts, $fsDir);
+            search($data, $dataDir, [$this, $functionName], $opts, $fsDir);
         }
         return $data;
     }
@@ -169,7 +169,8 @@ class Search
      * @author  Andreas Gohr <andi@splitbrain.org>
      * modified by Samuele Tognini <samuele@samuele.netsons.org>
      */
-    public function searchIndexmenuItems(&$data, $base, $file, $type, $lvl, $opts) {
+    public function searchIndexmenuItems(&$data, $base, $file, $type, $lvl, $opts)
+    {
         global $conf;
         $hns        = false;
         $isOpen     = false;
@@ -178,32 +179,33 @@ class Search
         $skipfile  = $opts['skipfile'];
         $headpage   = $opts['headpage'];
         $id         = pathID($file);
-        if($type == 'd') {
+        if ($type == 'd') {
             // Skip folders in plugin conf
-            foreach($skipns as $skipn) {
-                if(!empty($skipn) && preg_match($skipn, $id)){
+            foreach ($skipns as $skipn) {
+                if (!empty($skipn) && preg_match($skipn, $id)) {
                     return false;
                 }
             }
             //check ACL (for sneaky_index namespaces too).
-            if($conf['sneaky_index'] && auth_quickaclcheck($id.':') < AUTH_READ) return false;
+            if ($conf['sneaky_index'] && auth_quickaclcheck($id . ':') < AUTH_READ) return false;
 
             //Open requested level
-            if($opts['level'] > $lvl || $opts['level'] == -1) {
+            if ($opts['level'] > $lvl || $opts['level'] == -1) {
                 $isOpen = true;
             }
             //Search optional subnamespaces with
-            if(!empty($opts['subnss'])) {
+            if (!empty($opts['subnss'])) {
                 $subnss = $opts['subnss'];
-                for($a = 0; $a < count($subnss); $a++) {
-                    if(preg_match("/^".$id."($|:.+)/i", $subnss[$a][0], $match)) {
+                $counter = count($subnss);
+                for ($a = 0; $a < $counter; $a++) {
+                    if (preg_match("/^" . $id . "($|:.+)/i", $subnss[$a][0], $match)) {
                         //It contains a subnamespace
                         $isOpen = true;
-                    } elseif(preg_match("/^".$subnss[$a][0]."(:.*)/i", $id, $match)) {
+                    } elseif (preg_match("/^" . $subnss[$a][0] . "(:.*)/i", $id, $match)) {
                         //It's inside a subnamespace, check level
                         // -1 is open all, otherwise count number of levels in the remainer of the pageid
                         // (match[0] is always prefixed with :)
-                        if($subnss[$a][1] == -1 || substr_count($match[1], ":") < $subnss[$a][1]) {
+                        if ($subnss[$a][1] == -1 || substr_count($match[1], ":") < $subnss[$a][1]) {
                             $isOpen = true;
                         } else {
                             $isOpen = false;
@@ -211,15 +213,15 @@ class Search
                     }
                 }
             }
-            if($opts['nons']) {
+            if ($opts['nons']) {
                 return $isOpen;
-            } elseif($opts['max'] > 0 && !$isOpen && $lvl >= $opts['max']) {
+            } elseif ($opts['max'] > 0 && !$isOpen && $lvl >= $opts['max']) {
                 $isOpen = false;
                 //Stop recursive searching
                 $shouldBeTraversed = false;
                 //change type
                 $type = "l";
-            } elseif($opts['js']) {
+            } elseif ($opts['js']) {
                 $shouldBeTraversed = true; //TODO if js tree, then traverse deeper???
             } else {
                 $shouldBeTraversed = $isOpen;
@@ -227,70 +229,61 @@ class Search
             //Set title and headpage
             $title = $this->getNamespaceTitle($id, $headpage, $hns);
             //link namespace nodes to start pages when excluding page nodes
-            if(!$hns && $opts['nopg']) {
-                $hns = $id.":".$conf['start'];
+            if (!$hns && $opts['nopg']) {
+                $hns = $id . ":" . $conf['start'];
             }
         } else {
             //Nopg. Dont show pages
-            if($opts['nopg']) return false;
+            if ($opts['nopg']) return false;
 
             $shouldBeTraversed = true;
             //Nons.Set all pages at first level
-            if($opts['nons']) {
+            if ($opts['nons']) {
                 $lvl = 1;
             }
             //don't add
-            if(substr($file, -4) != '.txt') return false;
+            if (substr($file, -4) != '.txt') return false;
             //check hiddens and acl
-            if(isHiddenPage($id) || auth_quickaclcheck($id) < AUTH_READ) return false;
+            if (isHiddenPage($id) || auth_quickaclcheck($id) < AUTH_READ) return false;
             //Skip files in plugin conf
-            foreach($skipfile as $skipf) {
-                if(!empty($skipf) && preg_match($skipf, $id))
+            foreach ($skipfile as $skipf) {
+                if (!empty($skipf) && preg_match($skipf, $id))
                     return false;
             }
             //Skip headpages to hide
-            if(!$opts['nons'] && !empty($headpage) && $opts['hide_headpage']) {
+            if (!$opts['nons'] && !empty($headpage) && $opts['hide_headpage']) {
                 //start page is in root
-                if($id == $conf['start']) return false;
+                if ($id == $conf['start']) return false;
 
                 $ahp = explode(",", $headpage);
-                foreach($ahp as $hp) {
-                    switch($hp) {
+                foreach ($ahp as $hp) {
+                    switch ($hp) {
                         case ":inside:":
-                            if(noNS($id) == noNS(getNS($id))) return false;
+                            if (noNS($id) == noNS(getNS($id))) return false;
                             break;
                         case ":same:":
-                            if(@is_dir(dirname(wikiFN($id))."/".utf8_encodeFN(noNS($id)))) return false;
+                            if (@is_dir(dirname(wikiFN($id)) . "/" . utf8_encodeFN(noNS($id)))) return false;
                             break;
                         //it' s an inside start
                         case ":start:":
-                            if(noNS($id) == $conf['start']) return false;
+                            if (noNS($id) == $conf['start']) return false;
                             break;
                         default:
-                            if(noNS($id) == cleanID($hp)) return false;
+                            if (noNS($id) == cleanID($hp)) return false;
                     }
                 }
             }
             //Set title
-            if($conf['useheading'] == 1 || $conf['useheading'] === 'navigation') {
+            if ($conf['useheading'] == 1 || $conf['useheading'] === 'navigation') {
                 $title = p_get_first_heading($id, false);
             }
-            if(is_null($title)) {
+            if (is_null($title)) {
                 $title = noNS($id);
             }
             $title = htmlspecialchars($title, ENT_QUOTES);
         }
 
-        $item         = array(
-            'id'     => $id,
-            'type'   => $type,
-            'level'  => $lvl,
-            'open'   => $isOpen,
-            'title'  => $title,
-            'hns'    => $hns,
-            'file'   => $file,
-            'shouldBeTraversed' => $shouldBeTraversed
-        );
+        $item         = ['id'     => $id, 'type'   => $type, 'level'  => $lvl, 'open'   => $isOpen, 'title'  => $title, 'hns'    => $hns, 'file'   => $file, 'shouldBeTraversed' => $shouldBeTraversed];
         $item['sort'] = $this->getSortValue($item);
         $data[]       = $item;
         return $shouldBeTraversed;
@@ -324,7 +317,8 @@ class Search
      *   $opts['js']         bool   use js-render
      * @return bool if this directory should be traversed (true) or not (false)
      */
-    public function searchIndexmenuItemsNew(&$data, $base, $file, $type, $lvl, $opts) {
+    public function searchIndexmenuItemsNew(&$data, $base, $file, $type, $lvl, $opts)
+    {
         global $conf;
         $hns        = false;
         $isOpen     = false;
@@ -334,32 +328,33 @@ class Search
         $headpage   = $opts['headpage'];
         $id         = pathID($file);
 
-        if($type == 'd') {
+        if ($type == 'd') {
             // Skip folders in plugin conf
-            foreach($skipns as $skipn) {
-                if(!empty($skipn) && preg_match($skipn, $id)){
+            foreach ($skipns as $skipn) {
+                if (!empty($skipn) && preg_match($skipn, $id)) {
                     return false;
                 }
             }
             //check ACL (for sneaky_index namespaces too).
-            if($conf['sneaky_index'] && auth_quickaclcheck($id.':') < AUTH_READ) return false;
+            if ($conf['sneaky_index'] && auth_quickaclcheck($id . ':') < AUTH_READ) return false;
 
             //Open requested level
-            if($opts['level'] > $lvl || $opts['level'] == -1) {
+            if ($opts['level'] > $lvl || $opts['level'] == -1) {
                 $isOpen = true;
             }
 
             //Search optional subnamespaces with
-            if(!empty($opts['subnss'])) {
+            if (!empty($opts['subnss'])) {
                 $subnss = $opts['subnss'];
+                $counter = count($subnss);
 
-                for($a = 0; $a < count($subnss); $a++) {
-                    if(preg_match("/^".$id."($|:.+)/i", $subnss[$a][0], $match)) {
+                for ($a = 0; $a < $counter; $a++) {
+                    if (preg_match("/^" . $id . "($|:.+)/i", $subnss[$a][0], $match)) {
                         //It contains a subnamespace
                         $isOpen = true;
-                    } elseif(preg_match("/^".$subnss[$a][0]."(:.*)/i", $id, $match)) {
+                    } elseif (preg_match("/^" . $subnss[$a][0] . "(:.*)/i", $id, $match)) {
                         //It's inside a subnamespace, check level
-                        if($subnss[$a][1] == -1 || substr_count($match[1], ":") < $subnss[$a][1]) {
+                        if ($subnss[$a][1] == -1 || substr_count($match[1], ":") < $subnss[$a][1]) {
                             $isOpen = true;
                         } else {
                             $isOpen = false;
@@ -367,11 +362,11 @@ class Search
                     }
                 }
             }
-            if($opts['nons']) {
+            if ($opts['nons']) {
                 return $isOpen;
-            } elseif($opts['max'] > 0 && !$isOpen) {
+            } elseif ($opts['max'] > 0 && !$isOpen) {
                 // limited levels per request, node is closed
-                if($lvl >= $opts['max']) { //
+                if ($lvl >= $opts['max']) { //
                     //change type, more nodes should be loaded by ajax
                     $type = "l";
                     $shouldBeTraversed = false;
@@ -385,71 +380,62 @@ class Search
             //Set title and headpage
             $title = $this->getNamespaceTitle($id, $headpage, $hns);
             //link namespace nodes to start pages when excluding page nodes
-            if(!$hns && $opts['nopg']) {
-                $hns = $id.":".$conf['start'];
+            if (!$hns && $opts['nopg']) {
+                $hns = $id . ":" . $conf['start'];
             }
         } else {
             //Nopg.Dont show pages
-            if($opts['nopg']) return false;
+            if ($opts['nopg']) return false;
 
             $shouldBeTraversed = true;
             //Nons.Set all pages at first level
-            if($opts['nons']) {
+            if ($opts['nons']) {
                 $lvl = 1;
             }
             //don't add
-            if(substr($file, -4) != '.txt') return false;
+            if (substr($file, -4) != '.txt') return false;
             //check hiddens and acl
-            if(isHiddenPage($id) || auth_quickaclcheck($id) < AUTH_READ) return false;
+            if (isHiddenPage($id) || auth_quickaclcheck($id) < AUTH_READ) return false;
             //Skip files in plugin conf
-            foreach($skipfile as $skipf) {
-                if(!empty($skipf) && preg_match($skipf, $id))
+            foreach ($skipfile as $skipf) {
+                if (!empty($skipf) && preg_match($skipf, $id))
                     return false;
             }
             //Skip headpages to hide
-            if(!$opts['nons'] && !empty($headpage) && $opts['hide_headpage']) {
+            if (!$opts['nons'] && !empty($headpage) && $opts['hide_headpage']) {
                 //start page is in root
-                if($id == $conf['start']) return false;
+                if ($id == $conf['start']) return false;
 
                 $ahp = explode(",", $headpage);
-                foreach($ahp as $hp) {
-                    switch($hp) {
+                foreach ($ahp as $hp) {
+                    switch ($hp) {
                         case ":inside:":
-                            if(noNS($id) == noNS(getNS($id))) return false;
+                            if (noNS($id) == noNS(getNS($id))) return false;
                             break;
                         case ":same:":
-                            if(@is_dir(dirname(wikiFN($id))."/".utf8_encodeFN(noNS($id)))) return false;
+                            if (@is_dir(dirname(wikiFN($id)) . "/" . utf8_encodeFN(noNS($id)))) return false;
                             break;
                         //it' s an inside start
                         case ":start:":
-                            if(noNS($id) == $conf['start']) return false;
+                            if (noNS($id) == $conf['start']) return false;
                             break;
                         default:
-                            if(noNS($id) == cleanID($hp)) return false;
+                            if (noNS($id) == cleanID($hp)) return false;
                     }
                 }
             }
 
             //Set title
-            if($conf['useheading'] == 1 || $conf['useheading'] === 'navigation') {
+            if ($conf['useheading'] == 1 || $conf['useheading'] === 'navigation') {
                 $title = p_get_first_heading($id, false);
             }
-            if(is_null($title)) {
+            if (is_null($title)) {
                 $title = noNS($id);
             }
             $title = htmlspecialchars($title, ENT_QUOTES);
         }
 
-        $item         = array(
-            'id'     => $id,
-            'type'   => $type,
-            'level'  => $lvl,
-            'open'   => $isOpen,
-            'title'  => $title,
-            'hns'    => $hns,
-            'file'   => $file,
-            'shouldBeTraversed' => $shouldBeTraversed
-        );
+        $item         = ['id'     => $id, 'type'   => $type, 'level'  => $lvl, 'open'   => $isOpen, 'title'  => $title, 'hns'    => $hns, 'file'   => $file, 'shouldBeTraversed' => $shouldBeTraversed];
         $item['sort'] = $this->getSortValue($item);
         $data[]       = $item;
         return $shouldBeTraversed;
@@ -473,39 +459,40 @@ class Search
      * @author  Andreas Gohr <andi@splitbrain.org>
      * @author  modified by Samuele Tognini <samuele@samuele.netsons.org>
      */
-    public function customSearch(&$data, $base, $func, $opts, $dir = '', $lvl = 1) {
-        $dirs      = array();
-        $files     = array();
-        $files_tmp = array();
-        $dirs_tmp  = array();
+    public function customSearch(&$data, $base, $func, $opts, $dir = '', $lvl = 1)
+    {
+        $dirs      = [];
+        $files     = [];
+        $files_tmp = [];
+        $dirs_tmp  = [];
         $count = count($data);
 
         //read in directories and files
-        $dh = @opendir($base.'/'.$dir);
-        if(!$dh) return;
-        while(($file = readdir($dh)) !== false) {
+        $dh = @opendir($base . '/' . $dir);
+        if (!$dh) return;
+        while (($file = readdir($dh)) !== false) {
             //skip hidden files and upper dirs
-            if(preg_match('/^[._]/', $file)) continue;
-            if(is_dir($base.'/'.$dir.'/'.$file)) {
-                $dirs[] = $dir.'/'.$file;
+            if (preg_match('/^[._]/', $file)) continue;
+            if (is_dir($base . '/' . $dir . '/' . $file)) {
+                $dirs[] = $dir . '/' . $file;
                 continue;
             }
-            $files[] = $dir.'/'.$file;
+            $files[] = $dir . '/' . $file;
         }
         closedir($dh);
 
         //Collect and sort dirs
-        if($this->nsort) {
+        if ($this->nsort) {
             //collect the wanted directories in dirs_tmp
-            foreach($dirs as $dir) {
-                call_user_func_array($func, array(&$dirs_tmp, $base, $dir, 'd', $lvl, $opts));
+            foreach ($dirs as $dir) {
+                call_user_func_array($func, [&$dirs_tmp, $base, $dir, 'd', $lvl, $opts]);
             }
             //sort directories
-            usort($dirs_tmp, array($this, "compareNodes"));
+            usort($dirs_tmp, [$this, "compareNodes"]);
             //add and search each directory
-            foreach($dirs_tmp as $dir) {
+            foreach ($dirs_tmp as $dir) {
                 $data[] = $dir;
-                if($dir['shouldBeTraversed']) {
+                if ($dir['shouldBeTraversed']) {
                     $this->customSearch($data, $base, $func, $opts, $dir['file'], $lvl + 1);
                 }
             }
@@ -513,26 +500,26 @@ class Search
             //sort by page name
             sort($dirs);
             //collect directories
-            foreach($dirs as $dir) {
-                if(call_user_func_array($func, array(&$data, $base, $dir, 'd', $lvl, $opts))) {
+            foreach ($dirs as $dir) {
+                if (call_user_func_array($func, [&$data, $base, $dir, 'd', $lvl, $opts])) {
                     $this->customSearch($data, $base, $func, $opts, $dir, $lvl + 1);
                 }
             }
         }
 
         //Collect and sort files
-        foreach($files as $file) {
-            call_user_func_array($func, array(&$files_tmp, $base, $file, 'f', $lvl, $opts));
+        foreach ($files as $file) {
+            call_user_func_array($func, [&$files_tmp, $base, $file, 'f', $lvl, $opts]);
         }
-        usort($files_tmp, array($this, "compareNodes"));
+        usort($files_tmp, [$this, "compareNodes"]);
 
         //count added items
         $added = count($data) - $count;
 
-        if($added === 0 && empty($files_tmp)) {
+        if ($added === 0 && $files_tmp === []) {
             //remove empty directory again, only if it has not a headpage associated
             $v = end($data);
-            if(!$v['hns']) {
+            if (!$v['hns']) {
                 array_pop($data);
             }
         } else {
@@ -551,35 +538,36 @@ class Search
      * @param string $hns reference pageid of headpage, false when not existing
      * @return string when headpage & heading on: title of headpage, otherwise: namespace name
      */
-    public function getNamespaceTitle($ns, $headpage, &$hns) {
+    public function getNamespaceTitle($ns, $headpage, &$hns)
+    {
         global $conf;
         $hns   = false;
         $title = noNS($ns);
-        if(empty($headpage)) {
+        if (empty($headpage)) {
             return $title;
         }
         $ahp = explode(",", $headpage);
-        foreach($ahp as $hp) {
-            switch($hp) {
+        foreach ($ahp as $hp) {
+            switch ($hp) {
                 case ":inside:":
-                    $page = $ns.":".noNS($ns);
+                    $page = $ns . ":" . noNS($ns);
                     break;
                 case ":same:":
                     $page = $ns;
                     break;
                 //it's an inside start
                 case ":start:":
-                    $page = ltrim($ns.":".$conf['start'], ":");
+                    $page = ltrim($ns . ":" . $conf['start'], ":");
                     break;
                 //inside pages
                 default:
-                    $page = $ns.":".$hp;
+                    $page = $ns . ":" . $hp;
             }
             //check headpage
-            if(@file_exists(wikiFN($page)) && auth_quickaclcheck($page) >= AUTH_READ) {
-                if($conf['useheading'] == 1 || $conf['useheading'] === 'navigation') {
+            if (@file_exists(wikiFN($page)) && auth_quickaclcheck($page) >= AUTH_READ) {
+                if ($conf['useheading'] == 1 || $conf['useheading'] === 'navigation') {
                     $title_tmp = p_get_first_heading($page, false);
-                    if(!is_null($title_tmp)) {
+                    if (!is_null($title_tmp)) {
                         $title = $title_tmp;
                     }
                 }
@@ -600,8 +588,9 @@ class Search
      * @param array $b second node as array with 'sort' entry
      * @return int if less than zero 1st node is less than 2nd, otherwise equal respectively larger
      */
-    private function compareNodes($a, $b) {
-        if($this->rsort) {
+    private function compareNodes($a, $b)
+    {
+        if ($this->rsort) {
             return strnatcasecmp($b['sort'], $a['sort']);
         } else {
             return strnatcasecmp($a['sort'], $b['sort']);
@@ -616,31 +605,32 @@ class Search
      * @param array $item
      * @return bool|int|mixed|string
      */
-    private function getSortValue($item) {
+    private function getSortValue($item)
+    {
         global $conf;
 
         $sort = false;
         $page = false;
-        if($item['type'] == 'd' || $item['type'] == 'l') {
+        if ($item['type'] == 'd' || $item['type'] == 'l') {
             //Fake order info when nsort is not requested
-            if($this->nsort) {
+            if ($this->nsort) {
                 $page = $item['hns'];
             } else {
                 $sort = 0;
             }
         }
-        if($item['type'] == 'f') {
+        if ($item['type'] == 'f') {
             $page = $item['id'];
         }
-        if($page) {
-            if($this->hsort && noNS($item['id']) == $conf['start']) {
+        if ($page) {
+            if ($this->hsort && noNS($item['id']) == $conf['start']) {
                 $sort = 1;
             }
-            if($this->msort) {
+            if ($this->msort) {
                 $sort = p_get_metadata($page, $this->msort);
             }
-            if(!$sort && $this->sort) {
-                switch($this->sort) {
+            if (!$sort && $this->sort) {
+                switch ($this->sort) {
                     case 't':
                         $sort = $item['title'];
                         break;
@@ -650,10 +640,9 @@ class Search
                 }
             }
         }
-        if($sort === false) {
+        if ($sort === false) {
             $sort = noNS($item['id']);
         }
         return $sort;
     }
-
 }

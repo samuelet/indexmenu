@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Info Indexmenu: Show a customizable and sortable index for a namespace.
  *

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Info Indexmenu: Show a customizable and sortable index for a namespace.
  *
@@ -11,8 +12,6 @@ use dokuwiki\Extension\SyntaxPlugin;
 use dokuwiki\File\PageResolver;
 use dokuwiki\plugin\indexmenu\Search;
 use dokuwiki\Ui\Index;
-
-if (!defined('INDEXMENU_IMG_ABSDIR')) define('INDEXMENU_IMG_ABSDIR', DOKU_PLUGIN . "indexmenu/images");
 
 /**
  * All DokuWiki plugins to extend the parser/rendering mechanism

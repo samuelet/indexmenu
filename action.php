@@ -37,16 +37,15 @@ class action_plugin_indexmenu extends ActionPlugin
             $controller->register_hook('TPL_CONTENT_DISPLAY', 'BEFORE', $this, 'showSortNumberAtTopOfPage');
         }
         $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, 'ajaxCalls');
-//        $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, 'getDataFancyTree');
         $controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, 'addStylesForUsedThemes');
     }
 
     /**
      * Check if user has permission to insert indexmenu
      *
-     * @author Samuele Tognini <samuele@samuele.netsons.org>
-     *
      * @param Event $event
+     *
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
     public function removeSyntaxIfNotAdmin(Event $event)
     {
@@ -59,24 +58,24 @@ class action_plugin_indexmenu extends ActionPlugin
     /**
      * Add additional info to $JSINFO
      *
-     * @author Samuele Tognini <samuele@samuele.netsons.org>
-     * @author Gerrit Uitslag <klapinklapin@gmail.com>
-     *
      * @param Event $event
+     *
+     * @author Gerrit Uitslag <klapinklapin@gmail.com>
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
     public function extendJSINFO(Event $event)
     {
         global $INFO, $JSINFO;
-        $JSINFO['isadmin'] = (int) $INFO['isadmin'];
-        $JSINFO['isauth']  = (int) $INFO['userinfo'];
+        $JSINFO['isadmin'] = (int)$INFO['isadmin'];
+        $JSINFO['isauth'] = (int)$INFO['userinfo'];
     }
 
     /**
      * Check for pages changes and eventually purge cache.
      *
-     * @author Samuele Tognini <samuele@samuele.netsons.org>
-     *
      * @param Event $event
+     *
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
     public function purgeCache(Event $event)
     {
@@ -124,9 +123,9 @@ class action_plugin_indexmenu extends ActionPlugin
     /**
      * Render a defined page as index.
      *
-     * @author Samuele Tognini <samuele@samuele.netsons.org>
-     *
      * @param Event $event
+     *
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
     public function loadOwnIndexPage(Event $event)
     {
@@ -144,9 +143,9 @@ class action_plugin_indexmenu extends ActionPlugin
     /**
      * Display the indexmenu sort number.
      *
-     * @author Samuele Tognini <samuele@samuele.netsons.org>
-     *
      * @param Event $event
+     *
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
     public function showSortNumberAtTopOfPage(Event $event)
     {
@@ -216,14 +215,14 @@ class action_plugin_indexmenu extends ActionPlugin
 //        $ns       = $idxm->parseNs(rawurldecode($ns)); // why not assuming a 'key' is offered?
         $ns = $INPUT->str('ns', '');
         $ns = rtrim($ns, ':');
-         //key of directory has extra : on the end
-        $level    = -1; //opened levels. -1=all levels open
-        $max      = 1; //levels to load by lazyloading. Before the default was 0. CHANGED to 1.
+        //key of directory has extra : on the end
+        $level = -1; //opened levels. -1=all levels open
+        $max = 1; //levels to load by lazyloading. Before the default was 0. CHANGED to 1.
         $skipFile = [];
-        $skipNs   = [];
+        $skipNs = [];
 
         if ($INPUT->int('max') > 0) {
-            $max   = $INPUT->int('max'); // max#n#m, if init: #n, otherwise #m
+            $max = $INPUT->int('max'); // max#n#m, if init: #n, otherwise #m
             $level = $max;
         }
         if ($INPUT->int('level', -10) >= -1) {
@@ -268,21 +267,21 @@ class action_plugin_indexmenu extends ActionPlugin
         }
 
         $opts = [
-            'level'         => $level,
             //only set for init, lazy requests equal to max
-            'nons'          => $INPUT->bool('nons'),
+            'level' => $level,
             //only needed for init
-            'nopg'          => $INPUT->bool('nopg'),
-            'subnss'        => $subnss,
+            'nons' => $INPUT->bool('nons'),
+            'nopg' => $INPUT->bool('nopg'),
             //init with complex array, only current ns if lazy
-            'max'           => $max,
-            'js'            => false,
+            'subnss' => $subnss,
+            'max' => $max,
             //DEPRECATED (for dTree: only init true, lazy requests false.) NOW not used, so false.
-            'skipns'    => $skipNs,
+            'js' => false,
             //preprocessed to string, only part from syntax
-            'skipfile'     => $skipFile,
+            'skipns' => $skipNs,
             //preprocessed to string, only part from syntax
-            'headpage'      => $this->getConf('headpage'),
+            'skipfile' => $skipFile,
+            'headpage' => $this->getConf('headpage'),
             'hide_headpage' => $this->getConf('hide_headpage'),
         ];
 
@@ -345,7 +344,7 @@ class action_plugin_indexmenu extends ActionPlugin
 
         echo json_encode([
             'themebase' => $themebase,
-            'themes'    => $themes
+            'themes' => $themes
         ]);
     }
 
@@ -364,7 +363,7 @@ class action_plugin_indexmenu extends ActionPlugin
         if (auth_quickaclcheck($id) < AUTH_READ) return '';
 
         $meta = p_get_metadata($id);
-        $toc  = $meta['description']['tableofcontents'] ?? [];
+        $toc = $meta['description']['tableofcontents'] ?? [];
 
         if (count($toc) > 1) {
             //display ToC of two or more headings
@@ -455,16 +454,16 @@ class action_plugin_indexmenu extends ActionPlugin
     private function printIndex($ns)
     {
         global $conf, $INPUT;
-        $idxm     = new syntax_plugin_indexmenu_indexmenu();
-        $ns       = $idxm->parseNs(rawurldecode($ns));
-        $level    = -1;
-        $max      = 0;
-        $data     = [];
+        $idxm = new syntax_plugin_indexmenu_indexmenu();
+        $ns = $idxm->parseNs(rawurldecode($ns));
+        $level = -1;
+        $max = 0;
+        $data = [];
         $skipfile = [];
-        $skipns   = [];
+        $skipns = [];
 
         if ($INPUT->int('max') > 0) {
-            $max   = $INPUT->int('max');
+            $max = $INPUT->int('max');
             $level = $max;
         }
         $nss = $INPUT->str('nss', '', true);
@@ -474,7 +473,7 @@ class action_plugin_indexmenu extends ActionPlugin
         $sort['nsort'] = $INPUT->bool('nsort', false, true);
         $sort['hsort'] = $INPUT->bool('hsort', false, true);
         $search = new Search($sort);
-        $fsdir       = "/" . utf8_encodeFN(str_replace(':', '/', $ns));
+        $fsdir = "/" . utf8_encodeFN(str_replace(':', '/', $ns));
 
         $skipf = utf8_decodeFN($INPUT->str('skipfile'));
         $skipfile[] = $this->getConf('skip_file');
@@ -495,7 +494,18 @@ class action_plugin_indexmenu extends ActionPlugin
             $skipns[$index] = substr($skipn, 1);
         }
 
-        $opts = ['level'         => $level, 'nons'          => $INPUT->bool('nons', false, true), 'nss'           => [[$nss, 1]], 'max'           => $max, 'js'            => false, 'nopg'          => $INPUT->bool('nopg', false, true), 'skipns'    => $skipns, 'skipfile'     => $skipfile, 'headpage'      => $idxm->getConf('headpage'), 'hide_headpage' => $idxm->getConf('hide_headpage')];
+        $opts = [
+            'level' => $level,
+            'nons' => $INPUT->bool('nons', false, true),
+            'nss' => [[$nss, 1]],
+            'max' => $max,
+            'js' => false,
+            'nopg' => $INPUT->bool('nopg', false, true),
+            'skipns' => $skipns,
+            'skipfile' => $skipfile,
+            'headpage' => $idxm->getConf('headpage'),
+            'hide_headpage' => $idxm->getConf('hide_headpage')
+        ];
         if ($sort['sort'] || $sort['msort'] || $sort['rsort'] || $sort['hsort']) {
             $search->customSearch($data, $conf['datadir'], [$search, 'searchIndexmenuItems'], $opts, $fsdir);
         } else {
@@ -509,7 +519,7 @@ class action_plugin_indexmenu extends ActionPlugin
             $out .= preg_replace('/<ul class="idx">(.*)<\/ul>/s', "$1", $out_tmp);
         } else {
             $nodes = $idxm->builddTreeNodes($data, '', false);
-            $out   = "ajxnodes = [";
+            $out = "ajxnodes = [";
             $out .= rtrim($nodes[0], ",");
             $out .= "];";
         }

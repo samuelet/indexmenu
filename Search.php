@@ -5,7 +5,7 @@ namespace dokuwiki\plugin\indexmenu;
 class Search
 {
     /**
-     * @var bool|string sort by t=title, d=date of creation, 0 if not set result default in page sort (was needed for dTree..)
+     * @var bool|string sort by t=title, d=date of creation, 0 if not set i.e. default page sort (old dTree..)
      */
     private $sort;
     /**
@@ -89,14 +89,22 @@ class Search
                     $node['active'] = true;
                 }
             }
-            if ($item['type'] !== 'f') { //f/d/l, assumption: if 'd' try always level deeper, maybe not true if d has no items in them by some filter settings?.
+            // f/d/l, assumption: if 'd' try always level deeper, maybe not true if d has no items in them by some
+            // filter settings?.
+            if ($item['type'] !== 'f') {
                 $node['folder'] = true;
                 if ($item['open'] === true) {
                     $node['expanded'] = true;
                 }
                 if ($item['type'] === 'd') {
                     $node['children'] = [];
-                    $indexLatestParsedItem = $this->makeNodes($data, $i, $item['level'], $node['children'], $currentPage);
+                    $indexLatestParsedItem = $this->makeNodes(
+                        $data,
+                        $i,
+                        $item['level'],
+                        $node['children'],
+                        $currentPage
+                    );
                 } else { // 'l'
                     $node['lazy'] = true;
                 }
@@ -118,9 +126,11 @@ class Search
      *  $opts['skipfile']  string regexp matching pageids to skip
      *  $opts['headpage']   string headpages options or pageids
      *  $opts['level']      int    desired depth of main namespace, -1 = all levels
-     *  $opts['subnss']     array with entries: array(namespaceid,level) specifying namespaces with their own number of opened levels
+     *  $opts['subnss']     array with entries: array(namespaceid,level) specifying namespaces with their own number of
+     *                            opened levels
      *  $opts['nons']       bool   exclude namespace nodes
-     *  $opts['max']        int    If initially closed, the node at max level will retrieve all its child nodes through the AJAX mechanism
+     *  $opts['max']        int    If initially closed, the node at max level will retrieve all its child nodes through
+     *                             the AJAX mechanism
      *  $opts['nopg']       bool   exclude page nodes
      *  $opts['hide_headpage'] int don't hide (0) or hide (1)
      *  $opts['js']         bool   use js-render
@@ -129,7 +139,8 @@ class Search
     public function search($ns, $opts): array
     {
         if (!empty($opts['tempNew'])) {
-            $functionName = 'searchIndexmenuItemsNew'; //NEW: a bit different logic for lazy loading of opened/closed nodes
+            //NEW: a bit different logic for lazy loading of opened/closed nodes
+            $functionName = 'searchIndexmenuItemsNew';
         } else {
             $functionName = 'searchIndexmenuItems';
         }
@@ -158,9 +169,11 @@ class Search
      *   $opts['skipfile'] string regexp matching pageids to skip,
      *   $opts['headpage'] string headpages options or pageids,
      *   $opts['level'] int desired depth of main namespace, -1 = all levels,
-     *   $opts['subnss'] array with entries: array(namespaceid,level) specifying namespaces with their own number of opened levels,
+     *   $opts['subnss'] array with entries: array(namespaceid,level) specifying namespaces with their own number of o
+     *                   pened levels,
      *   $opts['nons'] bool Exclude namespace nodes,
-     *   $opts['max'] int If initially closed, the node at max level will retrieve all its child nodes through the AJAX mechanism,
+     *   $opts['max'] int If initially closed, the node at max level will retrieve all its child nodes through the AJAX
+     *                    mechanism,
      *   $opts['nopg'] bool Exclude page nodes,
      *   $opts['hide_headpage'] int don't hide (0) or hide (1),
      *   $opts['js'] bool use js-render
@@ -172,13 +185,15 @@ class Search
     public function searchIndexmenuItems(&$data, $base, $file, $type, $lvl, $opts)
     {
         global $conf;
-        $hns        = false;
-        $isOpen     = false;
-        $title      = null;
+
+        $hns = false;
+        $isOpen = false;
+        $title = null;
         $skipns = $opts['skipns'];
-        $skipfile  = $opts['skipfile'];
-        $headpage   = $opts['headpage'];
-        $id         = pathID($file);
+        $skipfile = $opts['skipfile'];
+        $headpage = $opts['headpage'];
+        $id = pathID($file);
+
         if ($type == 'd') {
             // Skip folders in plugin conf
             foreach ($skipns as $skipn) {
@@ -247,8 +262,9 @@ class Search
             if (isHiddenPage($id) || auth_quickaclcheck($id) < AUTH_READ) return false;
             //Skip files in plugin conf
             foreach ($skipfile as $skipf) {
-                if (!empty($skipf) && preg_match($skipf, $id))
+                if (!empty($skipf) && preg_match($skipf, $id)) {
                     return false;
+                }
             }
             //Skip headpages to hide
             if (!$opts['nons'] && !empty($headpage) && $opts['hide_headpage']) {
@@ -283,50 +299,59 @@ class Search
             $title = htmlspecialchars($title, ENT_QUOTES);
         }
 
-        $item         = ['id'     => $id, 'type'   => $type, 'level'  => $lvl, 'open'   => $isOpen, 'title'  => $title, 'hns'    => $hns, 'file'   => $file, 'shouldBeTraversed' => $shouldBeTraversed];
+        $item = [
+            'id' => $id,
+            'type' => $type,
+            'level' => $lvl,
+            'open' => $isOpen,
+            'title' => $title,
+            'hns' => $hns,
+            'file' => $file,
+            'shouldBeTraversed' => $shouldBeTraversed
+        ];
         $item['sort'] = $this->getSortValue($item);
-        $data[]       = $item;
+        $data[] = $item;
+
         return $shouldBeTraversed;
     }
 
     /**
      * Callback that adds an item of namespace/page to the browsable index, if it fits in the specified options
      *
-
      * testing version, for debuggin/fixing lazyloading...
-
-
-     * @author  Andreas Gohr <andi@splitbrain.org>
-     * modified by Samuele Tognini <samuele@samuele.netsons.org>
-     *
-     * @param array  $data Already collected nodes
+     * @param array $data Already collected nodes
      * @param string $base Where to start the search, usually this is $conf['datadir']
      * @param string $file Current file or directory relative to $base
      * @param string $type Type either 'd' for directory or 'f' for file
-     * @param int    $lvl  Current recursion depth
-     * @param array  $opts Option array as given to search()
+     * @param int $lvl Current recursion depth
+     * @param array $opts Option array as given to search()
      *   $opts['skipns'] string regexp matching namespaceids to skip
      *   $opts['skipfile']  string regexp matching pageids to skip
      *   $opts['headpage']   string headpages options or pageids
      *   $opts['level']      int    desired depth of main namespace, -1 = all levels
-     *   $opts['subnss']        array with entries: array(namespaceid,level) specifying namespaces with their own level
+     *   $opts['subnss']     array with entries: array(namespaceid,level) specifying namespaces with their own level
      *   $opts['nons']       bool   exclude namespace nodes
-     *   $opts['max']        int    If initially closed, the node at max level will retrieve all its child nodes through the AJAX mechanism
+     *   $opts['max']        int    If initially closed, the node at max level will retrieve all its child nodes
+     *                              through the AJAX mechanism
      *   $opts['nopg']       bool   exclude page nodes
      *   $opts['hide_headpage'] int don't hide (0) or hide (1)
      *   $opts['js']         bool   use js-render
      * @return bool if this directory should be traversed (true) or not (false)
+     *
+     * @author  Andreas Gohr <andi@splitbrain.org>
+     * modified by Samuele Tognini <samuele@samuele.netsons.org>
      */
     public function searchIndexmenuItemsNew(&$data, $base, $file, $type, $lvl, $opts)
     {
         global $conf;
-        $hns        = false;
-        $isOpen     = false;
-        $title      = null;
+
+        $hns = false;
+        $isOpen = false;
+        $title = null;
         $skipns = $opts['skipns'];
-        $skipfile  = $opts['skipfile'];
-        $headpage   = $opts['headpage'];
-        $id         = pathID($file);
+        $skipfile = $opts['skipfile'];
+        $headpage = $opts['headpage'];
+        $id = pathID($file);
 
         if ($type == 'd') {
             // Skip folders in plugin conf
@@ -435,9 +460,19 @@ class Search
             $title = htmlspecialchars($title, ENT_QUOTES);
         }
 
-        $item         = ['id'     => $id, 'type'   => $type, 'level'  => $lvl, 'open'   => $isOpen, 'title'  => $title, 'hns'    => $hns, 'file'   => $file, 'shouldBeTraversed' => $shouldBeTraversed];
+        $item = [
+            'id' => $id,
+            'type' => $type,
+            'level' => $lvl,
+            'open' => $isOpen,
+            'title' => $title,
+            'hns' => $hns,
+            'file' => $file,
+            'shouldBeTraversed' => $shouldBeTraversed
+        ];
         $item['sort'] = $this->getSortValue($item);
-        $data[]       = $item;
+        $data[] = $item;
+
         return $shouldBeTraversed;
     }
 
@@ -449,22 +484,22 @@ class Search
      *
      * Similar to search() of inc/search.php, but has extended sorting options
      *
-     * @param   array     $data The results of the search are stored here
-     * @param   string    $base Where to start the search
-     * @param   callback  $func Callback (function name or array with object,method)
-     * @param   array     $opts List of indexmenu options
-     * @param   string    $dir  Current directory beyond $base
-     * @param   int       $lvl  Recursion Level
+     * @param array $data The results of the search are stored here
+     * @param string $base Where to start the search
+     * @param callback $func Callback (function name or array with object,method)
+     * @param array $opts List of indexmenu options
+     * @param string $dir Current directory beyond $base
+     * @param int $lvl Recursion Level
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
      * @author  modified by Samuele Tognini <samuele@samuele.netsons.org>
      */
     public function customSearch(&$data, $base, $func, $opts, $dir = '', $lvl = 1)
     {
-        $dirs      = [];
-        $files     = [];
+        $dirs = [];
+        $files = [];
         $files_tmp = [];
-        $dirs_tmp  = [];
+        $dirs_tmp = [];
         $count = count($data);
 
         //read in directories and files
@@ -532,16 +567,17 @@ class Search
     /**
      * Get namespace title, checking for headpages
      *
-     * @author  Samuele Tognini <samuele@samuele.netsons.org>
      * @param string $ns namespace
      * @param string $headpage comma-separated headpages options and headpages
      * @param string $hns reference pageid of headpage, false when not existing
      * @return string when headpage & heading on: title of headpage, otherwise: namespace name
+     *
+     * @author  Samuele Tognini <samuele@samuele.netsons.org>
      */
     public function getNamespaceTitle($ns, $headpage, &$hns)
     {
         global $conf;
-        $hns   = false;
+        $hns = false;
         $title = noNS($ns);
         if (empty($headpage)) {
             return $title;
@@ -572,7 +608,7 @@ class Search
                     }
                 }
                 $title = htmlspecialchars($title, ENT_QUOTES);
-                $hns   = $page;
+                $hns = $page;
                 //headpage found, exit for
                 break;
             }
@@ -600,10 +636,10 @@ class Search
     /**
      * Add sort information to item.
      *
-     * @author  Samuele Tognini <samuele@samuele.netsons.org>
-     *
      * @param array $item
      * @return bool|int|mixed|string
+     *
+     * @author  Samuele Tognini <samuele@samuele.netsons.org>
      */
     private function getSortValue($item)
     {

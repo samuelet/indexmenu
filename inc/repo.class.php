@@ -16,9 +16,9 @@ class repo_indexmenu_plugin
         $file = cleanID($file);
         //check config
         if (!$idxm->getConf('be_repo') || empty($file)) return false;
-        $repodir    = INDEXMENU_IMG_ABSDIR . "/repository";
+        $repodir    = DOKU_PLUGIN . "indexmenu/images/repository";
         $zipfile    = $repodir . "/$file.zip";
-        $localtheme = INDEXMENU_IMG_ABSDIR . "/$file/";
+        $localtheme = DOKU_PLUGIN . "indexmenu/images/$file/";
         //theme does not exists
         if (!file_exists($localtheme)) return false;
         if (!io_mkdir_p($repodir)) return false;

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Info Indexmenu: Show a customizable and sortable index for a namespace.
  *
@@ -58,29 +57,31 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
     /**
      * Handler to prepare matched data for the rendering process
      *
-     * @param   string       $match   The text matched by the patterns
-     * @param   int          $state   The lexer state for the match
-     * @param   int          $pos     The character position of the matched text
-     * @param   Doku_Handler $handler The Doku_Handler object
+     * @param string $match The text matched by the patterns
+     * @param int $state The lexer state for the match
+     * @param int $pos The character position of the matched text
+     * @param Doku_Handler $handler The Doku_Handler object
      * @return  array Return an array with all data you want to use in render
+     *
+     * @throws Exception
      */
     public function handle($match, $state, $pos, Doku_Handler $handler)
     {
-        $theme    = 'default'; // name of theme for images and additional css
-        $level    = -1; // requested depth of initial opened nodes, -1:all
-        $max      = 0; // number of levels loaded initially, rest should be loaded with ajax. (TODO actual default is 1)
-        $maxAjax  = 1; // number of levels loaded per ajax request
-        $subNSs   = [];
-        $skipNs   = [];
+        $theme = 'default'; // name of theme for images and additional css
+        $level = -1; // requested depth of initial opened nodes, -1:all
+        $max = 0; // number of levels loaded initially, rest should be loaded with ajax. (TODO actual default is 1)
+        $maxAjax = 1; // number of levels loaded per ajax request
+        $subNSs = [];
+        $skipNs = [];
         $skipFile = [];
         /* @deprecated 2022-04-15 dTree only */
-        $maxJs    = 1;
+        $maxJs = 1;
         /* @deprecated 2022-04-15 dTree only */
-        $gen_id   = 'random';
+        $gen_id = 'random';
         /* @deprecated 2021-07-01 -- allow (temporary) switching between versions of the js treemenu */
         $jsVersion = 1; // 0:both, 1:dTree, 2:Fancytree
         /* @deprecated 2022-04-15 dTree only */
-        $jsAjax   = '';
+        $jsAjax = '';
 
         $defaultsStr = $this->getConf('defaultoptions');
         $defaults = explode(' ', $defaultsStr);
@@ -120,7 +121,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
             //split level
             $ns = $matched_ns_lvl[1];
             if (is_numeric($matched_ns_lvl[2])) {
-                $level = (int) $matched_ns_lvl[2];
+                $level = (int)$matched_ns_lvl[2];
             }
         } else {
             $ns = $nsStrs[0];
@@ -131,8 +132,10 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         }
 
         //nocookie option (disable for uncached pages)
+        /* @deprecated 2023-11 dTree only?, too complex */
         $nocookie = $context || $this->hasOption($defaults, $opts, 'nocookie');
         //noscroll option
+        /** @deprecated 2023-11 dTree only and too complex */
         $noscroll = $this->hasOption($defaults, $opts, 'noscroll');
         //Open at current namespace option
         $navbar = $this->hasOption($defaults, $opts, 'navbar');
@@ -207,19 +210,21 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
 
         if ($js) {
             //exist theme?
-            if (!empty($dir) && is_dir(INDEXMENU_IMG_ABSDIR . "/" . $dir)) {
+            if (!empty($dir) && is_dir(DOKU_PLUGIN . "indexmenu/images/" . $dir)) {
                 $theme = $dir;
             }
 
             //id generation method
+            /* @deprecated 2023-11 not needed anymore */
             $gen_id = $this->getOption($defaultsStr, $optsStr, '/id#(\S+)/u');
 
             //max option: #n is no of lvls during initialization , #m levels retrieved per ajax request
-            if ($matched_lvl_sublvl = $this->getOption($defaultsStr, $optsStr, '/max#(\d+)(?:$|\s+|#(\d+))/u', true)) {
+            $matchPattern = '/max#(\d+)(?:$|\s+|#(\d+))/u';
+            if ($matched_lvl_sublvl = $this->getOption($defaultsStr, $optsStr, $matchPattern, true)) {
                 $max = $matched_lvl_sublvl[1];
                 if (!empty($matched_lvl_sublvl[2])) {
                     $jsAjax .= "&max=" . $matched_lvl_sublvl[2];
-                    $maxAjax = (int) $matched_lvl_sublvl[2];
+                    $maxAjax = (int)$matched_lvl_sublvl[2];
                 }
                 //disable cookie to avoid javascript errors
                 $nocookie = true;
@@ -250,6 +255,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
             }
         }
         if (is_numeric($gen_id)) {
+            /* @deprecated 2023-11 not needed anymore */
             $identifier = $gen_id;
         } elseif ($gen_id == 'ns') {
             $identifier = sprintf("%u", crc32($ns));
@@ -283,32 +289,41 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         }
 
         //js options
-        $js_dTreeOpts = ['theme' => $theme, 'identifier' => $identifier, 'nocookie' => $nocookie, 'navbar' => $navbar, 'noscroll' => $noscroll, 'maxJs' => $maxJs, 'notoc' => $notoc, 'jsAjax' => $jsAjax, 'context' => $context, 'nomenu' => $nomenu];
-
         return [
             $ns, //0
-            $js_dTreeOpts, //1=js_dTreeOpts
+            [ //1=js_dTreeOpts
+                'theme' => $theme,
+                'identifier' => $identifier, //deprecated
+                'nocookie' => $nocookie, //deprecated
+                'navbar' => $navbar,
+                'noscroll' => $noscroll, //deprecated
+                'maxJs' => $maxJs, //deprecated
+                'notoc' => $notoc, //will be changed to default notoc
+                'jsAjax' => $jsAjax, //deprecated
+                'context' => $context, //only in handler()?
+                'nomenu' => $nomenu //will be changed to default nomenu
+            ],
             [ //2=sort
-                'sort' =>  $sort,
-                'msort' =>  $msort,
-                'rsort' =>  $rsort,
-                'nsort' =>  $nsort,
+                'sort' => $sort,
+                'msort' => $msort,
+                'rsort' => $rsort,
+                'nsort' => $nsort,
                 'hsort' => $hsort,
             ],
             [ //3=opts
-                'level'         => $level, // requested depth of initial opened nodes, -1:all
-                'nons'          => $nons,
-                'nopg'          => $nopg,
-                'subnss'        => $subNSs,
-                'navbar'        => $navbar, //add current ns to subNSs
-                'max'           => $max, //number of levels loaded initially, rest should be loaded with ajax
-                'maxajax'       => $maxAjax, //number of levels loaded per ajax request
-                'js'            => $js,
-                'skipns'        => $skipNs,
-                'skipfile'      => $skipFile,
-                'headpage'      => $this->getConf('headpage'),
+                'level' => $level, // requested depth of initial opened nodes, -1:all
+                'nons' => $nons,
+                'nopg' => $nopg,
+                'subnss' => $subNSs,
+                'navbar' => $navbar, //add current ns to subNSs
+                'max' => $max, //number of levels loaded initially, rest should be loaded with ajax
+                'maxajax' => $maxAjax, //number of levels loaded per ajax request
+                'js' => $js, //used???
+                'skipns' => $skipNs,
+                'skipfile' => $skipFile,
+                'headpage' => $this->getConf('headpage'),
                 'hide_headpage' => $this->getConf('hide_headpage'),
-                'theme'         => $theme
+                'theme' => $theme
             ],
             $jsVersion //4
         ];
@@ -317,9 +332,9 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
     /**
      * Looks if the default options and syntax options has the requested option
      *
-     * @param array  $defaultsOpts array of default options
-     * @param array  $opts         array of options provided via syntax
-     * @param string $optionName   name of requested option
+     * @param array $defaultsOpts array of default options
+     * @param array $opts array of options provided via syntax
+     * @param string $optionName name of requested option
      * @return bool has $optionName?
      */
     private function hasOption($defaultsOpts, $opts, $optionName)
@@ -341,10 +356,10 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
     /**
      * Looks for the value of the requested option in the default options and syntax options
      *
-     * @param string $defaultsString     default options string
-     * @param string $optsString         syntax options string
-     * @param string $matchPattern    pattern to search for
-     * @param bool   $multipleMatches if multiple returns array, otherwise the first match
+     * @param string $defaultsString default options string
+     * @param string $optsString syntax options string
+     * @param string $matchPattern pattern to search for
+     * @param bool $multipleMatches if multiple returns array, otherwise the first match
      * @return string|array
      */
     private function getOption($defaultsString, $optsString, $matchPattern, $multipleMatches = false)
@@ -379,11 +394,15 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         global $conf;
         global $INFO;
 
-        $ns          = $data[0];
-        $js_dTreeOpts = $data[1]; //theme, identifier, nocookie, navbar, noscroll, maxJs, notoc, jsAjax, context, nomenu
-        $sort        = $data[2]; //sort, msort, rsort, nsort, hsort
-        $opts        = $data[3]; //opts for search(): level, nons, nopg, subnss, max, maxajax, js, skipns, skipfile, headpage, hide_headpage
-        $jsVersion   = $data[4]; /* @deprecated 2021-07-01 temporary */
+        $ns = $data[0];
+        //theme, identifier, nocookie, navbar, noscroll, maxJs, notoc, jsAjax, context, nomenu
+        $js_dTreeOpts = $data[1];
+        //sort, msort, rsort, nsort, hsort
+        $sort = $data[2];
+        //opts for search(): level, nons, nopg, subnss, max, maxajax, js, skipns, skipfile, headpage, hide_headpage
+        $opts = $data[3];
+        /* @deprecated 2021-07-01 temporary */
+        $jsVersion = $data[4];
 
         if ($format == 'xhtml') {
             if ($ACT == 'preview') {
@@ -399,7 +418,12 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
                 $js_dTreeOpts['nocookie'] = true;
             }
             if ($opts['js'] & $conf['defer_js']) {
-                msg('Indexmenu Plugin: If you use the \'js\'-option of the indexmenu plugin, you have to disable the <a href="https://www.dokuwiki.org/config:defer_js">\'defer_js\'</a>-setting. This setting is temporary, in the future the indexmenu plugin will be improved.', -1);
+                msg(
+                    'Indexmenu Plugin: If you use the \'js\'-option of the indexmenu plugin, you have to '
+                    . 'disable the <a href="https://www.dokuwiki.org/config:defer_js">\'defer_js\'</a>-setting. '
+                    . 'This setting is temporary, in the future the indexmenu plugin will be improved.',
+                    -1
+                );
             }
             //Navbar with nojs
             if ($js_dTreeOpts['navbar'] && !$opts['js']) {
@@ -451,9 +475,11 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
      * Return the index
      *
      * @param string $ns
-     * @param array $js_dTreeOpts entries: theme, identifier, nocookie, navbar, noscroll, maxJs, notoc, jsAjax, context, nomenu
+     * @param array $js_dTreeOpts entries: theme, identifier, nocookie, navbar, noscroll, maxJs, notoc, jsAjax, context,
+     *                          nomenu
      * @param array $sort entries: sort, msort, rsort, nsort, hsort
-     * @param array $opts entries of opts for search(): level, nons, nopg, nss, max, maxajax, js, skipns, skipfile, headpage, hide_headpage
+     * @param array $opts entries of opts for search(): level, nons, nopg, nss, max, maxajax, js, skipns, skipfile,
+     *                     headpage, hide_headpage
      * @param int $jsVersion
      * @return bool|string return html for a nojs index and when enabled the js rendered index, otherwise false
      *
@@ -462,7 +488,8 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
     private function buildHtmlIndexmenu($ns, $js_dTreeOpts, $sort, $opts, $jsVersion)
     {
         $js_name = "indexmenu_" . $js_dTreeOpts['identifier'];
-        $opts['tempNew'] = false; //TODO temporary hack, to switch in Search between searchIndexmenuItemsNew() and searchIndexmenuItems()
+        //TODO temporary hack, to switch in Search between searchIndexmenuItemsNew() and searchIndexmenuItems()
+        $opts['tempNew'] = false;
         $search = new Search($sort);
         $data = $search->search($ns, $opts);
 
@@ -486,21 +513,21 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         }
         $output = "\n";
         $output .= $this->buildNoJSTree($data, $js_name, $js_dTreeOpts['jsAjax']);
-        $output .=  $output_js;
+        $output .= $output_js;
         return $output;
     }
 
     private function buildNoJSTree($data, $js_name, $jsAjax)
     {
         // Nojs dokuwiki index
-        //    extra div needed when index is first element in sidebar of dokuwiki template, template uses this to toggle sidebar
-        //    the toggle interacts with hide needed for js option.
+        //    extra div needed when index is first element in sidebar of dokuwiki template, template uses this to
+        //    toggle sidebar the toggle interacts with hide needed for js option.
         $idx = new Index();
         return '<div>'
-            . '<div id="nojs_' . $js_name . '" data-jsajax="' . utf8_encodeFN($jsAjax) . '" class="indexmenu_nojs">' . "\n"
+            . '<div id="nojs_' . $js_name . '" data-jsajax="' . utf8_encodeFN($jsAjax) . '" class="indexmenu_nojs">'
             . html_buildlist($data, 'idx', [$this, 'formatIndexmenuItem'], [$idx, 'tagListItem'])
             . '</div>'
-            . '</div>' . "\n";
+            . '</div>';
     }
 
     private function buildFancyTree($js_name, $ns, $opts, $sort)
@@ -519,17 +546,18 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
             'sort' => $sort,
             'contextmenu' => false
         ];
-        return '<div id="tree2_' . $js_name . '" class="indexmenu_js2 skin-' . $opts['theme'] . '" data-options=\'' . json_encode($options) . '\'></div>';
+        return '<div id="tree2_' . $js_name . '" class="indexmenu_js2 skin-' . $opts['theme'] . '"'
+            . 'data-options=\'' . json_encode($options) . '\'></div>';
     }
 
     /**
      * Build the browsable index of pages using javascript
      *
-     * @param array  $data    array with items of the tree
-     * @param string $ns      requested namespace
-     * @param array  $js_dTreeOpts options for javascript renderer
+     * @param array $data array with items of the tree
+     * @param string $ns requested namespace
+     * @param array $js_dTreeOpts options for javascript renderer
      * @param string $js_name identifier for this index
-     * @param int    $max     the node at $max level will retrieve all its child nodes through the AJAX mechanism
+     * @param int $max the node at $max level will retrieve all its child nodes through the AJAX mechanism
      * @return bool|string returns inline javascript or false
      *
      * @author  Samuele Tognini <samuele@samuele.netsons.org>
@@ -544,9 +572,10 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         }
 
 //TODO jsAjax is empty?? while max is set to 1
-        //Render requested ns as root
+        // Render requested ns as root
         $headpage = $this->getConf('headpage');
-        //if rootnamespace and headpage, then add startpage as headpage - TODO seems not logic, when desired use $conf[headpage]=:start: ??
+        // if rootnamespace and headpage, then add startpage as headpage
+        // TODO seems not logic, when desired use $conf[headpage]=:start: ??
         if (empty($ns) && !empty($headpage)) {
             $headpage .= ',' . $conf['start'];
         }
@@ -597,11 +626,11 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         $out .= "document.write(" . $js_name . ");\n";
         //initialize index
         $out .= "jQuery(function(){" . $js_name . ".init(";
-        $out .= (int) is_file(INDEXMENU_IMG_ABSDIR . '/' . $js_dTreeOpts['theme'] . '/style.css') . ",";
-        $out .= (int) $js_dTreeOpts['nocookie'] . ",";
+        $out .= (int)is_file(DOKU_PLUGIN . 'indexmenu/images/' . $js_dTreeOpts['theme'] . '/style.css') . ",";
+        $out .= (int)$js_dTreeOpts['nocookie'] . ",";
         $out .= '"' . $anodes[1] . '",';
-        $out .= (int) $js_dTreeOpts['navbar'] . ",";
-        $out .= (int) $max;
+        $out .= (int)$js_dTreeOpts['navbar'] . ",";
+        $out .= (int)$max;
         if ($js_dTreeOpts['nomenu']) {
             $out .= ",1";
         }
@@ -615,14 +644,15 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
     /**
      * Return array of javascript nodes and nodes to open.
      *
-     * @author  Samuele Tognini <samuele@samuele.netsons.org>
-     * @param array  $data    array with items of the tree
+     * @param array $data array with items of the tree
      * @param string $js_name identifier for this index
-     * @param boolean $noajax  return as inline js (=true) or array for ajax response (=false)
+     * @param boolean $noajax return as inline js (=true) or array for ajax response (=false)
      * @return array|bool returns array with
      *     - a string of the javascript nodes
      *     - and a string of space separated numbers of the opened nodes
      *    or false when no data provided
+     *
+     * @author  Samuele Tognini <samuele@samuele.netsons.org>
      */
     public function builddTreeNodes($data, $js_name, $noajax = true)
     {
@@ -632,15 +662,15 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         //Array of nodes to check
         $q = ['0'];
         //Current open node
-        $node  = 0;
-        $out   = '';
+        $node = 0;
+        $out = '';
         $opennodes = '';
         if ($noajax) {
             $jscmd = $js_name . ".add";
-            $separator   = ";\n";
+            $separator = ";\n";
         } else {
             $jscmd = "new Array ";
-            $separator   = ",";
+            $separator = ",";
         }
 
         foreach ($data as $i => $item) {
@@ -671,7 +701,8 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
                 //insert node in last position
                 $q[] = $i;
             }
-            $out .= $jscmd . "('" . idfilter($item['id'], false) . "',$i," . $father . "," . json_encode($item['title']);
+            $out .= $jscmd . "('" . idfilter($item['id'], false) . "',$i," . $father
+                . "," . json_encode($item['title']);
             //hns
             if ($item['hns']) {
                 $out .= ",'" . idfilter($item['hns'], false) . "'";
@@ -698,10 +729,11 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
     /**
      * Parse namespace request
      *
-     * @author  Samuele Tognini <samuele@samuele.netsons.org>
      * @param string $ns namespaceid
-     * @param bool   $id page id to resolve $ns relative to.
+     * @param bool $id page id to resolve $ns relative to.
      * @return string id of namespace
+     *
+     * @author  Samuele Tognini <samuele@samuele.netsons.org>
      */
     public function parseNs($ns, $id = false)
     {
@@ -722,9 +754,10 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
     /**
      * Clean index data from unwanted nodes in nojs mode.
      *
-     * @author  Samuele Tognini <samuele@samuele.netsons.org>
      * @param array $data nodes of the tree
      * @return void
+     *
+     * @author  Samuele Tognini <samuele@samuele.netsons.org>
      */
     private function cleanNojsData(&$data)
     {
@@ -736,7 +769,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
             }
             //closed node
             if ($item['type'] == "d" && !$item['open']) {
-                $a     = $i + 1;
+                $a = $i + 1;
                 $level = $item['level'];
                 //search and remove every lower and closed nodes
                 while (isset($data[$a]) && $data[$a]['level'] > $level && !$data[$a]['open']) {
@@ -751,19 +784,19 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
     /**
      * Callback to print a Indexmenu item
      *
-     * User function for @see html_buildlist()
-     *
-     * @author Andreas Gohr <andi@splitbrain.org>
-     * @author Samuele Tognini <samuele@samuele.netsons.org>
-     * @author Rik Blok
-     *
-     * @param array $item item described by array with at least the entries
+     * User function for @param array $item item described by array with at least the entries
      *          - id    page id/namespace id
      *          - type  'd', 'l'(directory which is not yet opened) or 'f'
      *          - open  is node open
      *          - title title of link
      *          - hns   page id of headpage of the namespace or false
      * @return string html of the content of a list item
+     *
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
+     * @author Rik Blok
+     * @author Andreas Gohr <andi@splitbrain.org>
+     *
+     * @see html_buildlist()
      */
     public function formatIndexmenuItem($item)
     {
@@ -778,9 +811,9 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
             $more = 'idx=' . $item['id'];
             //namespace link
             if ($item['hns']) {
-                $link  = $item['hns'];
+                $link = $item['hns'];
                 $tagid = "indexmenu_idx_head";
-                $more  = '';
+                $more = '';
                 //current page is shown?
                 $markCurrentPage = $this->getConf('hide_headpage') && $item['hns'] == $INFO['id'];
             } else {

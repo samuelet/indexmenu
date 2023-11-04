@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignorefile
 
 /**
  * AJAX Backend for indexmenu
@@ -23,6 +24,7 @@ $ajax_indexmenu->render();
 
 /**
  * Class ajax_indexmenu_plugin
+ * @deprecated 2023-11 not used anymore
  */
 class ajax_indexmenu_plugin
 {

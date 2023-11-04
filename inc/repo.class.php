@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignorefile
 
 class repo_indexmenu_plugin
 {
@@ -8,7 +9,7 @@ class repo_indexmenu_plugin
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      */
 
-    public function send_theme($file)
+    public function sendTheme($file)
     {
         require_once(DOKU_PLUGIN . 'indexmenu/syntax/indexmenu.php');
         $idxm = new syntax_plugin_indexmenu_indexmenu();

@@ -426,7 +426,9 @@ class action_plugin_indexmenu extends ActionPlugin
      */
     public function formatIndexmenuListTocItem($item)
     {
-        $id = cleanID($_REQUEST['id']);
+        global $INPUT;
+
+        $id = cleanID($INPUT->str('id'));
 
         if (isset($item['hid'])) {
             $link = '#' . $item['hid'];

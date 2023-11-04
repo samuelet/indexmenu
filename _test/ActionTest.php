@@ -6,13 +6,12 @@
  * @group plugin_indexmenu
  * @group plugins
  */
-class ActionTest extends DokuWikiTest {
+class ActionTest extends DokuWikiTest
+{
     /**
-
-   /**
      * Setup - enable and load the include plugin and create the test pages
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->pluginsEnabled[] = 'indexmenu';
         parent::setUp(); // this enables the include plugin

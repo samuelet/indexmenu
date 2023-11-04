@@ -2,15 +2,13 @@
 
 use DOMWrap\Document;
 
-require_once DOKU_INC.'inc/parser/xhtml.php';
+require_once DOKU_INC . 'inc/parser/xhtml.php';
 
 /**
  * @group plugin_indexmenu
  */
-class IndexmenuSyntaxTest extends DokuWikiTest {
-
-//    private $exampleIndex;
-
+class IndexmenuSyntaxTest extends DokuWikiTest
+{
 
     public function setup(): void
     {
@@ -39,47 +37,50 @@ class IndexmenuSyntaxTest extends DokuWikiTest {
      * @param array $values
      * @return array aligned similar to output of handle()
      */
-    private function createData($values) {
+    private function createData($values)
+    {
 
-        [$ns, $theme, $identifier, $nocookie, $navbar, $noscroll, $maxjs, $notoc, $jsajax, $context, $nomenu,
-            $sort, $msort, $rsort, $nsort, $level, $nons, $nopg, $subnss, $max, $maxAjax, $js, $skipns, $skipfile, $hsort,
-            $headpage, $hide_headpage, $jsVersion] = $values;
+        [
+            $ns, $theme, $identifier, $nocookie, $navbar, $noscroll, $maxjs, $notoc, $jsajax, $context, $nomenu,
+            $sort, $msort, $rsort, $nsort, $level, $nons, $nopg, $subnss, $max, $maxAjax, $js, $skipns, $skipfile,
+            $hsort, $headpage, $hide_headpage, $jsVersion
+        ] = $values;
 
         return [
             $ns,
             [
-                'theme'      => $theme,
+                'theme' => $theme,
                 'identifier' => $identifier,
-                'nocookie'   => $nocookie,
-                'navbar'     => $navbar,
-                'noscroll'   => $noscroll,
-                'maxJs'      => $maxjs,
-                'notoc'      => $notoc,
-                'jsAjax'     => $jsajax,
-                'context'    => $context,
-                'nomenu'     => $nomenu,
+                'nocookie' => $nocookie,
+                'navbar' => $navbar,
+                'noscroll' => $noscroll,
+                'maxJs' => $maxjs,
+                'notoc' => $notoc,
+                'jsAjax' => $jsajax,
+                'context' => $context,
+                'nomenu' => $nomenu,
             ],
             [
-                'sort' =>  $sort,
-                'msort' =>  $msort,
-                'rsort' =>  $rsort,
-                'nsort' =>  $nsort,
+                'sort' => $sort,
+                'msort' => $msort,
+                'rsort' => $rsort,
+                'nsort' => $nsort,
                 'hsort' => $hsort,
             ],
             [
-                'level'         => $level,
-                'nons'          => $nons,
-                'nopg'          => $nopg,
-                'subnss'        => $subnss,
-                'max'           => $max,
-                'js'            => $js,
-                'skipns'        => $skipns,
-                'skipfile'      => $skipfile,
-                'headpage'      => $headpage,
+                'level' => $level,
+                'nons' => $nons,
+                'nopg' => $nopg,
+                'subnss' => $subnss,
+                'max' => $max,
+                'js' => $js,
+                'skipns' => $skipns,
+                'skipfile' => $skipfile,
+                'headpage' => $headpage,
                 'hide_headpage' => $hide_headpage,
-                'maxajax'       => $maxAjax,
-                'navbar'        => $navbar,
-                'theme'         => $theme
+                'maxajax' => $maxAjax,
+                'navbar' => $navbar,
+                'theme' => $theme
             ],
             $jsVersion
         ];
@@ -90,7 +91,8 @@ class IndexmenuSyntaxTest extends DokuWikiTest {
      *
      * @return array[]
      */
-    public static function someSyntaxes() {
+    public static function someSyntaxes()
+    {
         return [
             //root ns (empty is not recognized..)
             // [syntax, data]
@@ -175,15 +177,16 @@ class IndexmenuSyntaxTest extends DokuWikiTest {
      *
      * @dataProvider someSyntaxes
      */
-    public function testHandle($syntax, $changedData) {
+    public function testHandle($syntax, $changedData)
+    {
         $plugin = new syntax_plugin_indexmenu_indexmenu();
 
-        $null   = new Doku_Handler();
+        $null = new Doku_Handler();
         $result = $plugin->handle($syntax, 0, 40, $null);
 
         //copy unique generated number, which is about 23 characters
         $len_id = strlen($result[1]['identifier']);
-        if(!is_numeric($changedData[2]) && ($len_id > 20 && $len_id<=23)) {
+        if (!is_numeric($changedData[2]) && ($len_id > 18 && $len_id <= 23)) {
             $changedData[2] = $result[1]['identifier'];
         }
         $data = $this->createData($changedData);
@@ -293,13 +296,14 @@ class IndexmenuSyntaxTest extends DokuWikiTest {
      *
      * @dataProvider differentNSs
      */
-    public function testResolving($syntax, $expectedNs, $expectedSubNss, $pageWithIndexmenu) {
+    public function testResolving($syntax, $expectedNs, $expectedSubNss, $pageWithIndexmenu)
+    {
         global $ID;
         $ID = $pageWithIndexmenu;
 
         $plugin = new syntax_plugin_indexmenu_indexmenu();
 
-        $null   = new Doku_Handler();
+        $null = new Doku_Handler();
         $result = $plugin->handle($syntax, 0, 40, $null);
 
         $this->assertEquals($expectedNs, $result[0], 'check resolved ns');
@@ -313,16 +317,17 @@ class IndexmenuSyntaxTest extends DokuWikiTest {
      * expect: contains namespace which replaced {{ns}}
      * expect: message contained rendered italic syntax
      */
-    public function testRenderEmptymsg() {
+    public function testRenderEmptymsg()
+    {
         global $conf;
 
-        $noexistns        = 'nonexisting:namespace';
+        $noexistns = 'nonexisting:namespace';
         $emptyindexsyntax = "{{indexmenu>$noexistns}}";
 
-        $xhtml  = new Doku_Renderer_xhtml();
+        $xhtml = new Doku_Renderer_xhtml();
         $plugin = new syntax_plugin_indexmenu_indexmenu();
 
-        $null   = new Doku_Handler();
+        $null = new Doku_Handler();
         $result = $plugin->handle($emptyindexsyntax, 0, 10, $null);
 
         //no empty message

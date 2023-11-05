@@ -97,14 +97,16 @@ jQuery(function(){  // on page load
     jQuery(".indexmenu_js2").each(function(){
         let $tree = jQuery(this),
             id = $tree.attr('id');
-        var options = $tree.data('options');
-console.log(options);
+        const options = $tree.data('options');
+        console.log("options");
+        console.log(options);
+        let themePreset = presets[options.opts.theme];
 
         $tree.fancytree({
-            extensions: presets[options.opts.theme] ? ["glyph"] : [],
+            extensions: themePreset ? ["glyph"] : [],
             glyph: {
-                preset: presets[options.opts.theme] ? presets[options.opts.theme].preset : '',
-                map: presets[options.opts.theme] ? presets[options.opts.theme].map : {}
+                preset: themePreset ? themePreset.preset : '',
+                map: themePreset ? themePreset.map : {}
             },
             //minExpandLevel: 2, // number of levels already expanded, and not unexpandable.
             clickFolderMode: 3, // expand with single click instead of dblclick

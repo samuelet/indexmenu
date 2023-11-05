@@ -119,10 +119,9 @@ console.log(options);
             tooltip: true,
             rtl: jQuery('html[dir=rtl]').length,
             focus: function(event, data) {
-                var node = data.node;
                 // Auto-activate focused node after 1 second (practical for use with keyboard)
-                if(node.key){
-                    node.scheduleAction("activate", 1000);
+                if(data.node.key){
+                    data.node.scheduleAction("activate", 1000);
                 }
             },
             blur: function(event, data) {
@@ -134,43 +133,40 @@ console.log(options);
             //     //return false;
             // },
             activate: function(event, data){
-                var node = data.node,
-                    orgEvent = data.originalEvent;
-
+                const node = data.node;
+                // let orgEvent = data.originalEvent;
+                // console.log("activate1");
+                // console.log(node.key)
+                // console.log(JSINFO.id)
                 //prevent looping
                 if(node.key === JSINFO.id) {
                     //node is equal to current page
-                    return
+                    return;
                 }
-                if(!node.folder) {
-                    url = DOKU_BASE + node.key
-                } else if(node.data.hns === false) {
+                //TODO node.key=="namespace:", JSINFO.id=="namespace:start", here an extra reload is done..
+                //happens if you try to close an folder with hns(a start page) while that start page shown.
+
+                if(node.data.url === false) {
                     return false;
-                } else {
-                    url = DOKU_BASE + node.data.hns
                 }
-                console.log(url);
-                if(url){
+                // console.log("activate");
+                // console.log(node.data.url);
+                if(node.data.url){
                     //window.open(node.data.href, (orgEvent.ctrlKey || orgEvent.metaKey) ? "_blank" /*node.data.target*/ : node.data.target);
-                    window.location.href=url;
+                    window.location.href = node.data.url;
+                    // console.log("reload");
                 }
             },
             init: function(event, data) {
                 data.tree.reactivate();
             },
             enhanceTitle: function(event, data) {
-                let url, node = data.node;
-                // console.log('enhanceTitle');
-                // console.log(data.node);
-                // console.log(data.$title);
-                if(!node.folder) {
-                    url = DOKU_BASE + node.key
-                } else if(node.data.hns === false) {
+                let node = data.node;
+
+                if(node.data.url === false) {
                     return;
-                } else {
-                    url = DOKU_BASE + node.data.hns
                 }
-                data.$title.html("<a href='" + url + "'>" + node.title + "</a>");
+                data.$title.html("<a href='" + node.data.url + "'>" + node.title + "</a>");
             },
             source: {
                 url: DOKU_BASE + 'lib/exe/ajax.php',
@@ -199,7 +195,7 @@ console.log(options);
                 }
             },
             lazyLoad: function(event, data) {
-                var node = data.node;
+                const node = data.node;
                 // Issue an Ajax request to load child nodes
                 data.result = {
                     url: DOKU_BASE + 'lib/exe/ajax.php', //TODO reminder: after adding node.key to subnss and maxajax loading is incomplete for ns3
@@ -238,13 +234,13 @@ console.log(options);
         // On page load, activate node if node.data.href matches the url#href
         let tree = jQuery.ui.fancytree.getTree("#" + id),
             path = window.parent && window.parent.location.pathname;
-console.log(path);
-console.log('test');
+// console.log(path);
+// console.log('test');
         if(path) {
             let arr = path.split('/'); // not reliable with config:useslash?
             let last = arr[arr.length-1] || arr[arr.length-2];
-            console.log(arr);
-            console.log(last);
+            // console.log(arr);
+            // console.log(last);
 
             // tree.activateKey(last);
             // var node1=tree.getNodeByKey(last);

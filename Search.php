@@ -102,11 +102,15 @@ class Search
                 if ($currentPage == $item['id']) {
                     $node['active'] = true;
                 }
+                // let php create url (considering rewriting etc)
+                $node['url'] = wl($item['id']);
             }
             // f/d/l, assumption: if 'd' try always level deeper, maybe not true if d has no items in them by some
             // filter settings?.
             if ($item['type'] !== 'f') {
                 $node['folder'] = true;
+                // let php create url (considering rewriting etc)
+                $node['url'] = $item['hns'] === false ? false : wl($item['hns']);
                 if ($item['open'] === true) {
                     $node['expanded'] = true;
                 }

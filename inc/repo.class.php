@@ -1,6 +1,7 @@
 <?php
 // phpcs:ignorefile
 
+/* @deprecated 2023-11 used in ajax.php, which is not used anymore */
 class repo_indexmenu_plugin
 {
     /**

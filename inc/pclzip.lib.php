@@ -160,6 +160,7 @@
   //   extract() : Extract the content of the archive
   //   properties() : List the properties of the archive
   // --------------------------------------------------------------------------------
+/* @deprecated 2023-11 used in ajax.php, which is not used anymore */
 class PclZip
 {
     // ----- Filename of the zip file

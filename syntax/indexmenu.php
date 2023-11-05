@@ -75,7 +75,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         $skipFile = [];
         /* @deprecated 2022-04-15 dTree only */
         $maxJs = 1;
-        /* @deprecated 2022-04-15 dTree only */
+        /* @deprecated 2022-04-15 dTree only. Fancytree always random id */
         $gen_id = 'random';
         /* @deprecated 2021-07-01 -- allow (temporary) switching between versions of the js treemenu */
         $jsVersion = 1; // 0:both, 1:dTree, 2:Fancytree
@@ -442,14 +442,14 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
                 $renderer->info['cache'] = false;
             }
             //build index
-            $n = $this->buildHtmlIndexmenu($ns, $js_dTreeOpts, $sort, $opts, $jsVersion);
+            $html = $this->buildHtmlIndexmenu($ns, $js_dTreeOpts, $sort, $opts, $jsVersion);
             //alternative if empty
-            if (!@$n) {
-                $n = $this->getConf('empty_msg');
-                $n = str_replace('{{ns}}', cleanID($ns), $n);
-                $n = p_render('xhtml', p_get_instructions($n), $info);
+            if (!@$html) {
+                $html = $this->getConf('empty_msg');
+                $html = str_replace('{{ns}}', cleanID($ns), $html);
+                $html = p_render('xhtml', p_get_instructions($html), $info);
             }
-            $renderer->doc .= $n;
+            $renderer->doc .= $html;
             return true;
         } elseif ($format == 'metadata') {
             /** @var Doku_Renderer_metadata $renderer */
@@ -490,9 +490,9 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         //TODO temporary hack, to switch in Search between searchIndexmenuItemsNew() and searchIndexmenuItems()
         $opts['tempNew'] = false;
         $search = new Search($sort);
-        $data = $search->search($ns, $opts);
+        $nodes = $search->search($ns, $opts);
 
-        if (!$data) return false;
+        if (!$nodes) return false;
 
         // javascript index
         $output_js = '';
@@ -501,22 +501,22 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
 
             // $jsversion: 0:both, 1:dTree, 2:Fancytree
             if ($jsVersion < 2) {
-                $output_js .= $this->builddTree($data, $ns, $js_dTreeOpts, $js_name, $opts['max']);
+                $output_js .= $this->builddTree($nodes, $ns, $js_dTreeOpts, $js_name, $opts['max']);
             }
             if ($jsVersion !== 1) {
                 $output_js .= $this->buildFancyTree($js_name, $ns, $opts, $sort);
             }
 
             //remove unwanted nodes from standard index
-            $this->cleanNojsData($data);
+            $this->cleanNojsData($nodes);
         }
         $output = "\n";
-        $output .= $this->buildNoJSTree($data, $js_name, $js_dTreeOpts['jsAjax']);
+        $output .= $this->buildNoJSTree($nodes, $js_name, $js_dTreeOpts['jsAjax']);
         $output .= $output_js;
         return $output;
     }
 
-    private function buildNoJSTree($data, $js_name, $jsAjax)
+    private function buildNoJSTree($nodes, $js_name, $jsAjax)
     {
         // Nojs dokuwiki index
         //    extra div needed when index is first element in sidebar of dokuwiki template, template uses this to
@@ -524,7 +524,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         $idx = new Index();
         return '<div>'
             . '<div id="nojs_' . $js_name . '" data-jsajax="' . utf8_encodeFN($jsAjax) . '" class="indexmenu_nojs">'
-            . html_buildlist($data, 'idx', [$this, 'formatIndexmenuItem'], [$idx, 'tagListItem'])
+            . html_buildlist($nodes, 'idx', [$this, 'formatIndexmenuItem'], [$idx, 'tagListItem'])
             . '</div>'
             . '</div>';
     }
@@ -552,7 +552,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
     /**
      * Build the browsable index of pages using javascript
      *
-     * @param array $data array with items of the tree
+     * @param array $nodes array with items of the tree
      * @param string $ns requested namespace
      * @param array $js_dTreeOpts options for javascript renderer
      * @param string $js_name identifier for this index
@@ -561,12 +561,14 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
      *
      * @author  Samuele Tognini <samuele@samuele.netsons.org>
      * @author  Rene Hadler
+     *
+     * @deprecated 2023-11 will be replace by Fancytree
      */
-    private function builddTree($data, $ns, $js_dTreeOpts, $js_name, $max)
+    private function builddTree($nodes, $ns, $js_dTreeOpts, $js_name, $max)
     {
         global $conf;
         $hns = false;
-        if (empty($data)) {
+        if (empty($nodes)) {
             return false;
         }
 
@@ -619,15 +621,15 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         }
         $out .= ");\n";
         //add nodes
-        $anodes = $this->builddTreeNodes($data, $js_name);
-        $out .= $anodes[0];
+        [$nodesArray, $openNodes] = $this->builddTreeNodes($nodes, $js_name);
+        $out .= $nodesArray;
         //write to document
         $out .= "document.write(" . $js_name . ");\n";
         //initialize index
         $out .= "jQuery(function(){" . $js_name . ".init(";
         $out .= (int)is_file(DOKU_PLUGIN . 'indexmenu/images/' . $js_dTreeOpts['theme'] . '/style.css') . ",";
         $out .= (int)$js_dTreeOpts['nocookie'] . ",";
-        $out .= '"' . $anodes[1] . '",';
+        $out .= '"' . $openNodes . '",';
         $out .= (int)$js_dTreeOpts['navbar'] . ",";
         $out .= (int)$max;
         if ($js_dTreeOpts['nomenu']) {
@@ -643,7 +645,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
     /**
      * Return array of javascript nodes and nodes to open.
      *
-     * @param array $data array with items of the tree
+     * @param array $nodes array with items of the tree
      * @param string $js_name identifier for this index
      * @param boolean $noajax return as inline js (=true) or array for ajax response (=false)
      * @return array|bool returns array with
@@ -652,18 +654,20 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
      *    or false when no data provided
      *
      * @author  Samuele Tognini <samuele@samuele.netsons.org>
+     *
+     * @deprecated 2023-11 will be replace by Fancytree
      */
-    public function builddTreeNodes($data, $js_name, $noajax = true)
+    public function builddTreeNodes($nodes, $js_name, $noajax = true)
     {
-        if (empty($data)) {
+        if (empty($nodes)) {
             return false;
         }
         //Array of nodes to check
         $q = ['0'];
         //Current open node
-        $node = 0;
+        $currentOpenNode = 0;
         $out = '';
-        $opennodes = '';
+        $openNodes = '';
         if ($noajax) {
             $jscmd = $js_name . ".add";
             $separator = ";\n";
@@ -672,15 +676,15 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
             $separator = ",";
         }
 
-        foreach ($data as $i => $item) {
+        foreach ($nodes as $i => $node) {
             $i++;
             //Remove already processed nodes (greater level = lower level)
-            while (isset($data[end($q) - 1]) && $item['level'] <= $data[end($q) - 1]['level']) {
+            while (isset($nodes[end($q) - 1]) && $node['level'] <= $nodes[end($q) - 1]['level']) {
                 array_pop($q);
             }
 
             //till i found its father node
-            if ($item['level'] == 1) {
+            if ($node['level'] == 1) {
                 //root node
                 $father = '0';
             } else {
@@ -688,41 +692,41 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
                 $father = end($q);
             }
             //add node and its options
-            if ($item['type'] == 'd') {
+            if ($node['type'] == 'd') {
                 //Search the lowest open node of a tree branch in order to open it.
-                if ($item['open']) {
-                    if ($item['level'] < $data[$node]['level']) {
-                        $node = $i;
+                if ($node['open']) {
+                    if ($node['level'] < $nodes[$currentOpenNode]['level']) {
+                        $currentOpenNode = $i;
                     } else {
-                        $opennodes .= "$i ";
+                        $openNodes .= "$i ";
                     }
                 }
                 //insert node in last position
                 $q[] = $i;
             }
-            $out .= $jscmd . "('" . idfilter($item['id'], false) . "',$i," . $father
-                . "," . json_encode($item['title']);
+            $out .= $jscmd . "('" . idfilter($node['id'], false) . "',$i," . $father
+                . "," . json_encode($node['title']);
             //hns
-            if ($item['hns']) {
-                $out .= ",'" . idfilter($item['hns'], false) . "'";
+            if ($node['hns']) {
+                $out .= ",'" . idfilter($node['hns'], false) . "'";
             } else {
                 $out .= ",0";
             }
-            if ($item['type'] == 'd' || $item['type'] == 'l') {
+            if ($node['type'] == 'd' || $node['type'] == 'l') {
                 $out .= ",1";
             } else {
                 $out .= ",0";
             }
             //MAX option
-            if ($item['type'] == 'l') {
+            if ($node['type'] == 'l') {
                 $out .= ",1";
             } else {
                 $out .= ",0";
             }
             $out .= ")" . $separator;
         }
-        $opennodes = rtrim($opennodes, ' ');
-        return [$out, $opennodes];
+        $openNodes = rtrim($openNodes, ' ');
+        return [$out, $openNodes];
     }
 
     /**
@@ -753,26 +757,26 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
     /**
      * Clean index data from unwanted nodes in nojs mode.
      *
-     * @param array $data nodes of the tree
+     * @param array $nodes nodes of the tree
      * @return void
      *
      * @author  Samuele Tognini <samuele@samuele.netsons.org>
      */
-    private function cleanNojsData(&$data)
+    private function cleanNojsData(&$nodes)
     {
         $a = 0;
-        foreach ($data as $i => $item) {
+        foreach ($nodes as $i => $node) {
             //all entries before $a are unset
             if ($i < $a) {
                 continue;
             }
             //closed node
-            if ($item['type'] == "d" && !$item['open']) {
+            if ($node['type'] == "d" && !$node['open']) {
                 $a = $i + 1;
-                $level = $item['level'];
+                $level = $node['level'];
                 //search and remove every lower and closed nodes
-                while (isset($data[$a]) && $data[$a]['level'] > $level && !$data[$a]['open']) {
-                    unset($data[$a]);
+                while (isset($nodes[$a]) && $nodes[$a]['level'] > $level && !$nodes[$a]['open']) {
+                    unset($nodes[$a]);
                     $a++;
                 }
             }

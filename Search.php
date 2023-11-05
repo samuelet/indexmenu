@@ -45,8 +45,10 @@ class Search
     }
 
     /**
+     * Build the data array for fancytree from search results
+     *
      * @param array $data results from search
-     * @param bool $isInit true if first level of nodes from tree, next levels false
+     * @param bool $isInit true if first level of nodes from tree, false if next levels
      * @return array|false
      */
     public function buildFancytreeData($data, $isInit, $currentPage)
@@ -65,14 +67,26 @@ class Search
         }
     }
 
+    /**
+     * Collects the children at the same level since last parsed item
+     *
+     * @param array $data results from search
+     * @param int $indexLatestParsedItem
+     * @param int $previousLevel level of parent
+     * @param array $nodes by reference, here the child nodes are stored
+     * @param string $currentPage id of main article
+     * @return int latest parsed item from data array
+     */
     private function makeNodes(&$data, $indexLatestParsedItem, $previousLevel, &$nodes, $currentPage)
     {
         $i = 0;
         $counter = 0;
         foreach ($data as $i => $item) {
+            //skip parsed items
             if ($i <= $indexLatestParsedItem) {
                 continue;
             }
+
             if ($item['level'] < $previousLevel || $counter === 0 && $item['level'] == $previousLevel) {
                 return $i - 1;
             }
@@ -138,13 +152,14 @@ class Search
      */
     public function search($ns, $opts): array
     {
+        global $conf;
+
         if (!empty($opts['tempNew'])) {
             //NEW: a bit different logic for lazy loading of opened/closed nodes
             $functionName = 'searchIndexmenuItemsNew';
         } else {
             $functionName = 'searchIndexmenuItems';
         }
-        global $conf;
         $dataDir = $conf['datadir'];
         $data = [];
         $fsDir = "/" . utf8_encodeFN(str_replace(':', '/', $ns));

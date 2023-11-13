@@ -55,6 +55,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
     /**
      * Handler to prepare matched data for the rendering process
      *
+     * @author Samuele Tognini <samuele@samuele.netsons.org>
+     * @author Ekkart Kleinod <ekleinod@edgesoft.de>
+     *
      * @param   string       $match   The text matched by the patterns
      * @param   int          $state   The lexer state for the match
      * @param   int          $pos     The character position of the matched text
@@ -71,6 +74,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $nss      = array();
         $skipns   = array();
         $skipfile = array();
+        $maxcount = 0;
 
         $defaultsstr = $this->getConf('defaultoptions');
         $defaults = explode(' ', $defaultsstr);
@@ -240,6 +244,12 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
             $jsajax .= "&skipfile=" . utf8_encodeFN(($action == '+' ? '+' : '=') . $sf[1]);
         }
 
+        // check maxcount option
+        if($maxcountvalue = $this->getOption($defaultsstr, $optsstr, '/maxcount#(\d+)/u')) {
+            $maxcount = $maxcountvalue;
+        }
+
+
         //js options
         $js_opts = compact('theme', 'identifier', 'nocookie', 'navbar', 'noscroll', 'maxjs', 'notoc', 'jsajax', 'context', 'nomenu');
 
@@ -262,7 +272,8 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
                 'headpage'      => $this->getConf('headpage'),
                 'hide_headpage' => $this->getConf('hide_headpage')
             ),
-            $hsort
+            $hsort,
+            $maxcount
         );
     }
 
@@ -389,6 +400,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      *
      * This function is a simple hack of Dokuwiki @see html_index($ns)
      * @author Andreas Gohr <andi@splitbrain.org>
+     * @author Ekkart Kleinod <ekleinod@edgesoft.de>
      *
      * @param array $myns the options for indexmenu
      * @return bool|string return html for a nojs index and when enabled the js rendered index, otherwise false
@@ -403,6 +415,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         $this->nsort = $myns[5];
         $opts        = $myns[6]; //level, nons, nopg, nss, max, js, skip_index, skip_file, headpage, hide_headpage
         $this->hsort = $myns[7];
+        $this->maxcount = $myns[8];
         $data        = array();
         $js_name     = "indexmenu_".$js_opts['identifier'];
         $fsdir       = "/".utf8_encodeFN(str_replace(':', '/', $ns));
@@ -411,6 +424,12 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         } else {
             search($data, $conf['datadir'], array($this, '_search_index'), $opts, $fsdir);
         }
+
+        if($this->maxcount > 0) {
+            // reduce items in array to maxcount, preserving keys
+            $data = array_slice($data, 0, $this->maxcount, true);
+        }
+
         if(!$data) return false;
 
         // javascript index

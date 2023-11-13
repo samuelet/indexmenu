@@ -288,6 +288,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
      * @author Samuele Tognini <samuele@samuele.netsons.org>
      * @author Andreas Gohr <andi@splitbrain.org>
      * @author Rene Hadler <rene.hadler@iteas.at>
+     * @author Ekkart Kleinod <ekleinod@edgesoft.de>
      */
     function print_index($ns) {
         require_once(DOKU_PLUGIN.'indexmenu/syntax/indexmenu.php');
@@ -299,6 +300,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         $data     = array();
         $skipfile = array();
         $skipns   = array();
+        $maxcount = 0;
 
         if($_REQUEST['max'] > 0) {
             $max   = $_REQUEST['max'];
@@ -331,6 +333,10 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
             $skipns[$index] = substr($skipn, 1);
         }
 
+        if($_REQUEST['maxcount'] > 0) {
+            $maxcount = $_REQUEST['maxcount'];
+        }
+
         $opts = array(
             'level'         => $level,
             'nons'          => $_REQUEST['nons'],
@@ -349,6 +355,11 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
             search($data, $conf['datadir'], array($idxm, '_search_index'), $opts, $fsdir);
         }
 
+        if($maxcount > 0) {
+            // reduce items in array to maxcount, preserving keys
+            $data = array_slice($data, 0, $maxcount, true);
+        }
+
         $out = '';
         if($_REQUEST['nojs']) {
             require_once(DOKU_INC.'inc/html.php');
@@ -356,7 +367,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
             $out .= preg_replace('/<ul class="idx">(.*)<\/ul>/s', "$1", $out_tmp);
         } else {
             $nodes = $idxm->_jsnodes($data, '', 0);
-            $out   = "ajxnodes = [";
+            $out .= "ajxnodes = [";
             $out .= rtrim($nodes[0], ",");
             $out .= "];";
         }

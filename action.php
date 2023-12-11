@@ -352,7 +352,7 @@ class action_plugin_indexmenu extends DokuWiki_Action_Plugin {
         $out = '';
         if($_REQUEST['nojs']) {
             require_once(DOKU_INC.'inc/html.php');
-            $out_tmp = html_buildlist($data, 'idx', array($idxm, "_html_list_index"), "html_li_index");
+            $out_tmp = html_buildlist($data, 'idx', array($idxm, "_tagListItem"), "tagListItem");
             $out .= preg_replace('/<ul class="idx">(.*)<\/ul>/s', "$1", $out_tmp);
         } else {
             $nodes = $idxm->_jsnodes($data, '', 0);

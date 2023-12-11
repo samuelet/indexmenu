@@ -428,7 +428,7 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         //    the toggle interacts with hide needed for js option.
         $output = "\n";
         $output .= '<div><div id="nojs_'.$js_name.'" data-jsajax="'.utf8_encodeFN($js_opts['jsajax']).'" class="indexmenu_nojs">'."\n";
-        $output .= html_buildlist($data, 'idx', array($this, "_html_list_index"), "html_li_index");
+        $output .= html_buildlist($data, 'idx', array($this, "_tagListItem"), "tagListItem");
         $output .= "</div></div>\n";
         $output .= $output_tmp;
         return $output;

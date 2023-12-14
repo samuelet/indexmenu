@@ -617,15 +617,18 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
      * @return string id of namespace
      */
     public function _parse_ns($ns, $id = FALSE) {
-        if(!$id) {
+        if(!$id === false) {
             global $ID;
             $id = $ID;
         }
-        //Just for old reelases compatibility
-        if(empty($ns) || $ns == '..') $ns = ":..";
-            $resolver = new PageResolver($ns);
-            $id = $resolver->resolveId(getNS($id));
-            return $id;
+        //Just for old reelases compatibility, .. was an old version for : in the docs of indexmenu
+        if ($ns == '..') {
+            $ns = ":";
+        }
+        $ns = "$ns:arandompagehere";
+        $resolver = new PageResolver($id);
+        $ns = getNs($resolver->resolveId($ns));
+        return $ns === false ? '' : $ns;
     }
 
     /**

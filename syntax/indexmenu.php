@@ -6,7 +6,7 @@
  * @author      Samuele Tognini <samuele@samuele.netsons.org>
  *
  */
-
+use dokuwiki\File\PageResolver;
 if(!defined('DOKU_INC')) die();
 if(!defined('INDEXMENU_IMG_ABSDIR')) define('INDEXMENU_IMG_ABSDIR', DOKU_PLUGIN."indexmenu/images");
 
@@ -623,7 +623,9 @@ class syntax_plugin_indexmenu_indexmenu extends DokuWiki_Syntax_Plugin {
         }
         //Just for old reelases compatibility
         if(empty($ns) || $ns == '..') $ns = ":..";
-        return resolve_id(getNS($id), $ns);
+            $resolver = new PageResolver($ns);
+            $id = $resolver->resolveId(getNS($id));
+            return $id;
     }
 
     /**

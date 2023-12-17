@@ -10,11 +10,21 @@ var indexmenu_contextmenu = {'all': []};
 
 
 /* DOKUWIKI:include scripts/fancytree/jquery.fancytree-all.min.js */
-// function logEvent(event, data, msg){
-//     //        var args = Array.isArray(args) ? args.join(", ") :
-//     msg = msg ? ": " + msg : "";
-//     jQuery.ui.fancytree.info("Event('" + event.type + "', node=" + data.node + ")" + msg);
-// }
+
+//   - page id without URL rewriting http://example.doku/doku.php?id=test:start
+//   - page id without URL rewriting http://example.doku/doku.php?id=test:plugins#interwikipaste
+//   - page id with .htaccess URL rewriting http://example.doku/test:plugins
+//   - page id with .htaccess URL rewriting and 'useslash' config http://example.doku/test/plugins
+//   - page id with internal URL rewriting http://example.doku/doku.php/test:plugins
+//   - http://example.doku/lib/exe/detail.php?id=test%3Aplugins&media=ns:image.jpg
+//   - http://example.doku/lib/exe/fetch.php?w=400&tok=097122&media=ns:image.jpg
+//   - http://example.doku/lib/exe/fetch.php?media=test:file.pdf
+//   - http://example.doku/_detail/ns:image.jpg?id=test%3Aplugins
+//   - http://example.doku/_media/test:file.pdf
+//   - http://example.doku/_detail/ns/image.jpg?id=test%3Aplugins
+//   - http://example.doku/_media/test/file.pdf
+
+
 jQuery(function(){  // on page load
     // Create the tree inside the <div id="tree"> element.
     const predefinedPresets = {
@@ -35,7 +45,6 @@ jQuery(function(){  // on page load
             'map': {}
         },
         'mdi': { //works with icons-plugin, settings: enable plugin»icons»loadMaterialDesignIcons
-
             'preset': '',
             'map': {
                 _addClass: "mdi",
@@ -93,13 +102,18 @@ jQuery(function(){  // on page load
     };
     // userDefinedPresets can be defined in conf/userscript.js
     const presets = {...predefinedPresets, ...(typeof userDefinedPresets === 'undefined' ? [] : userDefinedPresets)};
-
+    //let targettype;
+    // function logEvent(event, data, msg){
+    //     //        var args = Array.isArray(args) ? args.join(", ") :
+    //     msg = msg ? ": " + msg : "";
+    //     jQuery.ui.fancytree.info("Event('" + event.type + "', node=" + data.node + ")" + msg);
+    // }
     jQuery(".indexmenu_js2").each(function(){
         let $tree = jQuery(this),
             id = $tree.attr('id');
         const options = $tree.data('options');
-        console.log("options");
-        console.log(options);
+        // console.log("options");
+        // console.log(options);
         let themePreset = presets[options.opts.theme];
 
         $tree.fancytree({
@@ -140,17 +154,12 @@ jQuery(function(){  // on page load
             activate: function(event, data){
                 const node = data.node;
                 // let orgEvent = data.originalEvent;
-                // console.log("activate1");
-                // console.log(node.key)
-                // console.log(JSINFO.id)
 // console.log(data);
                 //prevent looping (hns is false or a page id)
                 if(node.key === JSINFO.id || node.data.hns === JSINFO.id) {
                     //node is equal to current page
                     return;
                 }
-                //TODO node.key=="namespace:", JSINFO.id=="namespace:start", here an extra reload is done..
-                //happens if you try to close an folder with hns(a start page) while that start page shown.
 
                 // if(targettype === 'expander') {  //check global stored target type
                 //     return false;
@@ -158,12 +167,9 @@ jQuery(function(){  // on page load
                 if(node.data.url === false) {
                     return false;
                 }
-                // console.log("activate");
-                // console.log(node.data.url);
+
                 if(node.data.url){
-                    //window.open(node.data.href, (orgEvent.ctrlKey || orgEvent.metaKey) ? "_blank" /*node.data.target*/ : node.data.target);
                     window.location.href = node.data.url;
-                    // console.log("reload");
                 }
             },
             init: function(event, data) {
@@ -192,7 +198,6 @@ jQuery(function(){  // on page load
                     navbar: options.opts.navbar ? 1 : 0, //only init: open tree at current page
                     currentpage: JSINFO.id,
                     max: options.opts.max, //#n of max#n#m
-                    //js: 1,//options.opts.js, //only init true, later false
                     skipns: options.opts.skipns,
                     skipfile: options.opts.skipfile,
                     sort: options.sort.sort ? options.sort.sort : 0, //'t', 'd', false TODO is false handled correctly?
@@ -220,7 +225,6 @@ jQuery(function(){  // on page load
                         subnss: '',//node.key,//options.opts.subnss, //TODO only string of current ns, that should be opened (use this only for navbar!)
                         currentpage: JSINFO.id,
                         max: options.opts.maxajax, //#m of max#n#m
-                        //js: 0, //options.opts.js, //original: only true needed if init
                         skipns: options.opts.skipns,
                         skipfile: options.opts.skipfile,
                         sort: options.sort.sort ? options.sort.sort  : 0,

@@ -66,8 +66,9 @@ class action_plugin_indexmenu extends ActionPlugin
     public function extendJSINFO(Event $event)
     {
         global $INFO, $JSINFO;
+
         $JSINFO['isadmin'] = (int)$INFO['isadmin'];
-        $JSINFO['isauth'] = (int)$INFO['userinfo'];
+        $JSINFO['isauth'] = (int)$INFO['userinfo'] ?? 0;
     }
 
     /**
@@ -532,8 +533,6 @@ class action_plugin_indexmenu extends ActionPlugin
     public function addStylesForUsedThemes(Event $event)
     {
         global $ID;
-
-        $hasIndexmenu = p_get_metadata($ID, 'indexmenu hasindexmenu');
 
         if (($themes = p_get_metadata($ID, 'indexmenu usedthemes')) !== null) { //METADATA_RENDER_UNLIMITED
             $themes = array_keys($themes);

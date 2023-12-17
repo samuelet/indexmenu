@@ -188,6 +188,7 @@ class action_plugin_indexmenu extends ActionPlugin
                 break;
 
             case 'index':
+                //for dTree
                 //retrieval of data of the extra nodes for the indexmenu (if ajax loading set with max#m(#n)
                 if ($INPUT->has('idx')) {
                     echo $this->printIndex($INPUT->str('idx'));
@@ -210,9 +211,6 @@ class action_plugin_indexmenu extends ActionPlugin
     {
         global $INPUT;
 
-
-//        $idxm     = new syntax_plugin_indexmenu_indexmenu();
-//        $ns       = $idxm->parseNs(rawurldecode($ns)); // why not assuming a 'key' is offered?
         $ns = $INPUT->str('ns', '');
         $ns = rtrim($ns, ':');
         //key of directory has extra : on the end
@@ -231,7 +229,7 @@ class action_plugin_indexmenu extends ActionPlugin
         $isInit = $INPUT->bool('init');
 
         $currentPage = $INPUT->str('currentpage');
-        if ($isInit) { //TODO attention, depends on logic that js is only 1 if init
+        if ($isInit) {
             $subnss = $INPUT->arr('subnss');
             $debug1 = var_export($subnss, true);
             // if 'navbar' enabled add current ns to list
@@ -275,8 +273,6 @@ class action_plugin_indexmenu extends ActionPlugin
             //init with complex array, only current ns if lazy
             'subnss' => $subnss,
             'max' => $max,
-            //DEPRECATED (for dTree: only init true, lazy requests false.) NOW not used, so false.
-            'js' => false,
             //preprocessed to string, only part from syntax
             'skipns' => $skipNs,
             //preprocessed to string, only part from syntax
@@ -407,7 +403,7 @@ class action_plugin_indexmenu extends ActionPlugin
     {
         $out = '<div class="tocheader">';
         $out .= '<a href="' . wl($id) . '">';
-        $out .= ($meta['title']) ? htmlspecialchars($meta['title']) : htmlspecialchars(noNS($id));
+        $out .= $meta['title'] ? hsc($meta['title']) : hsc(noNS($id));
         $out .= '</a>';
         $out .= '</div>';
         if ($meta['description']['abstract']) {
@@ -537,7 +533,7 @@ class action_plugin_indexmenu extends ActionPlugin
     {
         global $ID;
 
-        p_get_metadata($ID, 'indexmenu hasindexmenu');
+        $hasIndexmenu = p_get_metadata($ID, 'indexmenu hasindexmenu');
 
         if (($themes = p_get_metadata($ID, 'indexmenu usedthemes')) !== null) { //METADATA_RENDER_UNLIMITED
             $themes = array_keys($themes);

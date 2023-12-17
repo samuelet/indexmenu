@@ -310,16 +310,16 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
                 'hsort' => $hsort,
             ],
             [ //3=opts
-                'level' => $level, // requested depth of initial opened nodes, -1:all
-                'nons' => $nons,
-                'nopg' => $nopg,
-                'subnss' => $subNSs,
-                'navbar' => $navbar, //add current ns to subNSs
-                'max' => $max, //number of levels loaded initially, rest should be loaded with ajax
-                'maxajax' => $maxAjax, //number of levels loaded per ajax request
-                'js' => $js, //used???
-                'skipns' => $skipNs,
-                'skipfile' => $skipFile,
+                'level' => $level, // requested depth of initial opened nodes, -1:all //TODO test
+                'nons' => $nons, //TODO test
+                'nopg' => $nopg, //TODO test
+                'subnss' => $subNSs, //TODO test
+                'navbar' => $navbar, //add current ns to subNSs //TODO test
+                'max' => $max, //number of levels loaded initially, rest should be loaded with ajax //TODO test
+                'maxajax' => $maxAjax, //number of levels loaded per ajax request //TODO test
+                'js' => $js,
+                'skipns' => $skipNs, //TODO test
+                'skipfile' => $skipFile, //TODO test
                 'headpage' => $this->getConf('headpage'),
                 'hide_headpage' => $this->getConf('hide_headpage'),
                 'theme' => $theme
@@ -531,9 +531,11 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
 
     private function buildFancyTree($js_name, $ns, $opts, $sort)
     {
+        global $conf;
         //not needed, because directly retrieved from config
         unset($opts['headpage']);
         unset($opts['hide_headpage']);
+        unset($opts['js']); //always true
 
         /* @deprecated 2023-08-14 remove later */
         if ($opts['theme'] == 'default') {
@@ -543,7 +545,8 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
             'ns' => $ns,
             'opts' => $opts,
             'sort' => $sort,
-            'contextmenu' => false
+            'contextmenu' => false,
+            'startpage' => $conf['start']
         ];
         return '<div id="tree2_' . $js_name . '" class="indexmenu_js2 skin-' . $opts['theme'] . '"'
             . 'data-options=\'' . json_encode($options) . '\'></div>';
@@ -584,7 +587,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         $title = $search->getNamespaceTitle($ns, $headpage, $hns); //TODO static function?
         if (empty($title)) {
             if (empty($ns)) {
-                $title = htmlspecialchars($conf['title'], ENT_QUOTES);
+                $title = hsc($conf['title']);
             } else {
                 $title = $ns;
             }

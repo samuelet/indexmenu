@@ -151,7 +151,7 @@ class Search
      *                             the AJAX mechanism
      *  $opts['nopg']       bool   exclude page nodes
      *  $opts['hide_headpage'] int don't hide (0) or hide (1)
-     *  $opts['js']         bool   use js-render
+     *  $opts['js']         bool   use js-render (only used for old 'searchIndexmenuItems')
      * @return array The results of the search
      */
     public function search($ns, $opts): array
@@ -315,7 +315,7 @@ class Search
             if (is_null($title)) {
                 $title = noNS($id);
             }
-            $title = htmlspecialchars($title, ENT_QUOTES);
+            $title = hsc($title);
         }
 
         $item = [
@@ -337,7 +337,7 @@ class Search
     /**
      * Callback that adds an item of namespace/page to the browsable index, if it fits in the specified options
      *
-     * testing version, for debuggin/fixing lazyloading...
+     * TODO testing version, for debuggin/fixing lazyloading...
      * @param array $data Already collected nodes
      * @param string $base Where to start the search, usually this is $conf['datadir']
      * @param string $file Current file or directory relative to $base
@@ -354,7 +354,6 @@ class Search
      *                              through the AJAX mechanism
      *   $opts['nopg']       bool   exclude page nodes
      *   $opts['hide_headpage'] int don't hide (0) or hide (1)
-     *   $opts['js']         bool   use js-render
      * @return bool if this directory should be traversed (true) or not (false)
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
@@ -442,8 +441,9 @@ class Search
             if (isHiddenPage($id) || auth_quickaclcheck($id) < AUTH_READ) return false;
             //Skip files in plugin conf
             foreach ($skipfile as $skipf) {
-                if (!empty($skipf) && preg_match($skipf, $id))
+                if (!empty($skipf) && preg_match($skipf, $id)) {
                     return false;
+                }
             }
             //Skip headpages to hide
             if (!$opts['nons'] && !empty($headpage) && $opts['hide_headpage']) {
@@ -476,7 +476,7 @@ class Search
             if (is_null($title)) {
                 $title = noNS($id);
             }
-            $title = htmlspecialchars($title, ENT_QUOTES);
+            $title = hsc($title);
         }
 
         $item = [
@@ -626,7 +626,7 @@ class Search
                         $title = $title_tmp;
                     }
                 }
-                $title = htmlspecialchars($title, ENT_QUOTES);
+                $title = hsc($title);
                 $hns = $page;
                 //headpage found, exit for
                 break;

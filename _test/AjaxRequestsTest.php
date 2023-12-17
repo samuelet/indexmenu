@@ -160,11 +160,13 @@ class AjaxRequestsTest extends DokuWikiTest
                     'title' => 'dokuwiki',
                     'key' => 'wiki:dokuwiki',
                     'hns' => false,
+                    'url' => '/./doku.php?id=wiki:dokuwiki'
                 ],
                 1 => [
                     'title' => 'syntax',
                     'key' => 'wiki:syntax',
                     'hns' => false,
+                    'url' => '/./doku.php?id=wiki:syntax'
                 ]
             ]];
     }
@@ -177,11 +179,13 @@ class AjaxRequestsTest extends DokuWikiTest
                     'title' => 'dokuwiki',
                     'key' => 'wiki:dokuwiki',
                     'hns' => false,
+                    'url' => '/./doku.php?id=wiki:dokuwiki'
                 ],
                 1 => [
                     'title' => 'syntax',
                     'key' => 'wiki:syntax',
                     'hns' => false,
+                    'url' => '/./doku.php?id=wiki:syntax'
                 ]
             ]];
     }
@@ -193,17 +197,20 @@ class AjaxRequestsTest extends DokuWikiTest
                 0 => [
                     'title' => 'Cc',
                     'key' => 'ns2:apage',
-                    'hns' => false
+                    'hns' => false,
+                    'url' => '/./doku.php?id=ns2:apage'
                 ],
                 1 => [
                     'title' => 'Aa',
                     'key' => 'ns2:bpage',
-                    'hns' => false
+                    'hns' => false,
+                    'url' => '/./doku.php?id=ns2:bpage'
                 ],
                 2 => [
                     'title' => 'Bb',
                     'key' => 'ns2:cpage',
-                    'hns' => false
+                    'hns' => false,
+                    'url' => '/./doku.php?id=ns2:cpage'
                 ]
             ]];
     }
@@ -215,17 +222,20 @@ class AjaxRequestsTest extends DokuWikiTest
                 0 => [
                     'title' => 'Aa',
                     'key' => 'ns2:bpage',
-                    'hns' => false
+                    'hns' => false,
+                    'url' => '/./doku.php?id=ns2:bpage'
                 ],
                 1 => [
                     'title' => 'Bb',
                     'key' => 'ns2:cpage',
-                    'hns' => false
+                    'hns' => false,
+                    'url' => '/./doku.php?id=ns2:cpage'
                 ],
                 2 => [
                     'title' => 'Cc',
                     'key' => 'ns2:apage',
-                    'hns' => false
+                    'hns' => false,
+                    'url' => '/./doku.php?id=ns2:apage'
                 ]
             ]];
     }
@@ -237,17 +247,20 @@ class AjaxRequestsTest extends DokuWikiTest
                 0 => [
                     'title' => 'Bb',
                     'key' => 'ns2:cpage',
-                    'hns' => false
+                    'hns' => false,
+                    'url' => '/./doku.php?id=ns2:cpage'
                 ],
                 1 => [
                     'title' => 'Aa',
                     'key' => 'ns2:bpage',
-                    'hns' => false
+                    'hns' => false,
+                    'url' => '/./doku.php?id=ns2:bpage'
                 ],
                 2 => [
                     'title' => 'Cc',
                     'key' => 'ns2:apage',
-                    'hns' => false
+                    'hns' => false,
+                    'url' => '/./doku.php?id=ns2:apage'
                 ]
             ]];
     }
@@ -261,26 +274,30 @@ class AjaxRequestsTest extends DokuWikiTest
                     'key' => 'ns1:ns0:',
                     'hns' => false,
                     'folder' => true,
-                    'lazy' => true
+                    'lazy' => true,
+                    'url' => false
                 ],
                 1 => [
                     'title' => 'Aa',
                     'key' => 'ns1:ns1:',
                     'hns' => 'ns1:ns1:start',
                     'folder' => true,
-                    'lazy' => true
+                    'lazy' => true,
+                    'url' => '/./doku.php?id=ns1:ns1:start'
                 ],
                 2 => [
                     'title' => 'ns2',
                     'key' => 'ns1:ns2:',
                     'hns' => false,
                     'folder' => true,
-                    'lazy' => true
+                    'lazy' => true,
+                    'url' => false
                 ],
                 3 => [
                     'title' => 'Dd',
                     'key' => 'ns1:apage',
-                    'hns' => false
+                    'hns' => false,
+                    'url' => '/./doku.php?id=ns1:apage'
                 ]
             ]];
     }
@@ -296,26 +313,30 @@ class AjaxRequestsTest extends DokuWikiTest
                     'key' => 'ns1:ns1:',
                     'hns' => 'ns1:ns1:start',
                     'folder' => true,
-                    'lazy' => true
+                    'lazy' => true,
+                    'url' => '/./doku.php?id=ns1:ns1:start'
                 ],
                 1 => [
                     'title' => 'ns0',
                     'key' => 'ns1:ns0:',
                     'hns' => false,
                     'folder' => true,
-                    'lazy' => true
+                    'lazy' => true,
+                    'url' => false
                 ],
                 2 => [
                     'title' => 'ns2',
                     'key' => 'ns1:ns2:',
                     'hns' => false,
                     'folder' => true,
-                    'lazy' => true
+                    'lazy' => true,
+                    'url' => false
                 ],
                 3 => [
                     'title' => 'Dd',
                     'key' => 'ns1:apage',
-                    'hns' => false
+                    'hns' => false,
+                    'url' => '/./doku.php?id=ns1:apage'
                 ]
             ]];
     }

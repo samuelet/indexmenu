@@ -143,8 +143,9 @@ jQuery(function(){  // on page load
                 // console.log("activate1");
                 // console.log(node.key)
                 // console.log(JSINFO.id)
-                //prevent looping
-                if(node.key === JSINFO.id) {
+// console.log(data);
+                //prevent looping (hns is false or a page id)
+                if(node.key === JSINFO.id || node.data.hns === JSINFO.id) {
                     //node is equal to current page
                     return;
                 }

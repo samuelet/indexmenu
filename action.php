@@ -533,7 +533,7 @@ class action_plugin_indexmenu extends ActionPlugin
     {
         global $ID;
 
-        $hasIndexmenu = p_get_metadata($ID, 'indexmenu hasindexmenu');
+        p_get_metadata($ID, 'indexmenu hasindexmenu');
 
         if (($themes = p_get_metadata($ID, 'indexmenu usedthemes')) !== null) { //METADATA_RENDER_UNLIMITED
             $themes = array_keys($themes);

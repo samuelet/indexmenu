@@ -129,11 +129,14 @@ jQuery(function(){  // on page load
             blur: function(event, data) {
                 data.node.scheduleAction("cancel");
             },
-            // click: function(event, data) { //just for logging info(testing)
-            //     logEvent(event, data, ", targetType=" + data.targetType);
-            //     // return false to prevent default behavior (i.e. activation, ...)
-            //     //return false;
-            // },
+            click: function(event, data) {
+                // return false to prevent default behavior (i.e. activation, ...)
+                // var targettype = data.targetType; //store target type global
+                if(data.targetType === 'expander') {
+                    data.node.toggleExpanded(); //perform default action
+                    return false;  // prevent default action
+                }
+            },
             activate: function(event, data){
                 const node = data.node;
                 // let orgEvent = data.originalEvent;
@@ -148,6 +151,9 @@ jQuery(function(){  // on page load
                 //TODO node.key=="namespace:", JSINFO.id=="namespace:start", here an extra reload is done..
                 //happens if you try to close an folder with hns(a start page) while that start page shown.
 
+                // if(targettype === 'expander') {  //check global stored target type
+                //     return false;
+                // }
                 if(node.data.url === false) {
                     return false;
                 }
@@ -160,6 +166,7 @@ jQuery(function(){  // on page load
                 }
             },
             init: function(event, data) {
+                //activate current node
                 data.tree.reactivate();
             },
             enhanceTitle: function(event, data) {

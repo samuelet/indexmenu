@@ -235,7 +235,7 @@ class action_plugin_indexmenu extends ActionPlugin
             $debug1 = var_export($subnss, true);
             // if 'navbar' enabled add current ns to list
             if ($INPUT->bool('navbar')) {
-                $subnss[] = [getNS($currentPage)];
+                $subnss[] = [getNS($currentPage)]; //TODO add level?
             }
             $debug2 = var_export($subnss, true);
             // alternative, via javascript.. https://wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree.html#loadKeyPath
@@ -289,6 +289,8 @@ class action_plugin_indexmenu extends ActionPlugin
             'nsort' => $INPUT->bool('nsort'),
             'hsort' => $INPUT->bool('hsort')
         ];
+
+        $opts['tempNew'] = true; //TODO temporary
 
         $search = new Search($sort);
         $data = $search->search($ns, $opts);

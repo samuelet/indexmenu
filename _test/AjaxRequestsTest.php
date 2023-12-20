@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Test sorting
+ *
  * Principle copied from _test/tests/lib/exe/ajax_requests.test.php
  *
  * @group ajax

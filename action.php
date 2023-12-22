@@ -68,7 +68,7 @@ class action_plugin_indexmenu extends ActionPlugin
         global $INFO, $JSINFO;
 
         $JSINFO['isadmin'] = (int)$INFO['isadmin'];
-        $JSINFO['isauth'] = (int)$INFO['userinfo'] ?? 0;
+        $JSINFO['isauth'] = isset($INFO['userinfo']) ? (int) $INFO['userinfo'] : 0;
     }
 
     /**

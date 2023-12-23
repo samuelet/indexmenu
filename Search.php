@@ -285,7 +285,7 @@ class Search
                     return false;
                 }
             }
-            //Skip headpages to hide
+            //Skip headpages to hide (nons has no namespace nodes, therefore, no duplicated links to headpage)
             if (!$opts['nons'] && !empty($headpage) && $opts['hide_headpage']) {
                 //start page is in root
                 if ($id == $conf['start']) return false;

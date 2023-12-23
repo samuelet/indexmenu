@@ -181,7 +181,7 @@ var IndexmenuContextmenu = {
      * @returns {string}
      */
     getid: function (urlbase, id) {
-        let url = (urlbase || '') + encodeURI(id || '');
+        let url = (urlbase || '') + encodeURIComponent(id || '');
         url += (urlbase.indexOf("?") < 0) ? '?' : '&';
         return url;
     },

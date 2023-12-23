@@ -47,10 +47,10 @@ if (JSINFO && JSINFO.isadmin) {
  * Common available functions:
  *
  * Some common functions are added by [indexmenu plugin folder]/scripts/contextmenu.js
- *  - IndexmenuContextmenu.srchpage(u, s, isdir, nid)
- *  - IndexmenuContextmenu.getid(u, id)
- *  - IndexmenuContextmenu.reqpage(b, s, id, n)
- *  - IndexmenuContextmenu.insertTags(lnk, sep)
+ *  - IndexmenuContextmenu.srchpage(urlbase, sepchar, isdir, dokuid)
+ *  - IndexmenuContextmenu.getid(urlbase, dokuid)
+ *  - IndexmenuContextmenu.reqpage(urlbase, sepchar, dokuid, pagename)
+ *  - IndexmenuContextmenu.insertTags(dokuid, sepchar)
  *
  * Insert your custom functions (available for all users) at the bottom of this file.
  */

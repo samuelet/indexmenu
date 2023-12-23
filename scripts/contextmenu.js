@@ -152,6 +152,10 @@ var IndexmenuContextmenu = {
     /**
      * Common functions
      * Insert your custom functions (available for all users) here.
+     */
+
+    /**
+     * Navigate to the search page
      *
      * @param {string} urlbase index.config.urlbase
      * @param {string} sepchar index.config.sepchar
@@ -186,24 +190,40 @@ var IndexmenuContextmenu = {
         return url;
     },
 
-    reqpage: function (b, s, id, n) {
-        var r;
-        if (n) {
-            r = id + s + n;
+    /**
+     * Navigate to the editor window
+     *
+     * @param {string} urlbase
+     * @param {string} sepchar
+     * @param {string} id
+     * @param {string} pagename
+     */
+    reqpage: function (urlbase, sepchar, id, pagename) {
+        let newpageid;
+        if (pagename) {
+            newpageid = id + sepchar + pagename;
         } else {
-            r = prompt(LANG.plugins.indexmenu.insertpagename, "");
-            if (!r) {
+            newpageid = prompt(LANG.plugins.indexmenu.insertpagename, "");
+            if (!newpageid) {
                 return;
             }
-            r = id + s + r;
+            newpageid = id + sepchar + newpageid;
         }
-        if (r) window.location.href = IndexmenuContextmenu.getid(b, r) + "do=edit";
+        if (newpageid) {
+            window.location.href = IndexmenuContextmenu.getid(urlbase, newpageid) + "do=edit";
+        }
     },
 
-    insertTags: function (lnk, sep) {
-        var r, l = lnk;
-        if (sep) {
-            r = new RegExp(sep, "g");
+    /**
+     * Insert link syntax with given id in current editor window
+     *
+     * @param {string} lnk page id
+     * @param {string} sepchar
+     */
+    insertTags: function (lnk, sepchar) {
+        let r, l = lnk;
+        if (sepchar) {
+            r = new RegExp(sepchar, "g");
             l = lnk.replace(r, ':');
         }
         insertTags('wiki__text', '[[', ']]', l);

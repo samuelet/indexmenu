@@ -152,25 +152,37 @@ var IndexmenuContextmenu = {
     /**
      * Common functions
      * Insert your custom functions (available for all users) here.
+     *
+     * @param {string} urlbase index.config.urlbase
+     * @param {string} sepchar index.config.sepchar
+     * @param {boolean} isdir whether a directory (probably boolean, might be string)
+     * @param {string} nid  page id of node (dokuid mentioned in indexmenu.js)
      */
 
-    srchpage: function (u, s, isdir, nid) {
-        var r = prompt(LANG.plugins.indexmenu.insertkeywords, "");
-        if (r) {
-            var fnid = nid;
+    srchpage: function (urlbase, sepchar, isdir, nid) {
+        const enteredText = prompt(LANG.plugins.indexmenu.insertkeywords, "");
+        if (enteredText) {
+            let fnid = nid;
             if (isdir == "0") {
-                fnid = fnid.substring(0, nid.lastIndexOf(s));
+                fnid = fnid.substring(0, nid.lastIndexOf(sepchar));
             }
-            var b = u, re = new RegExp(s, 'g');
+            let b = urlbase, re = new RegExp(sepchar, 'g');
             fnid = fnid.replace(re, ":");
-            b += (u.indexOf("?id=") < 0) ? '?id=' : '';
-            window.location.href = IndexmenuContextmenu.getid(b, r + " @" + fnid) + "do=search";
+            b += (urlbase.indexOf("?id=") < 0) ? '?id=' : '';
+            window.location.href = IndexmenuContextmenu.getid(b, enteredText + " @" + fnid) + "do=search";
         }
     },
 
-    getid: function (u, id) {
-        var url = (u || '') + encodeURI(id || '');
-        url += (u.indexOf("?") < 0) ? '?' : '&';
+    /**
+     * Build a url to a wiki page
+     *
+     * @param {string} urlbase
+     * @param {string} id
+     * @returns {string}
+     */
+    getid: function (urlbase, id) {
+        let url = (urlbase || '') + encodeURI(id || '');
+        url += (urlbase.indexOf("?") < 0) ? '?' : '&';
         return url;
     },
 

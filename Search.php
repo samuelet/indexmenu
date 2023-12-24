@@ -2,6 +2,8 @@
 
 namespace dokuwiki\plugin\indexmenu;
 
+use dokuwiki\Utf8\Sort;
+
 class Search
 {
     /**
@@ -646,9 +648,9 @@ class Search
     private function compareNodes($a, $b)
     {
         if ($this->rsort) {
-            return strnatcasecmp($b['sort'], $a['sort']);
+            return Sort::strcmp($b['sort'], $a['sort']);
         } else {
-            return strnatcasecmp($a['sort'], $b['sort']);
+            return Sort::strcmp($a['sort'], $b['sort']);
         }
     }
 

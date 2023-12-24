@@ -593,7 +593,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
             }
         }
         // inline javascript
-        $out = "<script type='text/javascript' charset='utf-8'>\n";
+        $out = "<script type='text/javascript'>\n";
         $out .= "<!--//--><![CDATA[//><!--\n";
         $out .= "var $js_name = new dTree('" . $js_name . "','" . $js_dTreeOpts['theme'] . "');\n";
         //javascript config options

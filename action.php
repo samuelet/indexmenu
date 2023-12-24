@@ -50,7 +50,7 @@ class action_plugin_indexmenu extends ActionPlugin
     public function removeSyntaxIfNotAdmin(Event $event)
     {
         global $INFO;
-        if (!$INFO['isadmin']) {
+        if (!$INFO['ismanager']) {
             $event->data[0][1] = preg_replace("/{{indexmenu(|_n)>.+?}}/", "", $event->data[0][1]);
         }
     }

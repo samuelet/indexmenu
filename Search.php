@@ -108,6 +108,7 @@ class Search
                 $node['url'] = wl($item['id']);
             }
             // f/d/l, assumption: if 'd' try always level deeper, maybe not true if d has no items in them by some
+            // l_nopg - specific to add detection of lower levels to prevent not working expanders because ns is empty.
             // filter settings?.
             if ($item['type'] !== 'f') {
                 $node['folder'] = true;
@@ -125,6 +126,23 @@ class Search
                         $node['children'],
                         $currentPage
                     );
+                    //TODO consider: remove folder if no children e.g. due to hidden pages see issue #235
+                } else if ($item['type'] === 'l_nopg') {
+                    // nopg: is actual a lazy node, but because we have no pages, it could be often empty
+                    // therefore walk level deeper and check whether it has child folders
+                    $node['children'] = [];
+                    $indexLatestParsedItem = $this->makeNodes(
+                        $data,
+                        $i,
+                        $item['level'],
+                        $node['children'],
+                        $currentPage
+                    );
+                    // if not empty make it a lazy node
+                    if(!empty($node['children'])) {
+                        $node['lazy'] = true;
+                        unset($node['children']); //do not keep, because these nodes do not know yet their child folders
+                    }
                 } else { // 'l'
                     $node['lazy'] = true;
                 }
@@ -250,7 +268,7 @@ class Search
                 }
             }
             if ($opts['nons']) {
-                return $isOpen;
+                return $isOpen; // in nons, level is only way to show/hide nodes (in nons nodes are not expandable)
             } elseif ($opts['max'] > 0 && !$isOpen && $lvl >= $opts['max']) {
                 $isOpen = false;
                 //Stop recursive searching
@@ -339,7 +357,7 @@ class Search
     /**
      * Callback that adds an item of namespace/page to the browsable index, if it fits in the specified options
      *
-     * TODO testing version, for debuggin/fixing lazyloading...
+     * TODO testing version, for debugging/fixing lazyloading...
      * @param array $data Already collected nodes
      * @param string $base Where to start the search, usually this is $conf['datadir']
      * @param string $file Current file or directory relative to $base
@@ -408,12 +426,17 @@ class Search
                 }
             }
             if ($opts['nons']) {
-                return $isOpen;
-            } elseif ($opts['max'] > 0 && !$isOpen) {
+                return $isOpen; // in nons, level is only way to show/hide nodes (in nons nodes are not expandable)
+            } elseif ($opts['max'] > 0 && !$isOpen) { // note: for Fancytree >=1 is used
                 // limited levels per request, node is closed
-                if ($lvl >= $opts['max']) { //
+                if ($opts['nopg'] && $lvl == $opts['max']) { // deeper lvls only used temporary, type=l is fine there
+                    // change type, more nodes should be loaded by ajax, but for nopg we need extra level to determine
+                    // if folder is empty
+                    $type = "l_nopg";
+                    $shouldBeTraversed = true;
+                } elseif ($lvl >= $opts['max']) {
                     //change type, more nodes should be loaded by ajax
-                    $type = "l";
+                    $type = "l"; // use lazy loading
                     $shouldBeTraversed = false;
                 } else {
                     //node is closed, but still more levels requested with max

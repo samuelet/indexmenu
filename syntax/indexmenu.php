@@ -546,7 +546,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
             'opts' => $opts,
             'sort' => $sort,
             'contextmenu' => false,
-            'startpage' => $conf['start']
+            'startpage' => $conf['start'] //needed? or for contextmenu?
         ];
         return '<div id="tree2_' . $js_name . '" class="indexmenu_js2 skin-' . $opts['theme'] . '"'
             . 'data-options=\'' . json_encode($options) . '\'></div>';

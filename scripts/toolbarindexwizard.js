@@ -16,11 +16,11 @@ var indexmenu_wiz = {
     fields: {
         div1: {
             elems: {
-                js: {}
+                jstoggle: {label: 'js'}
             }
         },
         div2: {
-            tlbclass: 'js theme',
+            tlbclass: 'jsitem theme',
             elems: {
                 el1: {headerid: 'theme'}
             }
@@ -30,9 +30,9 @@ var indexmenu_wiz = {
                 el2: {headerid: 'navigation'},
                 navbar: {},
                 context: {},
-                nocookie: {tlbclass: 'js'},
-                noscroll: {tlbclass: 'js'},
-                notoc: {tlbclass: 'js'}
+                nocookie: {tlbclass: 'jsitem'},
+                noscroll: {tlbclass: 'jsitem'},
+                notoc: {tlbclass: 'jsitem'}
             }
         },
         div4: {
@@ -54,12 +54,12 @@ var indexmenu_wiz = {
             }
         },
         div6: {
-            tlbclass: 'js',
+            tlbclass: 'jsitem',
             elems: {
                 el5: {headerid: 'performance'},
-                max: {tlbclass: 'js', number: ['maxn', 'maxm']},
-                maxjs: {tlbclass: 'js', number: ['maxjsn']},
-                id: {tlbclass: 'js', number: ['idn']}
+                max: {tlbclass: 'jsitem', number: ['maxn', 'maxm']},
+                maxjs: {tlbclass: 'jsitem', number: ['maxjsn']},
+                id: {tlbclass: 'jsitem', number: ['idn']}
             }
         }
     },
@@ -81,16 +81,16 @@ var indexmenu_wiz = {
                 resizable: false
             })
             .html(
-                '<fieldset class="index"><legend>'+LANG.plugins.indexmenu.index+'</legend>' +
+                '<fieldset class="indexmenu_index"><legend>'+LANG.plugins.indexmenu.index+'</legend>' +
                     '<div><label>'+LANG.plugins.indexmenu.namespace+'<input id="namespace" type="text"></label></div>' +
                     '<div><label class="number">'+LANG.plugins.indexmenu.nsdepth+' #<input id="nsdepth" type="text" value=1></label></div>' +
                 '</fieldset>' +
 
-                '<fieldset class="options"><legend>'+LANG.plugins.indexmenu.options+'</legend>' +
+                '<fieldset class="indexmenu_options"><legend>'+LANG.plugins.indexmenu.options+'</legend>' +
                 '</fieldset>' +
                 '<input type="submit" value="'+LANG.plugins.indexmenu.insert+'" class="button" id="indexmenu__insert">'+
 
-                '<fieldset class="metanumber">' +
+                '<fieldset class="indexmenu_metanumber">' +
                     '<label class="number">'+LANG.plugins.indexmenu.metanum+'<input type="text" id="metanumber"></label>' +
                     '<input type="submit" value="'+LANG.plugins.indexmenu.insertmetanum+'" class="button" id="indexmenu__insertmetanum">' +
                 '</fieldset>'
@@ -106,7 +106,7 @@ var indexmenu_wiz = {
             .appendTo('.dokuwiki:first');
 
         indexmenu_wiz.textArea = $editor[0];
-        var $opt_fieldset = jQuery('#indexmenu__wiz fieldset.options');
+        var $opt_fieldset = jQuery('#indexmenu__wiz fieldset.indexmenu_options');
 
         jQuery.each(indexmenu_wiz.fields, function(i,section) {
             var div = jQuery('<div>').addClass(section.tlbclass);
@@ -115,10 +115,11 @@ var indexmenu_wiz = {
                 if(props.headerid) {
                     div.append('<strong>'+LANG.plugins.indexmenu[props.headerid]+'</strong><br />');
                 } else {
+                    let label = props.label || elid;
                     //checkbox
                     jQuery("<label>")
                         .addClass(props.tlbclass).addClass(props.number ? ' num':'')
-                        .html('<input id="'+elid+'" type="checkbox">'+elid)
+                        .html('<input id="'+elid+'" type="checkbox">'+label)
                         .attr({title: LANG.plugins.indexmenu[elid]})
                         .appendTo(div);
 
@@ -146,9 +147,9 @@ var indexmenu_wiz = {
         // attach event handlers
 
         //toggle js fields
-        jQuery('#js')
+        jQuery('#jstoggle')
             .change(function(){
-                jQuery('#indexmenu__wiz .js').toggle(this.checked);
+                jQuery('#indexmenu__wiz .jsitem').toggle(this.checked);
             }).change()
             .parent().css({display: 'inline-block', width: '40px'}); //enlarge clickable area of label
 
@@ -239,10 +240,10 @@ var indexmenu_wiz = {
      */
     insertIndexmenu: function(){
         var options = '';
-        jQuery('fieldset.options input').each(function(i, input){
+        jQuery('fieldset.indexmenu_options input').each(function(i, input){
             var $label = jQuery(this).parent();
 
-            if(input.checked && ( !$label.hasClass('js')||jQuery('input#js').is(':checked') )){
+            if(input.checked && ( !$label.hasClass('jsitem')||jQuery('input#jstoggle').is(':checked') )){
                 //add option
                 options += ' '+input.id;
 
@@ -254,7 +255,7 @@ var indexmenu_wiz = {
                     });
                 }
                 //add theme
-                if(input.id == 'js') {
+                if(input.id == 'jstoggle') {
                     var themename = jQuery('#themebar button.selected').attr('id');
                     if(indexmenu_wiz.defaulttheme !== themename) { //skip default theme
                         options += '#'+jQuery('#themebar button.selected').attr('id');
@@ -267,14 +268,14 @@ var indexmenu_wiz = {
         options = options ? '|'+jQuery.trim(options) : '';
 
         var sel, ns, depth, syntax, eo;
-        
+
         // XXX: Compatibility Fix for 2014-05-05 "Ponder Stibbons", splitbrain/dokuwiki#505
         if(DWgetSelection) {
             sel = DWgetSelection(indexmenu_wiz.textArea);
         } else {
             sel = getSelection(indexmenu_wiz.textArea);
         }
-        
+
 
         ns = jQuery('#namespace').val();
         depth = parseInt(jQuery('#nsdepth').val());

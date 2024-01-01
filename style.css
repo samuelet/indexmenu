@@ -267,7 +267,7 @@ div.dokuwiki div.indexmenu_list_themes {
     margin: 0 0.6em;
 }
 
-#indexmenu__wiz fieldset.options label.number {
+#indexmenu__wiz fieldset.indexmenu_options label.number {
     margin: 0 0.6em 0 -0.3em;
 }
 
@@ -275,7 +275,7 @@ div.dokuwiki div.indexmenu_list_themes {
     margin: 0.5em 3px 1em 3px;
 }
 
-#indexmenu__wiz fieldset.metanumber input[type=text] {
+#indexmenu__wiz fieldset.indexmenu_metanumber input[type=text] {
     width: 50px;
     margin: 5px;
 }

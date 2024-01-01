@@ -115,9 +115,17 @@ jQuery(function(){  // on page load
         // console.log("options");
         // console.log(options);
         let themePreset = presets[options.opts.theme];
+        let extensions = [];
+        if(themePreset) {
+            extensions.push("glyph");
+        }
+        if(options.opts.persist) {
+            extensions.push("persist");
+        }
 
         $tree.fancytree({
-            extensions: themePreset ? ["glyph"] : [],
+            //enabled extensions
+            extensions: extensions,
             glyph: {
                 preset: themePreset ? themePreset.preset : '',
                 map: themePreset ? themePreset.map : {}

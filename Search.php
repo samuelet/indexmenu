@@ -58,7 +58,7 @@ class Search
         if (empty($data)) return false;
 
         $children = [];
-        $this->makeNodes($data, -1, 0, $children, $currentPage);
+        $this->makeNodes($data, -1, 0, $children, $currentPage, false);
 
         if ($isInit) {
             $nodes['children'] = $children;
@@ -76,9 +76,10 @@ class Search
      * @param int $previousLevel level of parent
      * @param array $nodes by reference, here the child nodes are stored
      * @param string $currentPage id of main article
+     * @param bool $isParentLazy Used for recognizing the extra level below lazy nodes
      * @return int latest parsed item from data array
      */
-    private function makeNodes(&$data, $indexLatestParsedItem, $previousLevel, &$nodes, $currentPage)
+    private function makeNodes(&$data, $indexLatestParsedItem, $previousLevel, &$nodes, $currentPage, $isParentLazy)
     {
         $i = 0;
         $counter = 0;
@@ -94,7 +95,7 @@ class Search
             $node = [
                 'title' => $item['title'],
                 'key' => $item['id'] . ($item['type'] === 'f' ? '' : ':'), //ensure ns is unique
-                'hns' => $item['hns']
+                'hns' => $item['hns'] //false if not available
             ];
 
             // f=file, d=directory, l=directory which is lazy loaded later
@@ -105,48 +106,52 @@ class Search
                 }
                 // let php create url (considering rewriting etc)
                 $node['url'] = wl($item['id']);
-            }
-            // f/d/l, assumption: if 'd' try always level deeper, maybe not true if d has no items in them by some
-            // l_nopg - specific to add detection of lower levels to prevent not working expanders because ns is empty.
-            // filter settings?.
-            if ($item['type'] !== 'f') {
+            } else {
+                // type: d/l
                 $node['folder'] = true;
                 // let php create url (considering rewriting etc)
                 $node['url'] = $item['hns'] === false ? false : wl($item['hns']);
+                //might be duplicated if headpages are not hidden
+                if ($item['hns'] === $currentPage) {
+                    $node['active'] = true;
+                }
                 if ($item['open'] === true) {
                     $node['expanded'] = true;
                 }
-                if ($item['type'] === 'd') {
-                    $node['children'] = [];
-                    $indexLatestParsedItem = $this->makeNodes(
-                        $data,
-                        $i,
-                        $item['level'],
-                        $node['children'],
-                        $currentPage
-                    );
-                    //TODO consider: remove folder if no children e.g. due to hidden pages see issue #235
-                } else if ($item['type'] === 'l_nopg') {
-                    // nopg: is actual a lazy node, but because we have no pages, it could be often empty
-                    // therefore walk level deeper and check whether it has child folders
-                    $node['children'] = [];
-                    $indexLatestParsedItem = $this->makeNodes(
-                        $data,
-                        $i,
-                        $item['level'],
-                        $node['children'],
-                        $currentPage
-                    );
-                    // if not empty make it a lazy node
-                    if(!empty($node['children'])) {
+
+                $node['children'] = [];
+                $indexLatestParsedItem = $this->makeNodes(
+                    $data,
+                    $i,
+                    $item['level'],
+                    $node['children'],
+                    $currentPage,
+                    $item['type'] === 'l'
+                );
+
+                // a lazy node, but because we have sometime no pages or nodes (due e.g. acl/hidden/nopg), it could be
+                // empty. Therefore we did extra work by walking a level deeper and check here whether it has children
+                if ($item['type'] === 'l') {
+                    if (empty($node['children'])) {
+                        //an empty lazy node, is not marked lazy
+                        if ($isParentLazy) {
+                            //a lazy node with a lazy parent has no children loaded, so always empty
+                            //(these nodes are not really used, but only counted)
+                            $node['lazy'] = true;
+                            unset($node['children']);
+                        }
+                    } else {
+                        //has children, so mark lazy
                         $node['lazy'] = true;
                         unset($node['children']); //do not keep, because these nodes do not know yet their child folders
                     }
-                } else { // 'l'
-                    $node['lazy'] = true;
                 }
             }
-            $nodes[] = $node;
+            if ($item['type'] === 'f' || !empty($node['children']) || isset($node['lazy']) || $item['hns'] !== false) {
+                // add only files, non-empty folders, lazy-loaded or folder with only a headpage
+                $nodes[] = $node;
+            }
+
             $previousLevel = $item['level'];
             $counter++;
         }
@@ -406,34 +411,48 @@ class Search
             }
 
             //Search optional subnamespaces with
+            $isFolderAdjacentToSubNss = false;
             if (!empty($opts['subnss'])) {
                 $subnss = $opts['subnss'];
                 $counter = count($subnss);
 
                 for ($a = 0; $a < $counter; $a++) {
                     if (preg_match("/^" . $id . "($|:.+)/i", $subnss[$a][0], $match)) {
-                        //It contains a subnamespace
+                        //this folder contains a subnamespace
                         $isOpen = true;
                     } elseif (preg_match("/^" . $subnss[$a][0] . "(:.*)/i", $id, $match)) {
-                        //It's inside a subnamespace, check level
+                        //this folder is inside a subnamespace, check level
                         if ($subnss[$a][1] == -1 || substr_count($match[1], ":") < $subnss[$a][1]) {
                             $isOpen = true;
                         } else {
                             $isOpen = false;
                         }
+                    } elseif (preg_match(
+                        "/^" . (($ns = getNS($id)) === false ? '' : $ns) . "($|:.+)/i",
+                        $subnss[$a][0],
+                        $match
+                    )) {
+                        // parent folder contains a subnamespace, if level deeper it does not match anymore
+                        // that is handled with normal >max handling
+                        $isOpen = false;
+                        if($opts['max'] > 0) {
+                            $isFolderAdjacentToSubNss = true;
+                        }
                     }
                 }
             }
+            //decide if it should be traversed
             if ($opts['nons']) {
                 return $isOpen; // in nons, level is only way to show/hide nodes (in nons nodes are not expandable)
             } elseif ($opts['max'] > 0 && !$isOpen) { // note: for Fancytree >=1 is used
                 // limited levels per request, node is closed
-                if ($opts['nopg'] && $lvl == $opts['max']) { // deeper lvls only used temporary, type=l is fine there
+                if ($lvl == $opts['max'] || $isFolderAdjacentToSubNss) {
                     // change type, more nodes should be loaded by ajax, but for nopg we need extra level to determine
                     // if folder is empty
-                    $type = "l_nopg";
+                    // and folders adjacent to subns must be traversed as well
+                    $type = "l";
                     $shouldBeTraversed = true;
-                } elseif ($lvl >= $opts['max']) {
+                } elseif ($lvl > $opts['max']) { // deeper lvls only used temporary for checking existance children
                     //change type, more nodes should be loaded by ajax
                     $type = "l"; // use lazy loading
                     $shouldBeTraversed = false;
@@ -444,6 +463,7 @@ class Search
             } else {
                 $shouldBeTraversed = $isOpen;
             }
+
             //Set title and headpage
             $title = $this->getNamespaceTitle($id, $headpage, $hns);
             //link namespace nodes to start pages when excluding page nodes

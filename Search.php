@@ -62,7 +62,6 @@ class Search
 
         if ($isInit) {
             $nodes['children'] = $children;
-            $nodes['debug'] = $data;
             return $nodes;
         } else {
             return $children;

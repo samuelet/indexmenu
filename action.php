@@ -232,12 +232,10 @@ class action_plugin_indexmenu extends ActionPlugin
         $currentPage = $INPUT->str('currentpage');
         if ($isInit) {
             $subnss = $INPUT->arr('subnss');
-            $debug1 = var_export($subnss, true);
             // if 'navbar' enabled add current ns to list
             if ($INPUT->bool('navbar')) {
                 $subnss[] = [getNS($currentPage)]; //TODO add level?
             }
-            $debug2 = var_export($subnss, true);
             // alternative, via javascript.. https://wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree.html#loadKeyPath
         } else {
             $subnss = $INPUT->str('subnss');
@@ -296,16 +294,17 @@ class action_plugin_indexmenu extends ActionPlugin
         $data = $search->search($ns, $opts);
         $fancytreeData = $search->buildFancytreeData($data, $isInit, $currentPage);
 
+        //add eventually debug info
         if ($isInit) {
             //for lazy loading are other items than children not supported.
-            $fancytreeData['opts'] = $opts;
-            $fancytreeData['sort'] = $sort;
-//            $fancytreeData['navbar'] = $INPUT->bool('navbar');
-//            $fancytreeData['debug1'] = $debug1;
-//            $fancytreeData['debug2'] = $debug2;
+//            $fancytreeData['opts'] = $opts;
+//            $fancytreeData['sort'] = $sort;
+//            $fancytreeData['debug'] = $data;
         } else {
-            $fancytreeData[0]['opts'] = $opts;
-            $fancytreeData[0]['sort'] = $sort;
+            //returns only children, therefore, add debug info to first child
+//            $fancytreeData[0]['opts'] = $opts;
+//            $fancytreeData[0]['sort'] = $sort;
+//            $fancytreeData[0]['debug'] = $data;
         }
 
         header('Content-Type: application/json');

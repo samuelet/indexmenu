@@ -115,6 +115,7 @@ jQuery(function(){  // on page load
         // console.log("options");
         // console.log(options);
         let themePreset = presets[options.opts.theme];
+        let targettype; //to share type between handlers
         let extensions = [];
         if(themePreset) {
             extensions.push("glyph");
@@ -142,36 +143,45 @@ jQuery(function(){  // on page load
             escapeTitles: false,
             tooltip: true,
             rtl: jQuery('html[dir=rtl]').length,
-            focus: function(event, data) {
-                // Auto-activate focused node after 1 second (practical for use with keyboard)
-                if(data.node.key){
-                    data.node.scheduleAction("activate", 1000);
+
+            //for keyboard control
+            keydown: function (event, data) {
+                switch (event.which) {
+                    case 32: // [space]
+                        // logEvent(event,data);
+                        break;
+                    case 13: // [enter]
+                        // logEvent(event,data);
+                        if(data.node.data.url){
+                            // console.log('redirect');
+                            window.location.href = data.node.data.url;
+                        }
+                        break;
                 }
             },
-            blur: function(event, data) {
-                data.node.scheduleAction("cancel");
-            },
+
+            //store in click some event data for the activate handler
             click: function(event, data) {
                 // return false to prevent default behavior (i.e. activation, ...)
-                // var targettype = data.targetType; //store target type global
-                if(data.targetType === 'expander') {
-                    data.node.toggleExpanded(); //perform default action
-                    return false;  // prevent default action
-                }
+                targettype = data.targetType; //store target type, only available in click handler
             },
+
+            //go to wiki page if node is activated
             activate: function(event, data){
                 const node = data.node;
-                // let orgEvent = data.originalEvent;
-// console.log(data);
+
                 //prevent looping (hns is false or a page id)
                 if(node.key === JSINFO.id || node.data.hns === JSINFO.id) {
                     //node is equal to current page
                     return;
                 }
 
-                // if(targettype === 'expander') {  //check global stored target type
-                //     return false;
-                // }
+                // expander should not follow link
+                if(targettype === 'expander') {
+                    targettype = false; //reset
+                    return false;
+                }
+
                 if(node.data.url === false) {
                     return false;
                 }

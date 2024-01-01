@@ -127,21 +127,41 @@ jQuery(function(){  // on page load
         $tree.fancytree({
             //enabled extensions
             extensions: extensions,
+            //settings for glyph extension
             glyph: {
                 preset: themePreset ? themePreset.preset : '',
                 map: themePreset ? themePreset.map : {}
             },
-            //minExpandLevel: 2, // number of levels already expanded, and not unexpandable.
-            clickFolderMode: 3, // expand with single click instead of dblclick
-            //autoCollapse: true, //closes other opened nodes, so only one node is opened
-            // autoScroll: true, // for keyboard..  --opening folders becomes jumpy
-            autoActivate: false, // we use scheduleAction(). Otherwise, looping in combination with clicking
+            // 0=quite, 1=only errors, upto 4=also debug
+            //debugLevel: 4,
+            //settings for persist extension
+            persist: {
+                expandLazy: true,
+                // fireActivate: false,    // false: suppress `activate` event after active node was restored
+                // overrideSource: false,  // true: cookie takes precedence over `source` data attributes.
+                store: "auto" // 'cookie', 'local': use localStore, 'session': sessionStore
+                // Sample for a custom store:
+                // store: {
+                //   get: function(key){ this.info("get(" + key + ")"); return window.sessionStorage.getItem(key); },
+                //   set: function(key, value){ this.info("set(" + key + ", " + value + ")"); window.sessionStorage.setItem(key, value); },
+                //   remove: function(key){ this.info("remove(" + key + ")"); window.sessionStorage.removeItem(key); }
+            },
+            // number of levels already expanded, and not unexpandable.
+            //minExpandLevel: 2,
+            // expand with single click instead of dblclick
+            clickFolderMode: 3,
+            // closes other opened nodes, so only one node is opened
+            //autoCollapse: true,
+            // for keyboard..  --opening folders becomes jumpy
+            //autoScroll: true,
+            // Looping in combination with clicking
+            autoActivate: false,
+            // disabled because it causes also autoscrolling, such that select node is out-of-view
             activeVisible: false,
-            // tooltip: function(event, data) {
-            //     return data.node.title;
-            // },
+
             escapeTitles: false,
             tooltip: true,
+            //use same setting as wiki page
             rtl: jQuery('html[dir=rtl]').length,
 
             //for keyboard control
@@ -190,10 +210,13 @@ jQuery(function(){  // on page load
                     window.location.href = node.data.url;
                 }
             },
+
+            // active marked node (=current page)
             init: function(event, data) {
                 //activate current node
                 data.tree.reactivate();
             },
+            //add url
             enhanceTitle: function(event, data) {
                 let node = data.node;
 
@@ -202,6 +225,7 @@ jQuery(function(){  // on page load
                 }
                 data.$title.html("<a href='" + node.data.url + "'>" + node.title + "</a>");
             },
+            //retrieve initial data
             source: {
                 url: DOKU_BASE + 'lib/exe/ajax.php',
                 data: {
@@ -227,20 +251,21 @@ jQuery(function(){  // on page load
                     init: 1
                 }
             },
+            //retrieve data of expanded nodes
             lazyLoad: function(event, data) {
                 const node = data.node;
                 // Issue an Ajax request to load child nodes
                 data.result = {
-                    url: DOKU_BASE + 'lib/exe/ajax.php', //TODO reminder: after adding node.key to subnss and maxajax loading is incomplete for ns3
+                    url: DOKU_BASE + 'lib/exe/ajax.php',
                     data: {
                         ns: node.key, // ns with trailing :
                         call: 'indexmenu',
                         req: 'fancytree',
 
                         level: 1, //level opened nodes, for follow up ajax requests only next level, so:1
-                        //nons: options.opts.nons ? 1 : 0, //todo: sets text false
+                        nons: options.opts.nons ? 1 : 0, //todo: sets text false
                         nopg: options.opts.nopg ? 1 : 0,
-                        subnss: '',//node.key,//options.opts.subnss, //TODO only string of current ns, that should be opened (use this only for navbar!)
+                        subnss: '', //options.opts.subnss is used on init
                         currentpage: JSINFO.id,
                         max: options.opts.maxajax, //#m of max#n#m
                         skipns: options.opts.skipns,
@@ -264,32 +289,32 @@ jQuery(function(){  // on page load
         // Note: Loading and initialization may be asynchronous, so the nodes may not be accessible yet.
 
         // On page load, activate node if node.data.href matches the url#href
-        let tree = jQuery.ui.fancytree.getTree("#" + id),
-            path = window.parent && window.parent.location.pathname;
-// console.log(path);
-// console.log('test');
-        if(path) {
-            let arr = path.split('/'); // not reliable with config:useslash?
-            let last = arr[arr.length-1] || arr[arr.length-2];
-            // console.log(arr);
-            // console.log(last);
-
-            // tree.activateKey(last);
-            // var node1=tree.getNodeByKey(last);
-            // console.log(node1);
-            //     node1.setActive();
-            // also possible:
-            //                $.ui.fancytree.getTree("#tree").getNodeByKey("id4.3.2").setActive();
-
-            // tree.visit(function(n) {
-            //     console.log(n.key);
-            //     console.log(n);
-            //     if( n.key && n.key === last ) {
-            //         n.setActive();  //if not using iframes, this creates a loops in combination with activate above
-            //         return false; // done: break traversal
-            //     }
-            // });
-        }
+//         let tree = jQuery.ui.fancytree.getTree("#" + id),
+//             path = window.parent && window.parent.location.pathname;
+// // console.log(path);
+// // console.log('test');
+//         if(path) {
+//             let arr = path.split('/'); // not reliable with config:useslash?
+//             let last = arr[arr.length-1] || arr[arr.length-2];
+//             // console.log(arr);
+//             // console.log(last);
+//
+//             // tree.activateKey(last);
+//             // var node1=tree.getNodeByKey(last);
+//             // console.log(node1);
+//             //     node1.setActive();
+//             // also possible:
+//             //                $.ui.fancytree.getTree("#tree").getNodeByKey("id4.3.2").setActive();
+//
+//             // tree.visit(function(n) {
+//             //     console.log(n.key);
+//             //     console.log(n);
+//             //     if( n.key && n.key === last ) {
+//             //         n.setActive();  //if not using iframes, this creates a loops in combination with activate above
+//             //         return false; // done: break traversal
+//             //     }
+//             // });
+//         }
 // console.log(tree);
 // console.log("test");
 //         jQuery.contextMenu({
@@ -407,7 +432,7 @@ jQuery(function(){  // on page load
  */
 function addBtnActionIndexmenu($btn, props, edid) {
     indexmenu_wiz.init(jQuery('#' + edid));
-    $btn.click(function () {
+    $btn.on('click', function () {
         indexmenu_wiz.toggle();
         return false;
     });
@@ -428,7 +453,7 @@ if (window.toolbar !== undefined) {
 /**
  *  functions for js index renderer and contextmenu
  */
-var IndexmenuUtils = {
+const IndexmenuUtils = {
 
     /**
      * Determine extension from given theme dir name

@@ -232,14 +232,17 @@ class action_plugin_indexmenu extends ActionPlugin
         $currentPage = $INPUT->str('currentpage');
         if ($isInit) {
             $subnss = $INPUT->arr('subnss');
-            // if 'navbar' enabled add current ns to list
+            // if 'navbar' is enabled add current ns to list
             if ($INPUT->bool('navbar')) {
-                $subnss[] = [getNS($currentPage)]; //TODO add level?
+                $subnss[] = [getNS($currentPage), 1];
             }
             // alternative, via javascript.. https://wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree.html#loadKeyPath
         } else {
+            //not set via javascript at the moment.. ajax opens per level, so subnss has no use here
             $subnss = $INPUT->str('subnss');
-            $subnss = [[cleanID($subnss), 1]];
+            if($subnss !== '') {
+                $subnss = [[cleanID($subnss), 1]];
+            }
         }
 
         $skipf = $INPUT->str('skipfile'); // utf8_decodeFN($_REQUEST['skipfile']);
@@ -288,7 +291,7 @@ class action_plugin_indexmenu extends ActionPlugin
             'hsort' => $INPUT->bool('hsort')
         ];
 
-        $opts['tempNew'] = true; //TODO temporary
+        $opts['tempNew'] = true; //TODO temporary for recognizing treenew in the search function
 
         $search = new Search($sort);
         $data = $search->search($ns, $opts);

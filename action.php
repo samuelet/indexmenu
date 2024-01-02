@@ -234,7 +234,10 @@ class action_plugin_indexmenu extends ActionPlugin
             $subnss = $INPUT->arr('subnss');
             // if 'navbar' is enabled add current ns to list
             if ($INPUT->bool('navbar')) {
-                $subnss[] = [getNS($currentPage), 1];
+                $currentNs = getNS($currentPage);
+                if ($currentNs !== false) {
+                    $subnss[] = [$currentNs, 1];
+                }
             }
             // alternative, via javascript.. https://wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree.html#loadKeyPath
         } else {

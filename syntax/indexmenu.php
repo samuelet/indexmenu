@@ -443,7 +443,10 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
                     $ns = '..';
                 }
                 //add ns of current page to let open these nodes (within the $ns), open only 1 level.
-                $opts['subnss'][] = [getNS($INFO['id']), 1];
+                $currentNS = getNS($INFO['id']);
+                if ($currentNS !== false) {
+                    $opts['subnss'][] = [$currentNS, 1];
+                }
                 $renderer->info['cache'] = false;
             }
             if ($js_dTreeOpts['context']) {

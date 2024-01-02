@@ -275,10 +275,11 @@ class Search
                     }
                 }
             }
+
+            //decide if it should be traversed
             if ($opts['nons']) {
                 return $isOpen; // in nons, level is only way to show/hide nodes (in nons nodes are not expandable)
             } elseif ($opts['max'] > 0 && !$isOpen && $lvl >= $opts['max']) {
-                $isOpen = false;
                 //Stop recursive searching
                 $shouldBeTraversed = false;
                 //change type
@@ -447,6 +448,7 @@ class Search
                     }
                 }
             }
+
             //decide if it should be traversed
             if ($opts['nons']) {
                 return $isOpen; // in nons, level is only way to show/hide nodes (in nons nodes are not expandable)

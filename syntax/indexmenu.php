@@ -320,13 +320,13 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
                 'hsort' => $hsort,
             ],
             [ //3=opts
-                'level' => $level, // requested depth of initial opened nodes, -1:all //TODO test
-                'nons' => $nons, //TODO test
-                'nopg' => $nopg, //TODO test
-                'subnss' => $subNSs, //TODO test
-                'navbar' => $navbar, //add current ns to subNSs //TODO test
-                'max' => $max, //number of levels loaded initially, rest should be loaded with ajax //TODO test
-                'maxajax' => $maxAjax, //number of levels loaded per ajax request //TODO test
+                'level' => $level, // requested depth of initial opened nodes, -1:all
+                'nons' => $nons,
+                'nopg' => $nopg,
+                'subnss' => $subNSs, //only used for initial load
+                'navbar' => $navbar, //add current ns to subNSs, for initial load
+                'max' => $max, //number of levels loaded initially, rest should be loaded with ajax
+                'maxajax' => $maxAjax, //number of levels loaded per ajax request
                 'js' => $js,
                 'skipnscombined' => $skipNsCombined,
                 'skipfilecombined' => $skipFileCombined,
@@ -440,7 +440,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
             //Navbar with nojs
             if ($js_dTreeOpts['navbar'] && !$opts['js']) {
                 if (!isset($ns)) {
-                    $ns = '..';
+                    $ns = ':';
                 }
                 //add ns of current page to let open these nodes (within the $ns), open only 1 level.
                 $currentNS = getNS($INFO['id']);
@@ -472,10 +472,6 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
             if (!($js_dTreeOpts['navbar'] && !$opts['js']) && !$js_dTreeOpts['context']) {
                 //this is an indexmenu page that needs the PARSER_CACHE_USE event trigger;
                 $renderer->meta['indexmenu']['hasindexmenu'] = true;
-            }
-            if ($opts['js'] && $opts['theme'] !== 'default') { //add also for dtree, while only used for fancytree
-                //add once
-                $renderer->meta['indexmenu']['usedthemes'][$opts['theme']] = 1;
             }
             //summary
             $renderer->doc .= (empty($ns) ? $conf['title'] : nons($ns)) . " index\n\n";

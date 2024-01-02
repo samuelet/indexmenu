@@ -272,10 +272,10 @@ class action_plugin_indexmenu extends ActionPlugin
         $opts = [
             //only set for init, lazy requests equal to max
             'level' => $level,
-            //only needed for init
+            //nons only needed for init as it has no nested nodes
             'nons' => $INPUT->bool('nons'),
             'nopg' => $INPUT->bool('nopg'),
-            //init with complex array, only current ns if lazy
+            //init with complex array, empty if lazy loading
             'subnss' => $subnss,
             'max' => $max,
             'skipnscombined' => $skipNsCombined,

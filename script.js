@@ -263,7 +263,7 @@ jQuery(function(){  // on page load
                         req: 'fancytree',
 
                         level: 1, //level opened nodes, for follow up ajax requests only next level, so:1
-                        nons: options.opts.nons ? 1 : 0, //todo: sets text false
+                        nons: options.opts.nons ? 1 : 0,
                         nopg: options.opts.nopg ? 1 : 0,
                         subnss: '', //options.opts.subnss is used on init
                         currentpage: JSINFO.id,

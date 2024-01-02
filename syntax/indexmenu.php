@@ -71,8 +71,10 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         $max = 0; // number of levels loaded initially, rest should be loaded with ajax. (TODO actual default is 1)
         $maxAjax = 1; // number of levels loaded per ajax request
         $subNSs = [];
-        $skipNs = [];
-        $skipFile = [];
+        $skipNsCombined = [];
+        $skipFileCombined = [];
+        $skipNs = '';
+        $skipFile = '';
         /* @deprecated 2022-04-15 dTree only */
         $maxJs = 1;
         /* @deprecated 2022-04-15 dTree only. Fancytree always random id */
@@ -263,7 +265,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         }
 
         //skip namespaces in index
-        $skipNs[] = $this->getConf('skip_index');
+        $skipNsCombined[] = $this->getConf('skip_index');
         if (preg_match('/skipns[+=](\S+)/u', $optsStr, $matched_skipns) > 0) {
             //first sign is: '+' (parallel to conf) or '=' (replace conf)
             $action = $matched_skipns[0][6];
@@ -271,11 +273,15 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
             if ($action == '+') {
                 $index = 1;
             }
-            $skipNs[$index] = $matched_skipns[1];
+            //directly used in search
+            $skipNsCombined[$index] = $matched_skipns[1];
+            //fancytree
+            $skipNs = ($action == '+' ? '+' : '=') . $matched_skipns[1];
+            //dTree
             $jsAjax .= "&skipns=" . utf8_encodeFN(($action == '+' ? '+' : '=') . $matched_skipns[1]);
         }
         //skip file
-        $skipFile[] = $this->getConf('skip_file');
+        $skipFileCombined[] = $this->getConf('skip_file');
         if (preg_match('/skipfile[+=](\S+)/u', $optsStr, $matched_skipfile) > 0) {
             //first sign is: '+' (parallel to conf) or '=' (replace conf)
             $action = $matched_skipfile[0][8];
@@ -283,7 +289,11 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
             if ($action == '+') {
                 $index = 1;
             }
-            $skipFile[$index] = $matched_skipfile[1];
+            //directly used in search
+            $skipFileCombined[$index] = $matched_skipfile[1];
+            //fancytree
+            $skipFile = ($action == '+' ? '+' : '=') . $matched_skipfile[1];
+            //dTree
             $jsAjax .= "&skipfile=" . utf8_encodeFN(($action == '+' ? '+' : '=') . $matched_skipfile[1]);
         }
 
@@ -318,8 +328,10 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
                 'max' => $max, //number of levels loaded initially, rest should be loaded with ajax //TODO test
                 'maxajax' => $maxAjax, //number of levels loaded per ajax request //TODO test
                 'js' => $js,
-                'skipns' => $skipNs, //TODO test
-                'skipfile' => $skipFile, //TODO test
+                'skipnscombined' => $skipNsCombined,
+                'skipfilecombined' => $skipFileCombined,
+                'skipns' => $skipNs,
+                'skipfile' => $skipFile,
                 'headpage' => $this->getConf('headpage'),
                 'hide_headpage' => $this->getConf('hide_headpage'),
                 'theme' => $theme
@@ -398,7 +410,8 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         $js_dTreeOpts = $data[1];
         //sort, msort, rsort, nsort, hsort
         $sort = $data[2];
-        //opts for search(): level, nons, nopg, subnss, max, maxajax, js, skipns, skipfile, headpage, hide_headpage
+        //opts for search(): level, nons, nopg, subnss, max, maxajax, js, skipns, skipfile, skipnscombined,
+        //skipfilecombined, headpage, hide_headpage
         $opts = $data[3];
         /* @deprecated 2021-07-01 temporary */
         $jsVersion = $data[4];
@@ -478,7 +491,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
      *                          nomenu
      * @param array $sort entries: sort, msort, rsort, nsort, hsort
      * @param array $opts entries of opts for search(): level, nons, nopg, nss, max, maxajax, js, skipns, skipfile,
-     *                     headpage, hide_headpage
+     *                     skipnscombined, skipfilecombined, headpage, hide_headpage
      * @param int $jsVersion
      * @return bool|string return html for a nojs index and when enabled the js rendered index, otherwise false
      *
@@ -536,6 +549,8 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         unset($opts['headpage']);
         unset($opts['hide_headpage']);
         unset($opts['js']); //always true
+        unset($opts['skipnscombined']);
+        unset($opts['skipfilecombined']);
 
         /* @deprecated 2023-08-14 remove later */
         if ($opts['theme'] == 'default') {

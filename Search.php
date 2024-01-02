@@ -164,8 +164,10 @@ class Search
      *
      * @param string $ns
      * @param array $opts
-     *  $opts['skipns'] string regexp matching namespaceids to skip
-     *  $opts['skipfile']  string regexp matching pageids to skip
+     *  $opts['skipns'] string regexp matching namespaceids to skip (ignored)
+     *  $opts['skipfile']  string regexp matching pageids to skip (ignored)
+     *  $opts['skipnscombined'] array regexp matching namespaceids to skip
+     *  $opts['skipfilecombined']  array regexp matching pageids to skip
      *  $opts['headpage']   string headpages options or pageids
      *  $opts['level']      int    desired depth of main namespace, -1 = all levels
      *  $opts['subnss']     array with entries: array(namespaceid,level) specifying namespaces with their own number of
@@ -208,8 +210,10 @@ class Search
      * @param string $type Type either 'd' for directory or 'f' for file
      * @param int $lvl Current recursion depth
      * @param array $opts Option array as given to search():
-     *   $opts['skipns'] string regexp matching namespaceids to skip,
-     *   $opts['skipfile'] string regexp matching pageids to skip,
+     *   $opts['skipns'] string regexp matching namespaceids to skip (ignored),
+     *   $opts['skipfile'] string regexp matching pageids to skip (ignored),
+     *   $opts['skipnscombined'] array regexp matching namespaceids to skip,
+     *   $opts['skipfilecombined'] array regexp matching pageids to skip,
      *   $opts['headpage'] string headpages options or pageids,
      *   $opts['level'] int desired depth of main namespace, -1 = all levels,
      *   $opts['subnss'] array with entries: array(namespaceid,level) specifying namespaces with their own number of o
@@ -232,8 +236,8 @@ class Search
         $hns = false;
         $isOpen = false;
         $title = null;
-        $skipns = $opts['skipns'];
-        $skipfile = $opts['skipfile'];
+        $skipns = $opts['skipnscombined'];
+        $skipfile = $opts['skipfilecombined'];
         $headpage = $opts['headpage'];
         $id = pathID($file);
 
@@ -368,8 +372,10 @@ class Search
      * @param string $type Type either 'd' for directory or 'f' for file
      * @param int $lvl Current recursion depth
      * @param array $opts Option array as given to search()
-     *   $opts['skipns'] string regexp matching namespaceids to skip
-     *   $opts['skipfile']  string regexp matching pageids to skip
+     *   $opts['skipns'] string regexp matching namespaceids to skip (ignored)
+     *   $opts['skipfile']  string regexp matching pageids to skip (ignored)
+     *   $opts['skipnscombined'] array regexp matching namespaceids to skip
+     *   $opts['skipfilecombined'] array regexp matching pageids to skip
      *   $opts['headpage']   string headpages options or pageids
      *   $opts['level']      int    desired depth of main namespace, -1 = all levels
      *   $opts['subnss']     array with entries: array(namespaceid,level) specifying namespaces with their own level
@@ -390,8 +396,8 @@ class Search
         $hns = false;
         $isOpen = false;
         $title = null;
-        $skipns = $opts['skipns'];
-        $skipfile = $opts['skipfile'];
+        $skipns = $opts['skipnscombined'];
+        $skipfile = $opts['skipfilecombined'];
         $headpage = $opts['headpage'];
         $id = pathID($file);
 

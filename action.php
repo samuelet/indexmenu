@@ -217,8 +217,8 @@ class action_plugin_indexmenu extends ActionPlugin
         //key of directory has extra : on the end
         $level = -1; //opened levels. -1=all levels open
         $max = 1; //levels to load by lazyloading. Before the default was 0. CHANGED to 1.
-        $skipFile = [];
-        $skipNs = [];
+        $skipFileCombined = [];
+        $skipNsCombined = [];
 
         if ($INPUT->int('max') > 0) {
             $max = $INPUT->int('max'); // max#n#m, if init: #n, otherwise #m
@@ -245,25 +245,25 @@ class action_plugin_indexmenu extends ActionPlugin
             }
         }
 
-        $skipf = $INPUT->str('skipfile'); // utf8_decodeFN($_REQUEST['skipfile']);
-        $skipFile[] = $this->getConf('skip_file');
+        $skipf = $INPUT->str('skipfile');
+        $skipFileCombined[] = $this->getConf('skip_file');
         if (!empty($skipf)) {
             $index = 0;
             //prefix is '=' or '+'
-            if ($skipf[1] == '+') {
+            if ($skipf[0] == '+') {
                 $index = 1;
             }
-            $skipFile[$index] = substr($skipf, 1);
+            $skipFileCombined[$index] = substr($skipf, 1);
         }
-        $skipn = $INPUT->str('skipns'); //utf8_decodeFN($_REQUEST['skipns']);
-        $skipNs[] = $this->getConf('skip_index');
+        $skipn = $INPUT->str('skipns');
+        $skipNsCombined[] = $this->getConf('skip_index');
         if (!empty($skipn)) {
             $index = 0;
             //prefix is '=' or '+'
-            if ($skipn[1] == '+') {
+            if ($skipn[0] == '+') {
                 $index = 1;
             }
-            $skipNs[$index] = substr($skipn, 1);
+            $skipNsCombined[$index] = substr($skipn, 1);
         }
 
         $opts = [
@@ -275,10 +275,8 @@ class action_plugin_indexmenu extends ActionPlugin
             //init with complex array, only current ns if lazy
             'subnss' => $subnss,
             'max' => $max,
-            //preprocessed to string, only part from syntax
-            'skipns' => $skipNs,
-            //preprocessed to string, only part from syntax
-            'skipfile' => $skipFile,
+            'skipnscombined' => $skipNsCombined,
+            'skipfilecombined' => $skipFileCombined,
             'headpage' => $this->getConf('headpage'),
             'hide_headpage' => $this->getConf('hide_headpage'),
         ];
@@ -462,8 +460,8 @@ class action_plugin_indexmenu extends ActionPlugin
         $level = -1;
         $max = 0;
         $data = [];
-        $skipfile = [];
-        $skipns = [];
+        $skipfilecombined = [];
+        $skipnscombined = [];
 
         if ($INPUT->int('max') > 0) {
             $max = $INPUT->int('max');
@@ -479,22 +477,22 @@ class action_plugin_indexmenu extends ActionPlugin
         $fsdir = "/" . utf8_encodeFN(str_replace(':', '/', $ns));
 
         $skipf = utf8_decodeFN($INPUT->str('skipfile'));
-        $skipfile[] = $this->getConf('skip_file');
+        $skipfilecombined[] = $this->getConf('skip_file');
         if (!empty($skipf)) {
             $index = 0;
-            if ($skipf[1] == '+') {
+            if ($skipf[0] == '+') {
                 $index = 1;
             }
-            $skipfile[$index] = substr($skipf, 1);
+            $skipfilecombined[$index] = substr($skipf, 1);
         }
         $skipn = utf8_decodeFN($INPUT->str('skipns'));
-        $skipns[] = $this->getConf('skip_index');
+        $skipnscombined[] = $this->getConf('skip_index');
         if (!empty($skipn)) {
             $index = 0;
-            if ($skipn[1] == '+') {
+            if ($skipn[0] == '+') {
                 $index = 1;
             }
-            $skipns[$index] = substr($skipn, 1);
+            $skipnscombined[$index] = substr($skipn, 1);
         }
 
         $opts = [
@@ -504,8 +502,8 @@ class action_plugin_indexmenu extends ActionPlugin
             'max' => $max,
             'js' => false,
             'nopg' => $INPUT->bool('nopg', false, true),
-            'skipns' => $skipns,
-            'skipfile' => $skipfile,
+            'skipnscombined' => $skipnscombined,
+            'skipfilecombined' => $skipfilecombined,
             'headpage' => $idxm->getConf('headpage'),
             'hide_headpage' => $idxm->getConf('hide_headpage')
         ];

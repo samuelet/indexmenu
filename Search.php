@@ -434,15 +434,17 @@ class Search
                         } else {
                             $isOpen = false;
                         }
-                    } elseif (preg_match(
-                        "/^" . (($ns = getNS($id)) === false ? '' : $ns) . "($|:.+)/i",
-                        $subnss[$a][0],
-                        $match
-                    )) {
+                    } elseif (
+                        preg_match(
+                            "/^" . (($ns = getNS($id)) === false ? '' : $ns) . "($|:.+)/i",
+                            $subnss[$a][0],
+                            $match
+                        )
+                    ) {
                         // parent folder contains a subnamespace, if level deeper it does not match anymore
                         // that is handled with normal >max handling
                         $isOpen = false;
-                        if($opts['max'] > 0) {
+                        if ($opts['max'] > 0) {
                             $isFolderAdjacentToSubNss = true;
                         }
                     }

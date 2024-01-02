@@ -243,7 +243,7 @@ class action_plugin_indexmenu extends ActionPlugin
         } else {
             //not set via javascript at the moment.. ajax opens per level, so subnss has no use here
             $subnss = $INPUT->str('subnss');
-            if($subnss !== '') {
+            if ($subnss !== '') {
                 $subnss = [[cleanID($subnss), 1]];
             }
         }

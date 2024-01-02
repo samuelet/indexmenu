@@ -598,8 +598,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         if (empty($ns) && !empty($headpage)) {
             $headpage .= ',' . $conf['start'];
         }
-        $search = new Search(['sort' => false, 'msort' => false, 'rsort' => false, 'nsort' => false, 'hsort' => false]);
-        $title = $search->getNamespaceTitle($ns, $headpage, $hns); //TODO static function?
+        $title = Search::getNamespaceTitle($ns, $headpage, $hns);
         if (empty($title)) {
             if (empty($ns)) {
                 $title = hsc($conf['title']);

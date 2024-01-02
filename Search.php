@@ -289,7 +289,7 @@ class Search
                 $shouldBeTraversed = $isOpen;
             }
             //Set title and headpage
-            $title = $this->getNamespaceTitle($id, $headpage, $hns);
+            $title = static::getNamespaceTitle($id, $headpage, $hns);
             //link namespace nodes to start pages when excluding page nodes
             if (!$hns && $opts['nopg']) {
                 $hns = $id . ":" . $conf['start'];
@@ -471,7 +471,7 @@ class Search
             }
 
             //Set title and headpage
-            $title = $this->getNamespaceTitle($id, $headpage, $hns);
+            $title = static::getNamespaceTitle($id, $headpage, $hns);
             //link namespace nodes to start pages when excluding page nodes
             if (!$hns && $opts['nopg']) {
                 $hns = $id . ":" . $conf['start'];
@@ -643,7 +643,7 @@ class Search
      *
      * @author  Samuele Tognini <samuele@samuele.netsons.org>
      */
-    public function getNamespaceTitle($ns, $headpage, &$hns)
+    public static function getNamespaceTitle($ns, $headpage, &$hns)
     {
         global $conf;
         $hns = false;

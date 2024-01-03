@@ -296,7 +296,7 @@ class action_plugin_indexmenu extends ActionPlugin
 
         $search = new Search($sort);
         $data = $search->search($ns, $opts);
-        $fancytreeData = $search->buildFancytreeData($data, $isInit, $currentPage);
+        $fancytreeData = $search->buildFancytreeData($data, $isInit, $currentPage, $opts['nopg']);
 
         //add eventually debug info
         if ($isInit) {

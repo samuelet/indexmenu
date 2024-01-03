@@ -51,14 +51,22 @@ class Search
      *
      * @param array $data results from search
      * @param bool $isInit true if first level of nodes from tree, false if next levels
+     * @param bool $currentPage current wikipage id
+     * @param bool $isNopg if nopg is set
      * @return array|false
      */
-    public function buildFancytreeData($data, $isInit, $currentPage)
+    public function buildFancytreeData($data, $isInit, $currentPage, $isNopg)
     {
         if (empty($data)) return false;
 
         $children = [];
-        $this->makeNodes($data, -1, 0, $children, $currentPage, false);
+        $opts = [
+            'currentPage' => $currentPage,
+            'isParentLazy' => false,
+            'nopg' => $isNopg
+        ];
+        $hasActiveNode = false;
+        $this->makeNodes($data, -1, 0, $children, $hasActiveNode, $opts);
 
         if ($isInit) {
             $nodes['children'] = $children;
@@ -75,11 +83,15 @@ class Search
      * @param int $indexLatestParsedItem
      * @param int $previousLevel level of parent
      * @param array $nodes by reference, here the child nodes are stored
-     * @param string $currentPage id of main article
-     * @param bool $isParentLazy Used for recognizing the extra level below lazy nodes
+     * @param bool $hasActiveNode active node must be unique, needs tracking
+     * @param array $opts <ul>
+     *      <li>$opts['currentPage'] string id of main article</li>
+     *      <li>$opts['isParentLazy'] bool Used for recognizing the extra level below lazy nodes</li>
+     *      <li>$opts['nopg'] bool needed for currentpage handling</li>
+     * </ul>
      * @return int latest parsed item from data array
      */
-    private function makeNodes(&$data, $indexLatestParsedItem, $previousLevel, &$nodes, $currentPage, $isParentLazy)
+    private function makeNodes(&$data, $indexLatestParsedItem, $previousLevel, &$nodes, &$hasActiveNode, $opts)
     {
         $i = 0;
         $counter = 0;
@@ -100,21 +112,22 @@ class Search
 
             // f=file, d=directory, l=directory which is lazy loaded later
             if ($item['type'] == 'f') {
-                //set current page to active
-                if ($currentPage == $item['id']) {
-                    $node['active'] = true;
-                }
                 // let php create url (considering rewriting etc)
                 $node['url'] = wl($item['id']);
+
+                //set current page to active
+                if ($opts['currentPage'] == $item['id']) {
+                    if(!$hasActiveNode) {
+                        $node['active'] = true;
+                        $hasActiveNode = true;
+                    }
+                }
             } else {
                 // type: d/l
                 $node['folder'] = true;
                 // let php create url (considering rewriting etc)
                 $node['url'] = $item['hns'] === false ? false : wl($item['hns']);
-                //might be duplicated if headpages are not hidden
-                if ($item['hns'] === $currentPage) {
-                    $node['active'] = true;
-                }
+
                 if ($item['open'] === true) {
                     $node['expanded'] = true;
                 }
@@ -125,8 +138,12 @@ class Search
                     $i,
                     $item['level'],
                     $node['children'],
-                    $currentPage,
-                    $item['type'] === 'l'
+                    $hasActiveNode,
+                    [
+                        'currentPage' => $opts['currentPage'],
+                        'isParentLazy' => $item['type'] === 'l',
+                        'nopg' => $opts['nopg']
+                    ]
                 );
 
                 // a lazy node, but because we have sometime no pages or nodes (due e.g. acl/hidden/nopg), it could be
@@ -134,8 +151,8 @@ class Search
                 if ($item['type'] === 'l') {
                     if (empty($node['children'])) {
                         //an empty lazy node, is not marked lazy
-                        if ($isParentLazy) {
-                            //a lazy node with a lazy parent has no children loaded, so always empty
+                        if ($opts['isParentLazy']) {
+                            //a lazy node with a lazy parent has no children loaded, so stays always empty
                             //(these nodes are not really used, but only counted)
                             $node['lazy'] = true;
                             unset($node['children']);
@@ -146,7 +163,22 @@ class Search
                         unset($node['children']); //do not keep, because these nodes do not know yet their child folders
                     }
                 }
+
+                //might be duplicated if hide_headpage is disabled, or with nopg and a :same: headpage
+                //mark active after processing children, such that deepest level is activated
+                if (
+                    $item['hns'] === $opts['currentPage']
+                    || $opts['nopg'] && getNS($opts['currentPage']) === $item['id']
+                ) {
+                    //with hide_headpage enabled, the parent node must be actived
+                    //special: nopg has no pages, therefore, mark its parent node active
+                    if(!$hasActiveNode) {
+                        $node['active'] = true;
+                        $hasActiveNode = true;
+                    }
+                }
             }
+
             if ($item['type'] === 'f' || !empty($node['children']) || isset($node['lazy']) || $item['hns'] !== false) {
                 // add only files, non-empty folders, lazy-loaded or folder with only a headpage
                 $nodes[] = $node;

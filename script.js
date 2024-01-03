@@ -192,7 +192,11 @@ jQuery(function(){  // on page load
 
                 //prevent looping (hns is false or a page id)
                 if(node.key === JSINFO.id || node.data.hns === JSINFO.id) {
-                    //node is equal to current page
+                    //node is equal to current page, prevent to follow the url
+                    return;
+                }
+                if(options.opts.nopg && node.key === JSINFO.namespace + ':') {
+                    //nopg marks parent ns node active, prevent to follow the url
                     return;
                 }
 

@@ -53,11 +53,11 @@ class Search
      * @param bool $isInit true if first level of nodes from tree, false if next levels
      * @param bool $currentPage current wikipage id
      * @param bool $isNopg if nopg is set
-     * @return array|false
+     * @return array
      */
     public function buildFancytreeData($data, $isInit, $currentPage, $isNopg)
     {
-        if (empty($data)) return false;
+        if (empty($data)) return [];
 
         $children = [];
         $opts = [

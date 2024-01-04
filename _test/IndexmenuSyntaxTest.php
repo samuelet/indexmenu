@@ -43,7 +43,7 @@ class IndexmenuSyntaxTest extends DokuWikiTest
         [
             $ns, $theme, $identifier, $nocookie, $navbar, $noscroll, $maxjs, $notoc, $jsajax, $context, $nomenu,
             $sort, $msort, $rsort, $nsort, $level, $nons, $nopg, $subnss, $max, $maxAjax, $js, $skipns, $skipfile,
-            $hsort, $headpage, $hide_headpage, $jsVersion
+            $skipnscombined, $skipfilecombined, $hsort, $headpage, $hide_headpage, $jsVersion
         ] = $values;
 
         return [
@@ -76,6 +76,8 @@ class IndexmenuSyntaxTest extends DokuWikiTest
                 'js' => $js,
                 'skipns' => $skipns,
                 'skipfile' => $skipfile,
+                'skipnscombined' => $skipnscombined,
+                'skipfilecombined' => $skipfilecombined,
                 'headpage' => $headpage,
                 'hide_headpage' => $hide_headpage,
                 'maxajax' => $maxAjax,
@@ -100,7 +102,7 @@ class IndexmenuSyntaxTest extends DokuWikiTest
                 "{{indexmenu>:}}",
                 [
                     '', 'default', 'random', false, false, false, 1, false, '', false, false,
-                    0, false, false, false, -1, false, false, [], 0, 1, false, [''], [''], false,
+                    0, false, false, false, -1, false, false, [], 0, 1, false, '', '', [''], [''], false,
                     ":start:,:same:,:inside:", 1, 1
                 ]
             ],
@@ -109,7 +111,7 @@ class IndexmenuSyntaxTest extends DokuWikiTest
                 "{{indexmenu>#1|js}}",
                 [
                     '', 'default', 'random', false, false, false, 1, false, '', false, false,
-                    0, false, false, false, 1, false, false, [], 0, 1, true, [''], [''], false,
+                    0, false, false, false, 1, false, false, [], 0, 1, true, '', '', [''], [''], false,
                     ":start:,:same:,:inside:", 1, 1
                 ]
             ],
@@ -118,7 +120,7 @@ class IndexmenuSyntaxTest extends DokuWikiTest
                 "{{indexmenu>#2 test#6|navbar context tsort dsort msort hsort rsort nsort nons nopg}}",
                 [
                     '', 'default', 'random', true, true, false, 1, false, '&sort=t&msort=indexmenu_n&rsort=1&nsort=1&hsort=1&nopg=1', true, false,
-                    't', 'indexmenu_n', true, true, 2, true, true, [['test', 6]], 0, 1, false, [''], [''], true,
+                    't', 'indexmenu_n', true, true, 2, true, true, [['test', 6]], 0, 1, false, '', '', [''], [''], true,
                     ":start:,:same:,:inside:", 1, 1
                 ]
             ],
@@ -127,7 +129,7 @@ class IndexmenuSyntaxTest extends DokuWikiTest
                 "{{indexmenu>#2 test#6|navbar js#bj_ubuntu.png context tsort dsort msort hsort rsort nsort nons nopg}}",
                 [
                     '', 'bj_ubuntu.png', 'random', true, true, false, 1, false, '&sort=t&msort=indexmenu_n&rsort=1&nsort=1&hsort=1&nopg=1', true, false,
-                    't', 'indexmenu_n', true, true, 2, true, true, [['test', 6]], 0, 1, true, [''], [''], true,
+                    't', 'indexmenu_n', true, true, 2, true, true, [['test', 6]], 0, 1, true, '', '', [''], [''], true,
                     ":start:,:same:,:inside:", 1, 1
                 ]
             ],
@@ -136,7 +138,7 @@ class IndexmenuSyntaxTest extends DokuWikiTest
                 "{{indexmenu>#1|navbar context nocookie noscroll notoc nomenu dsort msort#date:modified hsort rsort nsort nons nopg max#2#4 maxjs#3 id#54321}}",
                 [
                     '', 'default', 'random', true, true, true, 1, true, '&sort=d&msort=date modified&rsort=1&nsort=1&hsort=1&nopg=1', true, true,
-                    'd', 'date modified', true, true, 1, true, true, [], 0, 1, false, [''], [''], true,
+                    'd', 'date modified', true, true, 1, true, true, [], 0, 1, false, '', '', [''], [''], true,
                     ":start:,:same:,:inside:", 1, 1
                 ]
             ],
@@ -145,7 +147,7 @@ class IndexmenuSyntaxTest extends DokuWikiTest
                 "{{indexmenu>#1|js#bj_ubuntu.png navbar context nocookie noscroll notoc nomenu dsort msort#date:modified hsort rsort nsort nons nopg max#2#4 maxjs#3 id#54321}}",
                 [
                     '', 'bj_ubuntu.png', 54321, true, true, true, 3, true, '&sort=d&msort=date modified&rsort=1&nsort=1&hsort=1&nopg=1&max=4', true, true,
-                    'd', 'date modified', true, true, 1, true, true, [], 2, 4, true, [''], [''], true,
+                    'd', 'date modified', true, true, 1, true, true, [], 2, 4, true, '', '', [''], [''], true,
                     ":start:,:same:,:inside:", 1, 1
                 ]
             ],
@@ -155,7 +157,8 @@ class IndexmenuSyntaxTest extends DokuWikiTest
                 "{{indexmenu>#1 test|skipfile+/(^myusers:spaces$|privatens:userss)/ skipns=/(^myusers:spaces$|privatens:users)/ id#ns}}",
                 [
                     '', 'default', 'random', false, false, false, 1, false, '&skipns=%3D/%28%5Emyusers%3Aspaces%24%7Cprivatens%3Ausers%29/&skipfile=%2B/%28%5Emyusers%3Aspaces%24%7Cprivatens%3Auserss%29/', false, false,
-                    0, false, false, false, 1, false, false, [['test', -1]], 0, 1, false, ['/(^myusers:spaces$|privatens:users)/'], ['', '/(^myusers:spaces$|privatens:userss)/'], false,
+                    0, false, false, false, 1, false, false, [['test', -1]], 0, 1, false, '=/(^myusers:spaces$|privatens:users)/',
+                    '+/(^myusers:spaces$|privatens:userss)/', ['/(^myusers:spaces$|privatens:users)/'], ['', '/(^myusers:spaces$|privatens:userss)/'], false,
                     ":start:,:same:,:inside:", 1, 1
                 ]
             ],
@@ -164,7 +167,8 @@ class IndexmenuSyntaxTest extends DokuWikiTest
                 "{{indexmenu>#1 test|js skipfile=/(^myusers:spaces$|privatens:userss)/ skipns+/(^myusers:spaces$|privatens:userssss)/ id#ns}}",
                 [
                     '', 'default', 0, false, false, false, 1, false, '&skipns=%2B/%28%5Emyusers%3Aspaces%24%7Cprivatens%3Auserssss%29/&skipfile=%3D/%28%5Emyusers%3Aspaces%24%7Cprivatens%3Auserss%29/', false, false,
-                    0, false, false, false, 1, false, false, [['test', -1]], 0, 1, true, ['', '/(^myusers:spaces$|privatens:userssss)/'], ['/(^myusers:spaces$|privatens:userss)/'], false,
+                    0, false, false, false, 1, false, false, [['test', -1]], 0, 1, true, '+/(^myusers:spaces$|privatens:userssss)/',
+                    '=/(^myusers:spaces$|privatens:userss)/', ['', '/(^myusers:spaces$|privatens:userssss)/'], ['/(^myusers:spaces$|privatens:userss)/'], false,
                     ":start:,:same:,:inside:", 1, 1
                 ]
             ]

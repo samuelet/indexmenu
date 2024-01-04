@@ -642,8 +642,8 @@ class Search
                 }
             }
         } else {
-            //sort by page name
-            sort($dirs);
+            //sort by directory name
+            Sort::sort($dirs);
             //collect directories
             foreach ($dirs as $dir) {
                 if (call_user_func_array($func, [&$data, $base, $dir, 'd', $lvl, $opts])) {

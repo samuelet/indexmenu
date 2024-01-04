@@ -124,7 +124,7 @@ class AjaxRequestsTest extends DokuWikiTest
 
     public function test_params()
     {
-        print_r(AjaxRequestsTest::prepareParams(['level' => 2]));
+//        print_r(AjaxRequestsTest::prepareParams(['level' => 2]));
 
         $this->assertTrue(true);
     }
@@ -319,6 +319,12 @@ class AjaxRequestsTest extends DokuWikiTest
                     'url' => '/./doku.php?id=ns1:ns1:start'
                 ],
                 1 => [
+                    'title' => 'Dd',
+                    'key' => 'ns1:apage',
+                    'hns' => false,
+                    'url' => '/./doku.php?id=ns1:apage'
+                ],
+                2 => [
                     'title' => 'ns0',
                     'key' => 'ns1:ns0:',
                     'hns' => false,
@@ -326,19 +332,13 @@ class AjaxRequestsTest extends DokuWikiTest
                     'lazy' => true,
                     'url' => false
                 ],
-                2 => [
+                3 => [
                     'title' => 'ns2',
                     'key' => 'ns1:ns2:',
                     'hns' => false,
                     'folder' => true,
                     'lazy' => true,
                     'url' => false
-                ],
-                3 => [
-                    'title' => 'Dd',
-                    'key' => 'ns1:apage',
-                    'hns' => false,
-                    'url' => '/./doku.php?id=ns1:apage'
                 ]
             ]];
     }

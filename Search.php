@@ -626,19 +626,27 @@ class Search
         }
         closedir($dh);
 
+        //Collect and sort files
+        foreach ($files as $file) {
+            call_user_func_array($func, [&$files_tmp, $base, $file, 'f', $lvl, $opts]);
+        }
+        usort($files_tmp, [$this, "compareNodes"]);
+
         //Collect and sort dirs
         if ($this->nsort) {
             //collect the wanted directories in dirs_tmp
             foreach ($dirs as $dir) {
                 call_user_func_array($func, [&$dirs_tmp, $base, $dir, 'd', $lvl, $opts]);
             }
-            //sort directories
-            usort($dirs_tmp, [$this, "compareNodes"]);
+            //combine directories and pages and sort together
+            $dirsAndFiles = array_merge($dirs_tmp, $files_tmp);
+            usort($dirsAndFiles, [$this, "compareNodes"]);
+
             //add and search each directory
-            foreach ($dirs_tmp as $dir) {
-                $data[] = $dir;
-                if ($dir['shouldBeTraversed']) {
-                    $this->customSearch($data, $base, $func, $opts, $dir['file'], $lvl + 1);
+            foreach ($dirsAndFiles as $dirOrFile) {
+                $data[] = $dirOrFile;
+                if ($dirOrFile['type'] != 'f' && $dirOrFile['shouldBeTraversed']) {
+                    $this->customSearch($data, $base, $func, $opts, $dirOrFile['file'], $lvl + 1);
                 }
             }
         } else {
@@ -652,24 +660,20 @@ class Search
             }
         }
 
-        //Collect and sort files
-        foreach ($files as $file) {
-            call_user_func_array($func, [&$files_tmp, $base, $file, 'f', $lvl, $opts]);
-        }
-        usort($files_tmp, [$this, "compareNodes"]);
-
         //count added items
         $added = count($data) - $count;
 
         if ($added === 0 && $files_tmp === []) {
             //remove empty directory again, only if it has not a headpage associated
-            $v = end($data);
-            if (!$v['hns']) {
+            $lastItem = end($data);
+            if (!$lastItem['hns']) {
                 array_pop($data);
             }
         } else {
             //add files to index
-            $data = array_merge($data, $files_tmp);
+            if(!$this->nsort) {
+                $data = array_merge($data, $files_tmp);
+            }
         }
     }
 

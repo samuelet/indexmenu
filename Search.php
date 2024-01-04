@@ -325,9 +325,9 @@ class Search
             }
             //Set title and headpage
             $title = static::getNamespaceTitle($id, $headpage, $hns);
-            //link namespace nodes to start pages when excluding page nodes
-            if (!$hns && $opts['nopg']) {
-                $hns = $id . ":" . $conf['start'];
+            // when excluding page nodes: guess a headpage based on the headpage setting
+            if ($opts['nopg'] && $hns === false) {
+                $hns = $this->guessHeadpage($headpage, $id);
             }
         } else {
             //Nopg. Dont show pages
@@ -511,9 +511,10 @@ class Search
 
             //Set title and headpage
             $title = static::getNamespaceTitle($id, $headpage, $hns);
-            //link namespace nodes to start pages when excluding page nodes
-            if (!$hns && $opts['nopg']) {
-                $hns = $id . ":" . $conf['start'];
+
+            // when excluding page nodes: guess a headpage based on the headpage setting
+            if ($opts['nopg'] && $hns === false) {
+                $hns = $this->guessHeadpage($headpage, $id);
             }
         } else {
             //Nopg.Dont show pages
@@ -539,8 +540,8 @@ class Search
                 //start page is in root
                 if ($id == $conf['start']) return false;
 
-                $ahp = explode(",", $headpage);
-                foreach ($ahp as $hp) {
+                $hpOptions = explode(",", $headpage);
+                foreach ($hpOptions as $hp) {
                     switch ($hp) {
                         case ":inside:":
                             if (noNS($id) == noNS(getNS($id))) return false;
@@ -677,7 +678,7 @@ class Search
      *
      * @param string $ns namespace
      * @param string $headpage comma-separated headpages options and headpages
-     * @param string $hns reference pageid of headpage, false when not existing
+     * @param string|false $hns reference pageid of headpage, false when not existing
      * @return string when headpage & heading on: title of headpage, otherwise: namespace name
      *
      * @author  Samuele Tognini <samuele@samuele.netsons.org>
@@ -690,8 +691,8 @@ class Search
         if (empty($headpage)) {
             return $title;
         }
-        $ahp = explode(",", $headpage);
-        foreach ($ahp as $hp) {
+        $hpOptions = explode(",", $headpage);
+        foreach ($hpOptions as $hp) {
             switch ($hp) {
                 case ":inside:":
                     $page = $ns . ":" . noNS($ns);
@@ -705,7 +706,9 @@ class Search
                     break;
                 //inside pages
                 default:
-                    $page = $ns . ":" . $hp;
+                    if(!blank($hp)) { //empty setting results in empty string here
+                        $page = $ns . ":" . $hp;
+                    }
             }
             //check headpage
             if (@file_exists(wikiFN($page)) && auth_quickaclcheck($page) >= AUTH_READ) {
@@ -788,5 +791,46 @@ class Search
             $sort = noNS($item['id']);
         }
         return $sort;
+    }
+
+    /**
+     * Guess based on first option of the headpage config setting (default :start: if enabled) the headpage of the node
+     *
+     * @param string $headpage config setting
+     * @param string $ns namespace
+     * @return string guessed headpage
+     */
+    private function guessHeadpage(string $headpage, string $ns): string
+    {
+        global $conf;
+        $hns = false;
+
+        $hpOptions = explode(",", $headpage);
+        foreach ($hpOptions as $hp) {
+            switch ($hp) {
+                case ":inside:":
+                    $hns = $ns . ":" . noNS($ns);
+                    break 2;
+                case ":same:":
+                    $hns = $ns;
+                    break 2;
+                //it's an inside start
+                case ":start:":
+                    $hns = ltrim($ns . ":" . $conf['start'], ":");
+                    break 2;
+                //inside pages
+                default:
+                    if (!blank($hp)) {
+                        $hns = $ns . ":" . $hp;
+                        break 2;
+                    }
+            }
+        }
+
+        if ($hns === false) {
+            //fallback to start if headpage setting was empty
+            $hns = ltrim($ns . ":" . $conf['start'], ":");
+        }
+        return $hns;
     }
 }

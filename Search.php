@@ -669,11 +669,9 @@ class Search
             if (!$lastItem['hns']) {
                 array_pop($data);
             }
-        } else {
+        } elseif (!$this->nsort) {
             //add files to index
-            if(!$this->nsort) {
-                $data = array_merge($data, $files_tmp);
-            }
+            $data = array_merge($data, $files_tmp);
         }
     }
 

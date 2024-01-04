@@ -227,7 +227,9 @@ jQuery(function(){  // on page load
                 if(node.data.url === false) {
                     return;
                 }
-                data.$title.html("<a href='" + node.data.url + "'>" + node.title + "</a>");
+                if(node.data.url) { // pagename 0 has url /0
+                    data.$title.html("<a href='" + node.data.url + "'>" + node.title + "</a>");
+                }
             },
             //retrieve initial data
             source: {

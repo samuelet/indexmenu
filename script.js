@@ -457,7 +457,7 @@ if (window.toolbar !== undefined) {
 /**
  *  functions for js index renderer and contextmenu
  */
-const IndexmenuUtils = {
+var IndexmenuUtils = {
 
     /**
      * Determine extension from given theme dir name

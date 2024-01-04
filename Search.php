@@ -117,7 +117,7 @@ class Search
 
                 //set current page to active
                 if ($opts['currentPage'] == $item['id']) {
-                    if(!$hasActiveNode) {
+                    if (!$hasActiveNode) {
                         $node['active'] = true;
                         $hasActiveNode = true;
                     }
@@ -172,7 +172,7 @@ class Search
                 ) {
                     //with hide_headpage enabled, the parent node must be actived
                     //special: nopg has no pages, therefore, mark its parent node active
-                    if(!$hasActiveNode) {
+                    if (!$hasActiveNode) {
                         $node['active'] = true;
                         $hasActiveNode = true;
                     }
@@ -706,7 +706,7 @@ class Search
                     break;
                 //inside pages
                 default:
-                    if(!blank($hp)) { //empty setting results in empty string here
+                    if (!blank($hp)) { //empty setting results in empty string here
                         $page = $ns . ":" . $hp;
                     }
             }

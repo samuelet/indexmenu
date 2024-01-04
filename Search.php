@@ -202,11 +202,11 @@ class Search
      *  <li>$opts['skipfilecombined']  array regexp matching pageids to skip</li>
      *  <li>$opts['headpage']   string headpages options or pageids</li>
      *  <li>$opts['level']      int    desired depth of main namespace, -1 = all levels</li>
-     *  <li>$opts['subnss']     array with entries: array(namespaceid,level) specifying namespaces with their own number of
-     *                            opened levels</li>
+     *  <li>$opts['subnss']     array with entries: array(namespaceid,level) specifying namespaces with their own
+     *                          number of opened levels</li>
      *  <li>$opts['nons']       bool   exclude namespace nodes</li>
-     *  <li>$opts['max']        int    If initially closed, the node at max level will retrieve all its child nodes through</li>
-     *                             the AJAX mechanism</li>
+     *  <li>$opts['max']        int    If initially closed, the node at max level will retrieve all its child nodes
+     *                          through the AJAX mechanism</li>
      *  <li>$opts['nopg']       bool   exclude page nodes</li>
      *  <li>$opts['hide_headpage'] int don't hide (0) or hide (1)</li>
      *  <li>$opts['js']         bool   use js-render (only used for old 'searchIndexmenuItems')</li>
@@ -249,11 +249,11 @@ class Search
      *   <li>$opts['skipfilecombined'] array regexp matching pageids to skip,</li>
      *   <li>$opts['headpage'] string headpages options or pageids,</li>
      *   <li>$opts['level'] int desired depth of main namespace, -1 = all levels,</li>
-     *   <li>$opts['subnss'] array with entries: array(namespaceid,level) specifying namespaces with their own number of o
-     *                   pened levels,</li>
+     *   <li>$opts['subnss'] array with entries: array(namespaceid,level) specifying namespaces with their own number
+     *                       of opened levels,</li>
      *   <li>$opts['nons'] bool Exclude namespace nodes,</li>
-     *   <li>$opts['max'] int If initially closed, the node at max level will retrieve all its child nodes through the AJAX
-     *                    mechanism,</li>
+     *   <li>$opts['max'] int If initially closed, the node at max level will retrieve all its child nodes through
+     *                    the AJAX mechanism,</li>
      *   <li>$opts['nopg'] bool Exclude page nodes,</li>
      *   <li>$opts['hide_headpage'] int don't hide (0) or hide (1),</li>
      *   <li>$opts['js'] bool use js-render</li>
@@ -413,7 +413,8 @@ class Search
      *   <li>$opts['skipfilecombined'] array regexp matching pageids to skip</li>
      *   <li>$opts['headpage']   string headpages options or pageids</li>
      *   <li>$opts['level']      int    desired depth of main namespace, -1 = all levels</li>
-     *   <li>$opts['subnss']     array with entries: array(namespaceid,level) specifying namespaces with their own level</li>
+     *   <li>$opts['subnss']     array with entries: array(namespaceid,level) specifying namespaces with their
+     *                           own level</li>
      *   <li>$opts['nons']       bool   exclude namespace nodes</li>
      *   <li>$opts['max']        int    If initially closed, the node at max level will retrieve all its child nodes
      *                              through the AJAX mechanism</li>

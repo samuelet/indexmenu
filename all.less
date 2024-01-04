@@ -19,7 +19,8 @@
     &.@{skin-foldername} {
         @import "scripts/fancytree/@{skin-foldername}/ui.fancytree.less";
         //overwrite default variable: @fancy-image-prefix: "./skin-win8/"; the current less compressor does not update paths
-        @fancy-image-prefix: "/lib/plugins/indexmenu/scripts/fancytree/@{skin-foldername}/";
+        //relative to lib/exe/(css.php), workaround DOKU_BASE not available in css
+        @fancy-image-prefix: "../plugins/indexmenu/scripts/fancytree/@{skin-foldername}/";
     }
 }
 

@@ -228,7 +228,12 @@ jQuery(function(){  // on page load
                     return;
                 }
                 if(node.data.url) { // pagename 0 has url /0
-                    data.$title.html("<a href='" + node.data.url + "'>" + node.title + "</a>");
+                    //nopg has potentially not existing pages
+                    let cls = '';
+                    if(node.data.hnsNotExisting) {
+                        cls = ' class="wikilink2"';
+                    }
+                    data.$title.html("<a href='" + node.data.url + "'"+cls+">" + node.title + "</a>");
                 }
             },
             //retrieve initial data

@@ -127,6 +127,10 @@ class Search
                 $node['folder'] = true;
                 // let php create url (considering rewriting etc)
                 $node['url'] = $item['hns'] === false ? false : wl($item['hns']);
+                if(!$item['hnsExists']) {
+                    //change link color
+                    $node['hnsNotExisting'] = true;
+                }
 
                 if ($item['open'] === true) {
                     $node['expanded'] = true;
@@ -218,18 +222,18 @@ class Search
         global $conf;
 
         if (!empty($opts['tempNew'])) {
-            //NEW: a bit different logic for lazy loading of opened/closed nodes
-            $functionName = 'searchIndexmenuItemsNew';
+            //a specific callback for Fancytree
+            $callback = [$this, 'searchIndexmenuItemsNew'];
         } else {
-            $functionName = 'searchIndexmenuItems';
+            $callback = [$this, 'searchIndexmenuItems'];
         }
         $dataDir = $conf['datadir'];
         $data = [];
         $fsDir = "/" . utf8_encodeFN(str_replace(':', '/', $ns));
         if ($this->sort || $this->msort || $this->rsort || $this->hsort) {
-            $this->customSearch($data, $dataDir, [$this, $functionName], $opts, $fsDir);
+            $this->customSearch($data, $dataDir, $callback, $opts, $fsDir);
         } else {
-            search($data, $dataDir, [$this, $functionName], $opts, $fsDir);
+            search($data, $dataDir, $callback, $opts, $fsDir);
         }
         return $data;
     }
@@ -400,8 +404,20 @@ class Search
     /**
      * Callback that adds an item of namespace/page to the browsable index, if it fits in the specified options
      *
-     * TODO testing version, for debugging/fixing lazyloading...
-     * @param array $data Already collected nodes
+     * TODO Version as used for Fancytree js tree
+     *
+     * @param array $data indexed array of collected nodes, each item has:<ul>
+     *   <li>$item['id'] string namespace or page id</li>
+     *   <li>$item['type'] string f/d/l</li>
+     *   <li>$item['level'] string current recursion depth (start count at 1)</li>
+     *   <li>$item['open'] bool if a node is open</li>
+     *   <li>$item['title'] string </li>
+     *   <li>$item['hns'] string|false page id or false</li>
+     *   <li>$item['hnsExists'] bool only false if hns is guessed(not-existing) for nopg</li>
+     *   <li>$item['file'] string path to file or directory</li>
+     *   <li>$item['shouldBeTraversed'] bool directory should be searched</li>
+     *   <li>$item['sort'] mixed sort value</li>
+     * </ul>
      * @param string $base Where to start the search, usually this is $conf['datadir']
      * @param string $file Current file or directory relative to $base
      * @param string $type Type either 'd' for directory or 'f' for file
@@ -436,6 +452,7 @@ class Search
         $skipns = $opts['skipnscombined'];
         $skipfile = $opts['skipfilecombined'];
         $headpage = $opts['headpage'];
+        $hnsExists = true; //nopg guesses pages
         $id = pathID($file);
 
         if ($type == 'd') {
@@ -516,6 +533,7 @@ class Search
             // when excluding page nodes: guess a headpage based on the headpage setting
             if ($opts['nopg'] && $hns === false) {
                 $hns = $this->guessHeadpage($headpage, $id);
+                $hnsExists = false;
             }
         } else {
             //Nopg.Dont show pages
@@ -577,6 +595,7 @@ class Search
             'open' => $isOpen,
             'title' => $title,
             'hns' => $hns,
+            'hnsExists' => $hnsExists,
             'file' => $file,
             'shouldBeTraversed' => $shouldBeTraversed
         ];

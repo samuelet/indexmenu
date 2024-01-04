@@ -127,7 +127,7 @@ class Search
                 $node['folder'] = true;
                 // let php create url (considering rewriting etc)
                 $node['url'] = $item['hns'] === false ? false : wl($item['hns']);
-                if(!$item['hnsExists']) {
+                if (!$item['hnsExists']) {
                     //change link color
                     $node['hnsNotExisting'] = true;
                 }

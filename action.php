@@ -37,7 +37,7 @@ class action_plugin_indexmenu extends ActionPlugin
             $controller->register_hook('TPL_CONTENT_DISPLAY', 'BEFORE', $this, 'showSortNumberAtTopOfPage');
         }
         $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, 'ajaxCalls');
-        $controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, 'addStylesForUsedThemes');
+        $controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, 'addStylesForSkins');
     }
 
     /**
@@ -535,24 +535,14 @@ class action_plugin_indexmenu extends ActionPlugin
      *
      * @param Event $event
      */
-    public function addStylesForUsedThemes(Event $event)
+    public function addStylesForSkins(Event $event)
     {
-        global $ID;
 
-        if (($themes = p_get_metadata($ID, 'indexmenu usedthemes')) !== null) { //METADATA_RENDER_UNLIMITED
-            $themes = array_keys($themes);
-        } else {
-            $themes = [];
-        }
-
-        //TODO works only on the main pages (where we can get its $ID) sidebars and other included pages we miss here
-//        foreach ($themes as $theme) {
-//            $event->data["link"][] = [
-//                "type" => "text/css",
-//                "rel" => "stylesheet",
-//                "href" => DOKU_BASE . "lib/plugins/indexmenu/scripts/fancytree/skin-$theme/ui.fancytree.min.css"
-//            ];
-//        }
+//        $event->data["link"][] = [
+//            "type" => "text/css",
+//            "rel" => "stylesheet",
+//            "href" => DOKU_BASE . "lib/plugins/indexmenu/scripts/fancytree/... etc etc"
+//        ];
 
 //        $event->data["link"][] = [
 //            "type" => "text/css",

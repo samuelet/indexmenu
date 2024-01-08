@@ -160,6 +160,9 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         }
         //sort directories in the same way as files
         $nsort = $this->hasOption($defaults, $opts, 'nsort');
+        //group namespaces and pages both sorted separately with same sorting, or nogroup: mix them and sort together
+        $group = !$this->hasOption($defaults, $opts, 'nogroup');
+
         //sort headpages up
         $hsort = $this->hasOption($defaults, $opts, 'hsort');
         //Metadata sort method
@@ -175,6 +178,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         if ($msort) $jsAjax .= "&msort=" . $msort;
         if ($rsort) $jsAjax .= "&rsort=1";
         if ($nsort) $jsAjax .= "&nsort=1";
+        if ($group) $jsAjax .= "&group=1";
         if ($hsort) $jsAjax .= "&hsort=1";
         if ($nopg) $jsAjax .= "&nopg=1";
 
@@ -317,7 +321,8 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
                 'msort' => $msort,
                 'rsort' => $rsort,
                 'nsort' => $nsort,
-                'hsort' => $hsort,
+                'group' => $group,
+                'hsort' => $hsort
             ],
             [ //3=opts
                 'level' => $level, // requested depth of initial opened nodes, -1:all
@@ -408,7 +413,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         $ns = $data[0];
         //theme, identifier, nocookie, navbar, noscroll, maxJs, notoc, jsAjax, context, nomenu
         $js_dTreeOpts = $data[1];
-        //sort, msort, rsort, nsort, hsort
+        //sort, msort, rsort, nsort, group, hsort
         $sort = $data[2];
         //opts for search(): level, nons, nopg, subnss, max, maxajax, js, skipns, skipfile, skipnscombined,
         //skipfilecombined, headpage, hide_headpage
@@ -488,7 +493,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
      * @param string $ns
      * @param array $js_dTreeOpts entries: theme, identifier, nocookie, navbar, noscroll, maxJs, notoc, jsAjax, context,
      *                          nomenu
-     * @param array $sort entries: sort, msort, rsort, nsort, hsort
+     * @param array $sort entries: sort, msort, rsort, nsort, group, hsort
      * @param array $opts entries of opts for search(): level, nons, nopg, nss, max, maxajax, js, skipns, skipfile,
      *                     skipnscombined, skipfilecombined, headpage, hide_headpage
      * @param int $jsVersion

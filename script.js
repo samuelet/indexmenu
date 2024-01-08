@@ -257,6 +257,7 @@ jQuery(function(){  // on page load
                     msort: options.sort.msort ? options.sort.msort : 0, //'indexmenu_n', or metadata 'key subkey' TODO is empty handled correctly?
                     rsort: options.sort.rsort ? 1 : 0,
                     nsort: options.sort.nsort ? 1 : 0,
+                    group: options.sort.group ? 1 : 0,
                     hsort: options.sort.hsort ? 1 : 0,
 
                     init: 1
@@ -285,6 +286,7 @@ jQuery(function(){  // on page load
                         msort: options.sort.msort ? options.sort.msort : 0,
                         rsort: options.sort.rsort ? 1 : 0,
                         nsort: options.sort.nsort ? 1 : 0,
+                        group: options.sort.group ? 1 : 0,
                         hsort: options.sort.hsort ? 1 : 0,
 
                         init: 0

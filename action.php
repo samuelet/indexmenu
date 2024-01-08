@@ -289,6 +289,7 @@ class action_plugin_indexmenu extends ActionPlugin
             'msort' => $INPUT->str('msort'),
             'rsort' => $INPUT->bool('rsort'),
             'nsort' => $INPUT->bool('nsort'),
+            'group' => $INPUT->bool('group'),
             'hsort' => $INPUT->bool('hsort')
         ];
 
@@ -475,6 +476,7 @@ class action_plugin_indexmenu extends ActionPlugin
         $sort['msort'] = $INPUT->str('msort', '', true);
         $sort['rsort'] = $INPUT->bool('rsort', false, true);
         $sort['nsort'] = $INPUT->bool('nsort', false, true);
+        $sort['group'] = $INPUT->bool('group', false, true);
         $sort['hsort'] = $INPUT->bool('hsort', false, true);
         $search = new Search($sort);
         $fsdir = "/" . utf8_encodeFN(str_replace(':', '/', $ns));

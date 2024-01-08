@@ -23,6 +23,10 @@ class Search
      */
     private $nsort;
     /**
+     * @var bool Group the namespaces and page and sort separately, or mix them and sort together
+     */
+    private $group;
+    /**
      * @var bool Sort the headpages as defined by global config setting startpage to the top
      */
     private $hsort;
@@ -35,6 +39,7 @@ class Search
      *   $sort['msort']
      *   $sort['rsort']
      *   $sort['nsort']
+     *   $sort['group']
      *   $sort['hsort'];
      */
     public function __construct($sort)
@@ -43,6 +48,7 @@ class Search
         $this->msort = $sort['msort'];
         $this->rsort = $sort['rsort'];
         $this->nsort = $sort['nsort'];
+        $this->group = $sort['group'];
         $this->hsort = $sort['hsort'];
     }
 
@@ -657,8 +663,15 @@ class Search
             foreach ($dirs as $dir) {
                 call_user_func_array($func, [&$dirs_tmp, $base, $dir, 'd', $lvl, $opts]);
             }
-            //combine directories and pages and sort together
-            $dirsAndFiles = array_merge($dirs_tmp, $files_tmp);
+            if($this->group) {
+                //group directories and pages, and sort separately
+                $dirsAndFiles = $dirs_tmp;
+            } else {
+                // no grouping
+                //mix directories and pages and sort together
+                $dirsAndFiles = array_merge($dirs_tmp, $files_tmp);
+            }
+
             usort($dirsAndFiles, [$this, "compareNodes"]);
 
             //add and search each directory
@@ -688,7 +701,7 @@ class Search
             if (!$lastItem['hns']) {
                 array_pop($data);
             }
-        } elseif (!$this->nsort) {
+        } elseif (!($this->nsort && !$this->group)) {
             //add files to index
             $data = array_merge($data, $files_tmp);
         }

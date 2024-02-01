@@ -211,7 +211,13 @@ jQuery(function(){  // on page load
                 }
 
                 if(node.data.url){
-                    window.location.href = node.data.url;
+                    if (e.ctrlKey || e.metaKey) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        window.open(node.data.url);
+                    } else {
+                        window.location.href = node.data.url;
+                    }
                 }
             },
 

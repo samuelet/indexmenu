@@ -233,7 +233,7 @@ jQuery(function(){  // on page load
                     if(node.data.hnsNotExisting) {
                         cls = ' class="wikilink2"';
                     }
-                    data.$title.html("<a href='" + node.data.url + "'"+cls+">" + node.title + "</a>");
+                    data.$title.html("<a href='" + node.data.url + "'"+cls+" data-wiki-id='" + node.key + "'>" + node.title + "</a>");
                 }
             },
             //retrieve initial data

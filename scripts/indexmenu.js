@@ -316,10 +316,11 @@ dTree.prototype.node = function (node, nodeId) {
         (node.hns) ? str += node.hns : str += node.dokuid;
         str += '"' + ' title="' + node.name + '"' + jsfnc;
         str += ' onclick="javascript: ' + this.treeName + '.s(' + nodeId + ');"';
+        str += ' data-wiki-id="' + node.dokuid + '"';
         str += '>' + node.name + '</a>';
     }
     else if (node.pid !== this.root.id) {
-        str += '<a id="s' + this.treeName + nodeId + '" href="javascript: ' + this.treeName + '.o(' + nodeId + '); " class="node"' + jsfnc + '>' + node.name + '</a>';
+        str += '<a id="s' + this.treeName + nodeId + '" href="javascript: ' + this.treeName + '.o(' + nodeId + '); " data-wiki-id="' + node.dokuid + '" class="node"' + jsfnc + '>' + node.name + '</a>';
     } else {
         str += node.name;
     }

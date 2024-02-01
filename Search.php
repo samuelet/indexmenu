@@ -663,7 +663,7 @@ class Search
             foreach ($dirs as $dir) {
                 call_user_func_array($func, [&$dirs_tmp, $base, $dir, 'd', $lvl, $opts]);
             }
-            if($this->group) {
+            if ($this->group) {
                 //group directories and pages, and sort separately
                 $dirsAndFiles = $dirs_tmp;
             } else {

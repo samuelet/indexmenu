@@ -1,0 +1,40 @@
+# This is a list of files that were present in previous plugin releases
+# but were removed later. An up to date plugin should not have any of
+# the files installed
+admin.php
+_test/indexmenu_syntax_indexmenu.test.php
+changelog
+images/was.png/._style.css
+images/was.png/._plus~bak.png
+images/was.png/._plusbottom~bak.png
+images/was.png/._page~bak.png
+images/was.png/._nolines_plus~bak.png
+images/was.png/._nolines_minus~bak.png
+images/was.png/._minus~bak.png
+images/was.png/._minusbottom~bak.png
+images/was.png/._minus.gif
+images/was.png/._line~bak.png
+images/was.png/._join~bak.png
+images/was.png/._joinbottom~bak.png
+images/was.png/._folder~bak.png
+images/was.png/._folderopen~bak.png
+images/was.png/._folderopen.png
+images/was.png/._folderopen.gif
+images/was.png/._folderh~bak.png
+images/was.png/._folderhopen~bak.png
+images/was.png/._folderhopen.gif
+images/was.png/._folder.gif
+images/was.png/._empty~bak.png
+images/was.png/._base~bak.png
+images/was.png/.DS_Store
+images/was.png/._base.gif
+jsmenu/admmenu.js
+jsmenu/authmenu.js
+jsmenu/menu.js
+jsmenu/usrmenu.js
+jscompact
+indexmenu-full.js
+edit-full.js
+edit.js
+VERSION.txt
+nojsindex.js

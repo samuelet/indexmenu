@@ -211,9 +211,9 @@ jQuery(function(){  // on page load
                 }
 
                 if(node.data.url){
-                    if (e.ctrlKey || e.metaKey) {
-                        e.stopPropagation();
-                        e.preventDefault();
+                    if (event.ctrlKey || event.metaKey) {
+                        event.stopPropagation();
+                        event.preventDefault();
                         window.open(node.data.url);
                     } else {
                         window.location.href = node.data.url;

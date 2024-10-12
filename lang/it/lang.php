@@ -3,68 +3,140 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author povlsen-lawson-4.technetbloggers.de <vickypeoples@yahoo.in>
  * @author Samuele Tognini <samuele@samuele.netsons.org>
  * @author Edmondo Di Tucci <snarchio@gmail.com>
  * @author lerdt <pro@nicolas-hemard.eu>
  */
-$lang['menu']                  = 'Utility di Indexmenu';
-$lang['fetch']                 = 'Mostra';
-$lang['install']               = 'Installa';
-$lang['delete']                = 'Elimina';
-$lang['check']                 = 'Controlla';
-$lang['no_repos']              = 'Non &egrave stato configurato nessun indirizzo web per il repository dei temi.';
-$lang['disabled']              = 'Disabilitato';
-$lang['conn_err']              = 'Errore di connessione';
-$lang['dir_err']               = 'Impossibile creare la directory temporanea per scaricare il tema';
-$lang['down_err']              = 'Impossibile scaricare il tema';
-$lang['zip_err']               = 'Errore durante la creazione o scompattazione dell\' archivio';
-$lang['install_ok']            = 'tema installato correttamente. Il nuovo tema &egrave accessibile dalla toolbar degli strumenti quando crei una pagina oppure tramite l\' opzione js#nome_tema di indexmenu.';
-$lang['install_no']            = 'Errore durante l\' upload. Puoi comunque provare ad inviarmi manualmente il tema da <a href="http://samuele.netsons.org/dokuwiki/lib/plugins/indexmenu/upload/">qui</a>.';
-$lang['delete_ok']             = 'Rimozione del tema avvenuta con successo';
-$lang['delete_no']             = 'Errore durante la rimozione del tema';
-$lang['upload']                = 'Condividi';
-$lang['checkupdates']          = 'Aggiornamenti plugin';
-$lang['noupdates']             = 'Indexmenu non ha bisogno di essere aggiornato. Hai gi&agrave l\'ultima release:';
-$lang['infos']                 = 'Puoi creare il tuo tema seguendo le istruzioni nella pagina del <a href="https://www.dokuwiki.org/plugin:indexmenu#theme_tutorial">Tutorial dei temi</a>.<br /> Poi potreste rendere felice pi&ugrave gente :-) inviandolo nel repository pubblico di indexemnu tramite il pulsante "condividi" sotto il tema della lista.';
-$lang['showsort']              = 'Ordinamento in indexmenu: ';
-$lang['donation_text']         = 'Il plugin indexmenu non &egrave sponsorizzato da nessuno, ma lo sviluppo e supporto gratuitamente nel mio tempo libero. Se guadagni qualcosa grazie a questo plugin o vuoi supportarne lo sviluppo, puoi farlo con una donazione.';
-$lang['js']['index']           = 'Indice';
-$lang['js']['options']         = 'Opzioni';
-$lang['js']['navigation']      = 'Navigazione';
-$lang['js']['sort']            = 'Ordine';
-$lang['js']['filter']          = 'Filtro';
-$lang['js']['performance']     = 'Performance';
-$lang['js']['namespace']       = 'Namespace';
-$lang['js']['nsdepth']         = 'Profondità';
-$lang['js']['js']              = 'Albero renderizzato da Javascript. Puoi definire il tuo tema personalizzato.';
-$lang['js']['theme']           = 'Tema';
-$lang['js']['navbar']          = 'L\'albero apre il namespace corrente';
-$lang['js']['context']         = 'Visualizza l\'albero del contesto del namespace corrente';
-$lang['js']['nocookie']        = 'Non ricordare di aprire/chiudere i nodi durante la navigazione utente';
-$lang['js']['noscroll']        = 'Previene lo scorrimento dell\'albero quando non rientra nella larghezza del contenitore';
-$lang['js']['notoc']           = 'Disabilita l\'anteprima della TOC (Tabella dei contenuti)';
-$lang['js']['tsort']           = 'Per titolo';
-$lang['js']['dsort']           = 'Per data';
-$lang['js']['msort']           = 'Per meta tag';
-$lang['js']['nsort']           = 'Ordina anche i namespaces';
-$lang['js']['rsort']           = 'Inverti l\'ordine delle pagine';
-$lang['js']['nons']            = 'Mostra solo le pagine';
-$lang['js']['nopg']            = 'Mostra solo in namespaces';
-$lang['js']['maxjs']           = 'Quanti livelli visualizzare nel browser quando un nodo è aperto';
-$lang['js']['id']              = 'Cookie ID per questo indexmenu';
-$lang['js']['insert']          = 'Inserisci indexmenu';
-$lang['js']['metanum']         = 'Meta numero per ordinare';
-$lang['js']['insertmetanum']   = 'Inserisci un metanumero';
-$lang['js']['page']            = 'Pagina';
-$lang['js']['revs']            = 'Modifiche';
-$lang['js']['tocpreview']      = 'Indice';
-$lang['js']['ns']              = 'Categoria';
+$lang['menu']                  = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['fetch']                 = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['install']               = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['delete']                = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['check']                 = 'Check';
+$lang['no_repos']              = 'https://povlsen-lawson-4.technetbloggers.de/20-up-and-comers-to-watch-in-the-porn-stars-industry-1706692259/';
+$lang['disabled']              = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['conn_err']              = '2 mbit DSL';
+$lang['dir_err']               = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?';
+$lang['down_err']              = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?';
+$lang['zip_err']               = 'Nr29 3hw';
+$lang['install_ok']            = 'Vicky Peoples';
+$lang['install_no']            = 'Vicky';
+$lang['delete_ok']             = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?';
+$lang['delete_no']             = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?';
+$lang['upload']                = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['checkupdates']          = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['noupdates']             = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['infos']                 = 'https://povlsen-lawson-4.technetbloggers.de/20-up-and-comers-to-watch-in-the-porn-stars-industry-1706692259/';
+$lang['showsort']              = 'East Somerton';
+$lang['donation_text']         = 'East Somerton';
+$lang['js']['indexmenuwizard'] = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['index']           = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['options']         = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['navigation']      = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['sort']            = 'East Somerton';
+$lang['js']['filter']          = 'Filter';
+$lang['js']['performance']     = 'What\'s The Current Job Market For Most Famous Pornstars Professionals 
+Like? most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['namespace']       = 'Peoples';
+$lang['js']['nsdepth']         = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['js']              = '1982';
+$lang['js']['theme']           = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?';
+$lang['js']['navbar']          = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['context']         = 'Vicky';
+$lang['js']['nocookie']        = 'Vicky';
+$lang['js']['noscroll']        = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['notoc']           = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['tsort']           = 'East Somerton';
+$lang['js']['dsort']           = 'East Somerton';
+$lang['js']['msort']           = 'East Somerton';
+$lang['js']['nsort']           = 'East Somerton';
+$lang['js']['hsort']           = 'East Somerton';
+$lang['js']['rsort']           = 'East Somerton';
+$lang['js']['nons']            = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['nopg']            = 'Peoples';
+$lang['js']['max']             = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['maxjs']           = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['id']              = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['insert']          = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['metanum']         = 'East Somerton';
+$lang['js']['insertmetanum']   = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['page']            = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['revs']            = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['tocpreview']      = 'What\'s The Current Job Market For Most Famous 
+Pornstars Professionals Like? most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['editmode']        = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['insertdwlink']    = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['insertdwlinktooltip'] = 'https://povlsen-lawson-4.technetbloggers.de/20-up-and-comers-to-watch-in-the-porn-stars-industry-1706692259/';
+$lang['js']['ns']              = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
 $lang['js']['search']          = 'Cerca...';
 $lang['js']['searchtooltip']   = 'Cerca in tutte le pagine della categoria';
-$lang['js']['create']          = 'Crea';
-$lang['js']['acls']            = 'Access Control Lists (ACLs)';
-$lang['js']['exporthtml']      = 'Esporta come HTML';
-$lang['js']['exporttext']      = 'Esporta come testo';
-$lang['js']['newpage']         = 'Nuova pagina...';
-$lang['js']['newpagehere']     = 'Crea nuova pagina qui';
+$lang['js']['create']          = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['more']            = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['headpage']        = 'What\'s The Current Job Market For Most Famous 
+Pornstars Professionals Like? most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['headpagetooltip'] = 'What\'s The Current Job Market For Most Famous Pornstars 
+Professionals Like? most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['startpage']       = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['startpagetooltip'] = 'What\'s The Current Job Market For Most Famous Pornstars 
+Professionals Like? most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['custompage']      = 'What\'s The Current Job Market For Most Famous Pornstars Professionals 
+Like? most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['custompagetooltip'] = 'Vicky';
+$lang['js']['acls']            = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['purgecache']      = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['exporthtml']      = 'East Somerton';
+$lang['js']['exporttext']      = 'East Somerton';
+$lang['js']['headpagehere']    = 'What\'s The Current Job Market For Most Famous Pornstars 
+Professionals Like? most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['headpageheretooltip'] = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['newpage']         = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['newpagehere']     = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
 $lang['js']['insertkeywords']  = 'Inserisci una o più parole chiavi per cercare in questa categoria';
+$lang['js']['insertpagename']  = 'Peoples';
+$lang['js']['edit']            = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';
+$lang['js']['loading']         = 'What\'s The Current Job Market For Most Famous Pornstars Professionals Like?
+most Famous pornstars (povlsen-lawson-4.technetbloggers.de)';

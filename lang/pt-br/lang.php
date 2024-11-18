@@ -3,6 +3,7 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>
  * @author Alexandre Belchior <alexbelchior@gmail.com>
  */
 $lang['menu']                  = 'Utilitários Indexmenu';
@@ -23,7 +24,7 @@ $lang['delete_no']             = 'Ocorreu um erro durante a exclusão do tema';
 $lang['upload']                = 'Compartilhar';
 $lang['checkupdates']          = 'Atualização de plugins';
 $lang['noupdates']             = 'Indexmenu não precisa de atualização. Você já possui a última versão.';
-$lang['infos']                 = 'Você pode criar seu tema seguindo as instruções em <a href="https://www.dokuwiki.org/plugin:indexmenu#theme_tutorial">Theme Tutorial</a> page. <br /> Então você poderia deixar mais pessoas felizes :-) enviando para o repositório público do indexmenu, com o botão "share" sob esse tema.';
+$lang['infos']                 = 'Você pode criar seu tema seguindo as instruções na página <a href="https://www.dokuwiki.org/plugin:indexmenu#theme_tutorial">Theme Tutorial</a>. <br /> Então você poderia deixar mais pessoas felizes :-) enviando para o repositório público do indexmenu, com o botão "share" sob esse tema.';
 $lang['showsort']              = 'Número de ordem do Indexmenu';
 $lang['donation_text']         = 'O plug-in indexmenu não é patrocinado por ninguém, mas eu desenvolvo e dou suporte de graça durante meu tempo livre. Se você ganhar algo graças a isso ou quiser apoiar o seu desenvolvimento, você pode considerar fazer uma doação.';
 $lang['js']['indexmenuwizard'] = 'Assistente do Indexmenu';

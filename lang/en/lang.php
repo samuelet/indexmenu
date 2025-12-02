@@ -26,6 +26,7 @@ $lang['checkupdates']          = 'Plugin updates';
 $lang['noupdates']             = 'Indexmenu does not need to be update. You have already the last release:';
 $lang['infos']                 = 'You can create your theme following the instructions at the <a href="https://www.dokuwiki.org/plugin:indexmenu#theme_tutorial">Theme Tutorial</a> page. <br />Then you could make more people happy :-) sending it to the public indexmenu repository, with the "share" button under that theme.';
 $lang['showsort']              = 'Indexmenu sort number: ';
+$lang['pdf_sort_err']          = 'Page %s does not have a required indexmenu tag';
 $lang['donation_text']         = 'The indexmenu plugin is not sponsored by anyone but i develop and support it for free during my spare time. If you gain something thanks to it or you want to support its development, you can consider to make a donation.';
 $lang['js']['indexmenuwizard'] = 'Indexmenu Wizard';
 $lang['js']['index']           = 'Index';

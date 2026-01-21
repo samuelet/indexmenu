@@ -698,7 +698,7 @@ class Search
         if ($added === 0 && $files_tmp === []) {
             //remove empty directory again, only if it has not a headpage associated
             $lastItem = end($data);
-            if (isset($lastItem['hns']) && !$lastItem['hns']) {
+            if (empty($lastItem['hns'])) {
                 array_pop($data);
             }
         } elseif (!($this->nsort && !$this->group)) {

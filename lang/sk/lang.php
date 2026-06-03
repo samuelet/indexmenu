@@ -1,0 +1,88 @@
+<?php
+
+/**
+ * @license    GPL 2 (https://www.gnu.org/licenses/gpl.html)
+ *
+ * @author Wizzard <wizzardsk@gmail.com>
+ */
+$lang['menu']                  = 'Nástroje Indexmenu';
+$lang['fetch']                 = 'Zobraziť';
+$lang['install']               = 'Inštalovať';
+$lang['delete']                = 'Odstrániť';
+$lang['check']                 = 'Skontrolovať';
+$lang['no_repos']              = 'Nie je nakonfigurovaná URL adresa úložiska tém.';
+$lang['disabled']              = 'Zakázané';
+$lang['conn_err']              = 'Chyba spojenia';
+$lang['dir_err']               = 'Nepodarilo sa vytvoriť dočasný priečinok na prijatie témy';
+$lang['down_err']              = 'Nepodarilo sa prijať tému';
+$lang['zip_err']               = 'Chyba pri vytváraní alebo rozbaľovaní ZIP archívu';
+$lang['install_ok']            = 'téma bola úspešne nainštalovaná. Nová téma je dostupná na paneli nástrojov stránky úprav alebo pomocou <code>js#theme_name option</code>.';
+$lang['install_no']            = 'Chyba spojenia. Svoju tému však môžete skúsiť nahrať ručne <a href="http://samuele.netsons.org/dokuwiki/lib/plugins/indexmenu/upload/">tu</a>.';
+$lang['delete_ok']             = 'Téma bola úspešne odstránená.';
+$lang['delete_no']             = 'Počas odstraňovania témy nastala chyba';
+$lang['upload']                = 'Zdieľať';
+$lang['checkupdates']          = 'Aktualizácie pluginu';
+$lang['noupdates']             = 'Indexmenu netreba aktualizovať. Už máte najnovšiu verziu:';
+$lang['infos']                 = 'Vlastnú tému môžete vytvoriť podľa pokynov na stránke <a href="https://www.dokuwiki.org/plugin:indexmenu#theme_tutorial">Theme Tutorial</a>. <br />Potom môžete potešiť viac ľudí :-) tým, že ju pošlete do verejného úložiska indexmenu pomocou tlačidla „share“ pod danou témou.';
+$lang['showsort']              = 'Triediace číslo Indexmenu:';
+$lang['donation_text']         = 'Plugin indexmenu nikto nesponzoruje, vyvíjam ho a podporujem zadarmo vo voľnom čase. Ak vám vďaka nemu niečo získal alebo chcete podporiť jeho vývoj, môžete zvážiť darovanie príspevku.';
+$lang['js']['indexmenuwizard'] = 'Sprievodca Indexmenu';
+$lang['js']['index']           = 'Index';
+$lang['js']['options']         = 'Možnosti';
+$lang['js']['navigation']      = 'Navigácia';
+$lang['js']['sort']            = 'Triedenie';
+$lang['js']['filter']          = 'Filter';
+$lang['js']['performance']     = 'Výkon';
+$lang['js']['namespace']       = 'Menný priestor';
+$lang['js']['nsdepth']         = 'Hĺbka';
+$lang['js']['js']              = 'Strom vykreslený JavaScriptom, môžete si zadefinovať vlastnú tému';
+$lang['js']['theme']           = 'Téma';
+$lang['js']['navbar']          = 'Strom sa otvorí v aktuálnom mennom priestore';
+$lang['js']['context']         = 'Zobraziť strom kontextu aktuálneho menného priestoru wiki';
+$lang['js']['nocookie']        = 'Nezapamätať otvorené/zatvorené uzly počas navigácie používateľa';
+$lang['js']['noscroll']        = 'Zabrániť posúvaniu stromu, keď sa nezmestí do šírky svojho kontajnera';
+$lang['js']['notoc']           = 'Vypnúť funkciu náhľadu obsahu (TOC)';
+$lang['js']['tsort']           = 'Podľa názvu';
+$lang['js']['dsort']           = 'Podľa dátumu';
+$lang['js']['msort']           = 'Podľa meta značky';
+$lang['js']['nsort']           = 'Triediť aj menné priestory';
+$lang['js']['hsort']           = 'Zoradiť úvodnú stránku navrch';
+$lang['js']['rsort']           = 'Obrátiť poradie triedenia stránok';
+$lang['js']['nons']            = 'Zobraziť iba stránky';
+$lang['js']['nopg']            = 'Zobraziť iba menné priestory';
+$lang['js']['max']             = 'Koľko úrovní sa vykreslí pomocou AJAX-u pri otvorení uzla. Doplnkové určuje, koľko podúrovní pod touto úrovňou sa načíta cez AJAX namiesto naraz.';
+$lang['js']['maxjs']           = 'Koľko úrovní sa vykreslí v prehliadači klienta pri otvorení uzla';
+$lang['js']['id']              = 'Vlastné ID cookie pre toto indexmenu';
+$lang['js']['insert']          = 'Vložiť indexmenu';
+$lang['js']['metanum']         = 'Meta číslo na triedenie';
+$lang['js']['insertmetanum']   = 'Vložiť meta číslo';
+$lang['js']['page']            = 'Stránka';
+$lang['js']['revs']            = 'Revízie';
+$lang['js']['tocpreview']      = 'Náhľad obsahu (TOC)';
+$lang['js']['editmode']        = 'Režim úprav';
+$lang['js']['insertdwlink']    = 'Vložiť ako DWlink';
+$lang['js']['insertdwlinktooltip'] = 'Vloží odkaz na túto stránku do editačného poľa na pozíciu kurzora';
+$lang['js']['ns']              = 'Menný priestor';
+$lang['js']['search']          = 'Hľadať ...';
+$lang['js']['searchtooltip']   = 'Hľadať stránky v tomto mennom priestore';
+$lang['js']['create']          = 'Vytvoriť';
+$lang['js']['more']            = 'Viac';
+$lang['js']['headpage']        = 'Úvodná stránka';
+$lang['js']['headpagetooltip'] = 'Vytvoriť novú úvodnú stránku pod touto stránkou';
+$lang['js']['startpage']       = 'Štartovacia stránka';
+$lang['js']['startpagetooltip'] = 'Vytvoriť novú štartovaciu stránku pod touto stránkou';
+$lang['js']['custompage']      = 'Vlastná stránka...';
+$lang['js']['custompagetooltip'] = 'Vytvoriť novú stránku (názov sa zadá cez vyskakovacie okno) pod touto stránkou';
+$lang['js']['acls']            = 'ACL';
+$lang['js']['purgecache']      = 'Vyčistiť vyrovnávaciu pamäť';
+$lang['js']['exporthtml']      = 'Exportovať ako HTML';
+$lang['js']['exporttext']      = 'Exportovať ako text';
+$lang['js']['headpagehere']    = 'Úvodná stránka sem';
+$lang['js']['headpageheretooltip'] = 'Vytvoriť novú úvodnú stránku v tomto mennom priestore';
+$lang['js']['newpage']         = 'Nová stránka...';
+$lang['js']['newpagetooltip']  = 'Vytvoriť novú stránku (názov sa zadá cez vyskakovacie okno) v tomto mennom priestore';
+$lang['js']['newpagehere']     = 'Nová stránka sem';
+$lang['js']['insertkeywords']  = 'Zadajte kľúčové slová na hľadanie v tomto mennom priestore';
+$lang['js']['insertpagename']  = 'Zadajte názov stránky, ktorú chcete vytvoriť';
+$lang['js']['edit']            = 'Upraviť';
+$lang['js']['loading']         = 'Načítava sa...';

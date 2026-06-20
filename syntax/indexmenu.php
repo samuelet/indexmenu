@@ -851,7 +851,7 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
             if ($markCurrentPage) {
                 $ret .= '<span class="curid">';
             }
-            $ret .= '<a href="' . wl($link, $more) . '" class="' . $tagid . '" data-wiki-id="'. $item['hns'] . '">'
+            $ret .= '<a href="' . wl($link, $more) . '" class="' . $tagid . '" data-wiki-id="' . $item['hns'] . '">'
                 . $item['title']
                 . '</a>';
             if ($markCurrentPage) {

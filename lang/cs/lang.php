@@ -3,6 +3,7 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author E32k <Erik32konto@gmail.com>
  * @author Jakub Duchek <jakduch@jakduch.cz>
  * @author Vojta Olsan <olsh0@seznam.cz>
  */
@@ -45,4 +46,4 @@ $lang['js']['exporthtml']      = 'Exportovat jako HTML';
 $lang['js']['exporttext']      = 'Exportovat jako text';
 $lang['js']['newpage']         = 'Nová stránka...';
 $lang['js']['edit']            = 'Upravit';
-$lang['js']['loading']         = 'Nahrávání...';
+$lang['js']['loading']         = 'Načítání...';

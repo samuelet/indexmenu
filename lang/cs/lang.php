@@ -3,6 +3,7 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author E32k <Erik32konto@gmail.com>
  * @author Jakub Duchek <jakduch@jakduch.cz>
  * @author Vojta Olsan <olsh0@seznam.cz>
  */
@@ -21,6 +22,8 @@ $lang['delete_ok']             = 'Šablona byla úspěšně smazána';
 $lang['delete_no']             = 'Při mazání šablony nastala chyba';
 $lang['upload']                = 'Sdílet';
 $lang['checkupdates']          = 'Aktualizace pluginů';
+$lang['noupdates']             = 'Indexmenu nemusí být aktualizováno. Již máte nejnovější vydání:';
+$lang['donation_text']         = 'Plugin indexmenu není nikým sponzorován, ale vyvíjím a podporuji ho zadarmo ve svém volném čase. Pokud z něj máte užitek nebo chcete podpořit jeho vývoj, zvažte příspěvek.';
 $lang['js']['options']         = 'Možnosti';
 $lang['js']['navigation']      = 'Navigace';
 $lang['js']['sort']            = 'Srovnat';
@@ -32,6 +35,7 @@ $lang['js']['tsort']           = 'Podle názvu';
 $lang['js']['dsort']           = 'Podle data';
 $lang['js']['msort']           = 'Podle meta tagu';
 $lang['js']['nons']            = 'Zobrazit pouze stránky';
+$lang['js']['insert']          = 'Vložit indexmenu';
 $lang['js']['insertmetanum']   = 'Vložit metačíslo';
 $lang['js']['page']            = 'Stránka';
 $lang['js']['revs']            = 'Revize';
@@ -40,9 +44,12 @@ $lang['js']['insertdwlink']    = 'Vložit jako DWlink';
 $lang['js']['search']          = 'Vyhledat ...';
 $lang['js']['create']          = 'Vytvořit';
 $lang['js']['more']            = 'Více';
+$lang['js']['custompage']      = 'Vlastní stránka...';
+$lang['js']['custompagetooltip'] = 'Vytvořit novou stránku (zadejte název v vyskakovacím okně) pod touto stránkou';
 $lang['js']['purgecache']      = 'Vyčistit cache';
 $lang['js']['exporthtml']      = 'Exportovat jako HTML';
 $lang['js']['exporttext']      = 'Exportovat jako text';
 $lang['js']['newpage']         = 'Nová stránka...';
+$lang['js']['newpagehere']     = 'Nová stránka zde';
 $lang['js']['edit']            = 'Upravit';
-$lang['js']['loading']         = 'Nahrávání...';
+$lang['js']['loading']         = 'Načítání...';

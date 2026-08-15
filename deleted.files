@@ -38,3 +38,6 @@ edit-full.js
 edit.js
 VERSION.txt
 nojsindex.js
+inc/pclzip.lib.php
+inc/repo.class.php
+ajax.php

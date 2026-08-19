@@ -769,10 +769,14 @@ class syntax_plugin_indexmenu_indexmenu extends SyntaxPlugin
         if ($ns == '..') {
             $ns = ":";
         }
-        $ns = "$ns:arandompagehere";
-        $resolver = new PageResolver($id);
-        $ns = getNs($resolver->resolveId($ns));
-        return $ns === false ? '' : $ns;
+        if (class_exists('dokuwiki\File\PageResolver')) {
+            $ns = "$ns:arandompagehere";
+            $resolver = new PageResolver($id);
+            $ns = getNs($resolver->resolveId($ns));
+            return $ns === false ? '' : $ns;
+        } else {
+            return resolve_id(getNS($id), $ns);
+        }
     }
 
     /**

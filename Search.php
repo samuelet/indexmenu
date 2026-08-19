@@ -151,7 +151,7 @@ class Search
                     $hasActiveNode,
                     [
                         'currentPage' => $opts['currentPage'],
-                        'isParentLazy' => $item['type'] === 'l',
+                        'isParentLazy' => $item['type'] === 'l' || $item['type'] === 'd',
                         'nopg' => $opts['nopg']
                     ]
                 );

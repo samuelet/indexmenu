@@ -191,7 +191,9 @@ class Search
 
             if ($item['type'] === 'f' || !empty($node['children']) || isset($node['lazy']) || $item['hns'] !== false) {
                 // add only files, non-empty folders, lazy-loaded or folder with only a headpage
-                $nodes[] = $node;
+                if(auth_quickaclcheck($item['id'])) {
+                    $nodes[] = $node;
+                }
             }
 
             $previousLevel = $item['level'];
